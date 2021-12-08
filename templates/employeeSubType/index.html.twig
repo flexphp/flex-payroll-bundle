@@ -1,0 +1,41 @@
+{% trans_default_domain 'employeeSubType' %}
+{% extends 'form/layout.html.twig' %}
+
+{% block title %}{% trans %}title.list{% endtrans %}{% endblock %}
+
+{% block main %}
+    <div class="card">
+        <div class="card-header d-flex">
+            <h3 class="card-header-title">
+                {% trans %}title.list{% endtrans %}
+            </h3>
+            <div class="toolbar ml-auto">
+                <a href="{{ path('flexphp.payroll.employee-sub-types.new') }}" class="btn btn-primary">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    <span class="btn-text">{% trans %}title.new{% endtrans %}</span>
+                </a>
+            </div>
+        </div>
+        <div class="card-body p-0 table-responsive-sm">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">{% trans %}label.id{% endtrans %}</th>
+                        <th scope="col">{% trans %}label.name{% endtrans %}</th>
+                        <th scope="col">{% trans %}label.code{% endtrans %}</th>
+                        <th scope="col">{% trans %}label.isActive{% endtrans %}</th>
+                        <th scope="col" class="text-center" style="width: 105px;"><i class="fa fa-cogs" aria-hidden="true"></i></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {{ include('@FlexPHPPayroll/employeeSubType/_ajax.html.twig', {employeeSubTypes: employeeSubTypes}) }}
+                </tbody>
+            </table>
+            {{ include('default/_infinite.html.twig') }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/jquery/jquery.infinite.min.js') }}"></script>
+{% endblock %}

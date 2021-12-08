@@ -10,6 +10,7 @@
         <service id="FlexPHP\Bundle\Payroll" alias="flexphp.payroll.bundle" />
 
         <service id="flexphp.payroll.bundle.employee_type_controller" class="FlexPHP\Bundle\PayrollBundle\Controller\EmployeeTypeController" public="true" />
+        <service id="flexphp.payroll.bundle.employee_sub_type_controller" class="FlexPHP\Bundle\PayrollBundle\Controller\EmployeeSubTypeController" public="true" />
         <!-- <service id="flexphp.payroll.bundle.account_type_controller" class="FlexPHP\Bundle\PayrollBundle\Controller\AccountTypeController" public="true" /> -->
 
         <prototype namespace="FlexPHP\Bundle\PayrollBundle\" resource="../src/*" exclude="../src/{DependencyInjection}">
