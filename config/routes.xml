@@ -3,6 +3,27 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="flexphp.payroll.users.index" controller="flexphp.payroll.bundle.payroll_controller::index" path="/payroll" methods="GET" />
+    <!--
+    Add routes in config/routes.yaml
+    flexphp_payroll_bundle_routes:
+        resource: "@FlexPHPPayrollBundle/config/routes.xml"
+        prefix: /
+    -->
+
+    <route id="flexphp.payroll.employee-types.index" controller="flexphp.payroll.bundle.employee_type_controller::index" path="/employee-types" methods="GET" />
+    <route id="flexphp.payroll.employee-types.new" controller="flexphp.payroll.bundle.employee_type_controller::new" path="/employee-types/new" methods="GET" />
+    <route id="flexphp.payroll.employee-types.create" controller="flexphp.payroll.bundle.employee_type_controller::create" path="/employee-types/create" methods="POST" />
+    <route id="flexphp.payroll.employee-types.read" controller="flexphp.payroll.bundle.employee_type_controller::read" path="/employee-types/{id}" methods="GET" />
+    <route id="flexphp.payroll.employee-types.edit" controller="flexphp.payroll.bundle.employee_type_controller::edit" path="/employee-types/edit/{id}" methods="GET" />
+    <route id="flexphp.payroll.employee-types.update" controller="flexphp.payroll.bundle.employee_type_controller::update" path="/employee-types/update/{id}" methods="PUT" />
+    <route id="flexphp.payroll.employee-types.delete" controller="flexphp.payroll.bundle.employee_type_controller::delete" path="/employee-types/delete/{id}" methods="DELETE" />
+
+<!--     <route id="flexphp.payroll.account-types.index" controller="flexphp.payroll.bundle.account_type_controller::index" path="/employee-types" methods="GET" /> -->
+<!--     <route id="flexphp.payroll.account-types.new" controller="flexphp.payroll.bundle.account_type_controller::new" path="/employee-types/new" methods="GET" /> -->
+<!--     <route id="flexphp.payroll.account-types.create" controller="flexphp.payroll.bundle.account_type_controller::create" path="/employee-types/create" methods="POST" /> -->
+<!--     <route id="flexphp.payroll.account-types.read" controller="flexphp.payroll.bundle.account_type_controller::read" path="/employee-types/{id}" methods="GET" /> -->
+<!--     <route id="flexphp.payroll.account-types.edit" controller="flexphp.payroll.bundle.account_type_controller::edit" path="/employee-types/edit/{id}" methods="GET" /> -->
+<!--     <route id="flexphp.payroll.account-types.update" controller="flexphp.payroll.bundle.account_type_controller::update" path="/employee-types/update/{id}" methods="PUT" /> -->
+<!--     <route id="flexphp.payroll.account-types.delete" controller="flexphp.payroll.bundle.account_type_controller::delete" path="/employee-types/delete/{id}" methods="DELETE" /> -->
 </routes>
 
