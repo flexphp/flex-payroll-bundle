@@ -73,5 +73,13 @@
     <route id="flexphp.payroll.account-types.edit" controller="flexphp.payroll.bundle.account_type_controller::edit" path="/account-types/edit/{id}" methods="GET" />
     <route id="flexphp.payroll.account-types.update" controller="flexphp.payroll.bundle.account_type_controller::update" path="/account-types/update/{id}" methods="PUT" />
     <route id="flexphp.payroll.account-types.delete" controller="flexphp.payroll.bundle.account_type_controller::delete" path="/account-types/delete/{id}" methods="DELETE" />
+
+    <route id="flexphp.payroll.banks.index" controller="flexphp.payroll.bundle.bank_controller::index" path="/banks" methods="GET" />
+    <route id="flexphp.payroll.banks.new" controller="flexphp.payroll.bundle.bank_controller::new" path="/banks/new" methods="GET" />
+    <route id="flexphp.payroll.banks.create" controller="flexphp.payroll.bundle.bank_controller::create" path="/banks/create" methods="POST" />
+    <route id="flexphp.payroll.banks.read" controller="flexphp.payroll.bundle.bank_controller::read" path="/banks/{id}" methods="GET" />
+    <route id="flexphp.payroll.banks.edit" controller="flexphp.payroll.bundle.bank_controller::edit" path="/banks/edit/{id}" methods="GET" />
+    <route id="flexphp.payroll.banks.update" controller="flexphp.payroll.bundle.bank_controller::update" path="/banks/update/{id}" methods="PUT" />
+    <route id="flexphp.payroll.banks.delete" controller="flexphp.payroll.bundle.bank_controller::delete" path="/banks/delete/{id}" methods="DELETE" />
 </routes>
 

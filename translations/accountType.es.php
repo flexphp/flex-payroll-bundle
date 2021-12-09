@@ -11,7 +11,7 @@ return [
     'label' => [
         'id' => 'Id',
         'name' => 'Nombre',
-        'isActive' => 'Está activa?',
+        'isActive' => 'Está activo?',
         'createdAt' => 'Creado',
         'updatedAt' => 'Actualizado',
         'createdBy' => 'Creado por',
