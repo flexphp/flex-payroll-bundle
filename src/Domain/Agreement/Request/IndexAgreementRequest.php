@@ -18,7 +18,9 @@ final class IndexAgreementRequest implements RequestInterface
 
     public $id;
 
-    public $status;
+    public $name;
+
+    public $employee;
 
     public $type;
 
@@ -36,11 +38,11 @@ final class IndexAgreementRequest implements RequestInterface
 
     public $highRisk;
 
-    public $isActive;
-
     public $initAt;
 
     public $finishAt;
+
+    public $status;
 
     public $createdAt = [];
 
@@ -59,7 +61,8 @@ final class IndexAgreementRequest implements RequestInterface
     public function __construct(array $data, int $_page, int $_limit = 50, ?string $timezone = null)
     {
         $this->id = $data['id'] ?? null;
-        $this->status = $data['status'] ?? null;
+        $this->name = $data['name'] ?? null;
+        $this->employee = $data['employee'] ?? null;
         $this->type = $data['type'] ?? null;
         $this->period = $data['period'] ?? null;
         $this->currency = $data['currency'] ?? null;
@@ -68,9 +71,9 @@ final class IndexAgreementRequest implements RequestInterface
         $this->pensionPercentage = $data['pensionPercentage'] ?? null;
         $this->integralSalary = $data['integralSalary'] ?? null;
         $this->highRisk = $data['highRisk'] ?? null;
-        $this->isActive = $data['isActive'] ?? null;
         $this->initAt = $data['initAt'] ?? null;
         $this->finishAt = $data['finishAt'] ?? null;
+        $this->status = $data['status'] ?? null;
         $this->createdAt[] = $data['createdAt_START'] ?? null;
         $this->createdAt[] = $data['createdAt_END'] ?? null;
         $this->updatedAt = $data['updatedAt'] ?? null;

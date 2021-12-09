@@ -1,18 +1,19 @@
 jQuery(document).ready(function ($) {
     'use strict';
 
-    const statusUrl = $('[id$=form_status]').data('autocomplete-url');
+    const employeeUrl = $('[id$=form_employee]').data('autocomplete-url');
     const typeUrl = $('[id$=form_type]').data('autocomplete-url');
     const periodUrl = $('[id$=form_period]').data('autocomplete-url');
     const currencyUrl = $('[id$=form_currency]').data('autocomplete-url');
+    const statusUrl = $('[id$=form_status]').data('autocomplete-url');
 
-    $('[id$=form_status]').select2({
+    $('[id$=form_employee]').select2({
         theme: 'bootstrap4',
-        minimumInputLength: 0,
+        minimumInputLength: 3,
         allowClear: true,
         placeholder: '',
         ajax: {
-            url: statusUrl,
+            url: employeeUrl,
             method: 'POST',
             dataType: 'json',
             delay: 300,
@@ -82,6 +83,29 @@ jQuery(document).ready(function ($) {
         placeholder: '',
         ajax: {
             url: currencyUrl,
+            method: 'POST',
+            dataType: 'json',
+            delay: 300,
+            cache: true,
+            headers: {
+                'X-XSRF-Token': getCookie('XSRF-Token')
+            },
+            data: function (params) {
+                return {
+                    term: params.term,
+                    page: params.page
+                };
+            }
+        },
+    });
+
+    $('[id$=form_status]').select2({
+        theme: 'bootstrap4',
+        minimumInputLength: 0,
+        allowClear: true,
+        placeholder: '',
+        ajax: {
+            url: statusUrl,
             method: 'POST',
             dataType: 'json',
             delay: 300,

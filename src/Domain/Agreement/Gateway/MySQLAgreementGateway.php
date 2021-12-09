@@ -17,6 +17,7 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\FindAgreementAgreement
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\FindAgreementAgreementStatusRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\FindAgreementAgreementTypeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\FindAgreementCurrencyRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\FindAgreementEmployeeRequest;
 use FlexPHP\Bundle\HelperBundle\Domain\Helper\DbalCriteriaHelper;
 
 class MySQLAgreementGateway implements AgreementGateway
@@ -38,7 +39,8 @@ class MySQLAgreementGateway implements AgreementGateway
 
         $query->select([
             'agreement.Id as id',
-            'agreement.Status as status',
+            'agreement.Name as name',
+            'agreement.Employee as employee',
             'agreement.Type as type',
             'agreement.Period as period',
             'agreement.Currency as currency',
@@ -47,23 +49,26 @@ class MySQLAgreementGateway implements AgreementGateway
             'agreement.PensionPercentage as pensionPercentage',
             'agreement.IntegralSalary as integralSalary',
             'agreement.HighRisk as highRisk',
-            'agreement.IsActive as isActive',
             'agreement.InitAt as initAt',
             'agreement.FinishAt as finishAt',
-            'status.id as `status.id`',
-            'status.id as `status.id`',
+            'agreement.Status as status',
+            'employee.id as `employee.id`',
+            'employee.documentNumber as `employee.documentNumber`',
             'type.id as `type.id`',
             'type.id as `type.id`',
             'period.id as `period.id`',
             'period.id as `period.id`',
             'currency.id as `currency.id`',
             'currency.id as `currency.id`',
+            'status.id as `status.id`',
+            'status.id as `status.id`',
         ]);
         $query->from('`Agreements`', '`agreement`');
-        $query->join('`agreement`', '`AgreementStatus`', '`status`', 'agreement.Status = status.id');
+        $query->join('`agreement`', '`Employees`', '`employee`', 'agreement.Employee = employee.id');
         $query->join('`agreement`', '`AgreementTypes`', '`type`', 'agreement.Type = type.id');
         $query->join('`agreement`', '`AgreementPeriods`', '`period`', 'agreement.Period = period.id');
         $query->join('`agreement`', '`Currencies`', '`currency`', 'agreement.Currency = currency.id');
+        $query->join('`agreement`', '`AgreementStatus`', '`status`', 'agreement.Status = status.id');
 
         $query->orderBy('agreement.UpdatedAt', 'DESC');
 
@@ -85,7 +90,8 @@ class MySQLAgreementGateway implements AgreementGateway
 
         $query->insert('`Agreements`');
 
-        $query->setValue('Status', ':status');
+        $query->setValue('Name', ':name');
+        $query->setValue('Employee', ':employee');
         $query->setValue('Type', ':type');
         $query->setValue('Period', ':period');
         $query->setValue('Currency', ':currency');
@@ -94,14 +100,15 @@ class MySQLAgreementGateway implements AgreementGateway
         $query->setValue('PensionPercentage', ':pensionPercentage');
         $query->setValue('IntegralSalary', ':integralSalary');
         $query->setValue('HighRisk', ':highRisk');
-        $query->setValue('IsActive', ':isActive');
         $query->setValue('InitAt', ':initAt');
         $query->setValue('FinishAt', ':finishAt');
+        $query->setValue('Status', ':status');
         $query->setValue('CreatedAt', ':createdAt');
         $query->setValue('UpdatedAt', ':updatedAt');
         $query->setValue('CreatedBy', ':createdBy');
 
-        $query->setParameter(':status', $agreement->status(), DB::STRING);
+        $query->setParameter(':name', $agreement->name(), DB::STRING);
+        $query->setParameter(':employee', $agreement->employee(), DB::INTEGER);
         $query->setParameter(':type', $agreement->type(), DB::INTEGER);
         $query->setParameter(':period', $agreement->period(), DB::STRING);
         $query->setParameter(':currency', $agreement->currency(), DB::STRING);
@@ -110,9 +117,9 @@ class MySQLAgreementGateway implements AgreementGateway
         $query->setParameter(':pensionPercentage', $agreement->pensionPercentage(), DB::INTEGER);
         $query->setParameter(':integralSalary', $agreement->integralSalary(), DB::BOOLEAN);
         $query->setParameter(':highRisk', $agreement->highRisk(), DB::BOOLEAN);
-        $query->setParameter(':isActive', $agreement->isActive(), DB::BOOLEAN);
         $query->setParameter(':initAt', $agreement->initAt(), DB::DATETIME_MUTABLE);
         $query->setParameter(':finishAt', $agreement->finishAt(), DB::DATETIME_MUTABLE);
+        $query->setParameter(':status', $agreement->status(), DB::STRING);
         $query->setParameter(':createdAt', $agreement->createdAt() ?? new \DateTime(date('Y-m-d H:i:s')), DB::DATETIME_MUTABLE);
         $query->setParameter(':updatedAt', $agreement->updatedAt() ?? new \DateTime(date('Y-m-d H:i:s')), DB::DATETIME_MUTABLE);
         $query->setParameter(':createdBy', $agreement->createdBy(), DB::INTEGER);
@@ -128,7 +135,8 @@ class MySQLAgreementGateway implements AgreementGateway
 
         $query->select([
             'agreement.Id as id',
-            'agreement.Status as status',
+            'agreement.Name as name',
+            'agreement.Employee as employee',
             'agreement.Type as type',
             'agreement.Period as period',
             'agreement.Currency as currency',
@@ -137,31 +145,34 @@ class MySQLAgreementGateway implements AgreementGateway
             'agreement.PensionPercentage as pensionPercentage',
             'agreement.IntegralSalary as integralSalary',
             'agreement.HighRisk as highRisk',
-            'agreement.IsActive as isActive',
             'agreement.InitAt as initAt',
             'agreement.FinishAt as finishAt',
+            'agreement.Status as status',
             'agreement.CreatedAt as createdAt',
             'agreement.UpdatedAt as updatedAt',
             'agreement.CreatedBy as createdBy',
             'agreement.UpdatedBy as updatedBy',
-            'status.id as `status.id`',
-            'status.id as `status.id`',
+            'employee.id as `employee.id`',
+            'employee.documentNumber as `employee.documentNumber`',
             'type.id as `type.id`',
             'type.id as `type.id`',
             'period.id as `period.id`',
             'period.id as `period.id`',
             'currency.id as `currency.id`',
             'currency.id as `currency.id`',
+            'status.id as `status.id`',
+            'status.id as `status.id`',
             'createdBy.id as `createdBy.id`',
             'createdBy.name as `createdBy.name`',
             'updatedBy.id as `updatedBy.id`',
             'updatedBy.name as `updatedBy.name`',
         ]);
         $query->from('`Agreements`', '`agreement`');
-        $query->join('`agreement`', '`AgreementStatus`', '`status`', 'agreement.Status = status.id');
+        $query->join('`agreement`', '`Employees`', '`employee`', 'agreement.Employee = employee.id');
         $query->join('`agreement`', '`AgreementTypes`', '`type`', 'agreement.Type = type.id');
         $query->join('`agreement`', '`AgreementPeriods`', '`period`', 'agreement.Period = period.id');
         $query->join('`agreement`', '`Currencies`', '`currency`', 'agreement.Currency = currency.id');
+        $query->join('`agreement`', '`AgreementStatus`', '`status`', 'agreement.Status = status.id');
         $query->leftJoin('`agreement`', '`Users`', '`createdBy`', 'agreement.CreatedBy = createdBy.id');
         $query->leftJoin('`agreement`', '`Users`', '`updatedBy`', 'agreement.UpdatedBy = updatedBy.id');
         $query->where('agreement.Id = :id');
@@ -176,7 +187,8 @@ class MySQLAgreementGateway implements AgreementGateway
 
         $query->update('`Agreements`');
 
-        $query->set('Status', ':status');
+        $query->set('Name', ':name');
+        $query->set('Employee', ':employee');
         $query->set('Type', ':type');
         $query->set('Period', ':period');
         $query->set('Currency', ':currency');
@@ -185,13 +197,14 @@ class MySQLAgreementGateway implements AgreementGateway
         $query->set('PensionPercentage', ':pensionPercentage');
         $query->set('IntegralSalary', ':integralSalary');
         $query->set('HighRisk', ':highRisk');
-        $query->set('IsActive', ':isActive');
         $query->set('InitAt', ':initAt');
         $query->set('FinishAt', ':finishAt');
+        $query->set('Status', ':status');
         $query->set('UpdatedAt', ':updatedAt');
         $query->set('UpdatedBy', ':updatedBy');
 
-        $query->setParameter(':status', $agreement->status(), DB::STRING);
+        $query->setParameter(':name', $agreement->name(), DB::STRING);
+        $query->setParameter(':employee', $agreement->employee(), DB::INTEGER);
         $query->setParameter(':type', $agreement->type(), DB::INTEGER);
         $query->setParameter(':period', $agreement->period(), DB::STRING);
         $query->setParameter(':currency', $agreement->currency(), DB::STRING);
@@ -200,9 +213,9 @@ class MySQLAgreementGateway implements AgreementGateway
         $query->setParameter(':pensionPercentage', $agreement->pensionPercentage(), DB::INTEGER);
         $query->setParameter(':integralSalary', $agreement->integralSalary(), DB::BOOLEAN);
         $query->setParameter(':highRisk', $agreement->highRisk(), DB::BOOLEAN);
-        $query->setParameter(':isActive', $agreement->isActive(), DB::BOOLEAN);
         $query->setParameter(':initAt', $agreement->initAt(), DB::DATETIME_MUTABLE);
         $query->setParameter(':finishAt', $agreement->finishAt(), DB::DATETIME_MUTABLE);
+        $query->setParameter(':status', $agreement->status(), DB::STRING);
         $query->setParameter(':updatedAt', $agreement->updatedAt() ?? new \DateTime(date('Y-m-d H:i:s')), DB::DATETIME_MUTABLE);
         $query->setParameter(':updatedBy', $agreement->updatedBy(), DB::INTEGER);
 
@@ -224,18 +237,18 @@ class MySQLAgreementGateway implements AgreementGateway
         $query->execute();
     }
 
-    public function filterAgreementStatus(FindAgreementAgreementStatusRequest $request, int $page, int $limit): array
+    public function filterEmployees(FindAgreementEmployeeRequest $request, int $page, int $limit): array
     {
         $query = $this->conn->createQueryBuilder();
 
         $query->select([
-            'agreementStatus.id as id',
-            'agreementStatus.id as text',
+            'employee.id as id',
+            'employee.documentNumber as text',
         ]);
-        $query->from('`AgreementStatus`', '`agreementStatus`');
+        $query->from('`Employees`', '`employee`');
 
-        $query->where('agreementStatus.id like :agreementStatus_id');
-        $query->setParameter(':agreementStatus_id', "%{$request->term}%");
+        $query->where('employee.documentNumber like :employee_documentNumber');
+        $query->setParameter(':employee_documentNumber', "%{$request->term}%");
 
         $query->setFirstResult($page ? ($page - 1) * $limit : 0);
         $query->setMaxResults($limit);
@@ -293,6 +306,25 @@ class MySQLAgreementGateway implements AgreementGateway
 
         $query->where('currency.id like :currency_id');
         $query->setParameter(':currency_id', "%{$request->term}%");
+
+        $query->setFirstResult($page ? ($page - 1) * $limit : 0);
+        $query->setMaxResults($limit);
+
+        return $query->execute()->fetchAll();
+    }
+
+    public function filterAgreementStatus(FindAgreementAgreementStatusRequest $request, int $page, int $limit): array
+    {
+        $query = $this->conn->createQueryBuilder();
+
+        $query->select([
+            'agreementStatus.id as id',
+            'agreementStatus.id as text',
+        ]);
+        $query->from('`AgreementStatus`', '`agreementStatus`');
+
+        $query->where('agreementStatus.id like :agreementStatus_id');
+        $query->setParameter(':agreementStatus_id', "%{$request->term}%");
 
         $query->setFirstResult($page ? ($page - 1) * $limit : 0);
         $query->setMaxResults($limit);

@@ -35,11 +35,16 @@ final class AgreementFilterFormType extends AbstractType
             'required' => false,
         ]);
 
-        $builder->add('status', Select2Type::class, [
-            'label' => 'label.status',
+        $builder->add('name', InputType\TextType::class, [
+            'label' => 'label.name',
+            'required' => false,
+        ]);
+
+        $builder->add('employee', Select2Type::class, [
+            'label' => 'label.employee',
             'required' => false,
             'attr' => [
-                'data-autocomplete-url' => $this->router->generate('flexphp.payroll.agreements.find.agreement-status'),
+                'data-autocomplete-url' => $this->router->generate('flexphp.payroll.agreements.find.employees'),
             ],
         ]);
 
@@ -92,11 +97,6 @@ final class AgreementFilterFormType extends AbstractType
             'required' => false,
         ]);
 
-        $builder->add('isActive', InputType\CheckboxType::class, [
-            'label' => 'label.isActive',
-            'required' => false,
-        ]);
-
         $builder->add('initAt', DatetimepickerType::class, [
             'label' => 'label.initAt',
             'required' => false,
@@ -105,6 +105,14 @@ final class AgreementFilterFormType extends AbstractType
         $builder->add('finishAt', DatetimepickerType::class, [
             'label' => 'label.finishAt',
             'required' => false,
+        ]);
+
+        $builder->add('status', Select2Type::class, [
+            'label' => 'label.status',
+            'required' => false,
+            'attr' => [
+                'data-autocomplete-url' => $this->router->generate('flexphp.payroll.agreements.find.agreement-status'),
+            ],
         ]);
 
         $builder->add('createdAt_START', DatestartpickerType::class, [

@@ -13,6 +13,7 @@ use FlexPHP\Bundle\PayrollBundle\Domain\AgreementPeriod\AgreementPeriodFactory;
 use FlexPHP\Bundle\PayrollBundle\Domain\AgreementStatus\AgreementStatusFactory;
 use FlexPHP\Bundle\PayrollBundle\Domain\AgreementType\AgreementTypeFactory;
 use FlexPHP\Bundle\LocationBundle\Domain\Currency\CurrencyFactory;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\EmployeeFactory;
 use FlexPHP\Bundle\HelperBundle\Domain\Helper\FactoryExtendedTrait;
 use FlexPHP\Bundle\UserBundle\Domain\User\UserFactory;
 
@@ -32,8 +33,12 @@ final class AgreementFactory
             $agreement->setId((int)$data['id']);
         }
 
-        if (isset($data['status'])) {
-            $agreement->setStatus((string)$data['status']);
+        if (isset($data['name'])) {
+            $agreement->setName((string)$data['name']);
+        }
+
+        if (isset($data['employee'])) {
+            $agreement->setEmployee((int)$data['employee']);
         }
 
         if (isset($data['type'])) {
@@ -68,16 +73,16 @@ final class AgreementFactory
             $agreement->setHighRisk((bool)$data['highRisk']);
         }
 
-        if (isset($data['isActive'])) {
-            $agreement->setIsActive((bool)$data['isActive']);
-        }
-
         if (isset($data['initAt'])) {
             $agreement->setInitAt(\is_string($data['initAt']) ? new \DateTime($data['initAt']) : $data['initAt']);
         }
 
         if (isset($data['finishAt'])) {
             $agreement->setFinishAt(\is_string($data['finishAt']) ? new \DateTime($data['finishAt']) : $data['finishAt']);
+        }
+
+        if (isset($data['status'])) {
+            $agreement->setStatus((string)$data['status']);
         }
 
         if (isset($data['createdAt'])) {
@@ -96,8 +101,8 @@ final class AgreementFactory
             $agreement->setUpdatedBy((int)$data['updatedBy']);
         }
 
-        if (isset($data['status.id'])) {
-            $agreement->setStatusInstance((new AgreementStatusFactory())->make($this->getFkEntity('status.', $data)));
+        if (isset($data['employee.id'])) {
+            $agreement->setEmployeeInstance((new EmployeeFactory())->make($this->getFkEntity('employee.', $data)));
         }
 
         if (isset($data['type.id'])) {
@@ -110,6 +115,10 @@ final class AgreementFactory
 
         if (isset($data['currency.id'])) {
             $agreement->setCurrencyInstance((new CurrencyFactory())->make($this->getFkEntity('currency.', $data)));
+        }
+
+        if (isset($data['status.id'])) {
+            $agreement->setStatusInstance((new AgreementStatusFactory())->make($this->getFkEntity('status.', $data)));
         }
 
         if (isset($data['createdBy.id'])) {

@@ -17,6 +17,7 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\FindAgreementAgreement
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\FindAgreementAgreementStatusRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\FindAgreementAgreementTypeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\FindAgreementCurrencyRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\FindAgreementEmployeeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\IndexAgreementRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\ReadAgreementRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\UpdateAgreementRequest;
@@ -26,6 +27,7 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\FindAgreementAgreement
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\FindAgreementAgreementStatusUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\FindAgreementAgreementTypeUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\FindAgreementCurrencyUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\FindAgreementEmployeeUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\IndexAgreementUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\ReadAgreementUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\UpdateAgreementUseCase;
@@ -167,20 +169,20 @@ final class AgreementController extends AbstractController
 
     /**
      * @Cache(smaxage="3600")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_AGREEMENTSTATUS_INDEX')", statusCode=401)
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_EMPLOYEE_INDEX')", statusCode=401)
      */
-    public function findAgreementStatus(Request $request, FindAgreementAgreementStatusUseCase $useCase): Response
+    public function findEmployee(Request $request, FindAgreementEmployeeUseCase $useCase): Response
     {
         if (!$request->isXmlHttpRequest()) {
             return new JsonResponse([], Response::HTTP_BAD_REQUEST);
         }
 
-        $request = new FindAgreementAgreementStatusRequest($request->request->all());
+        $request = new FindAgreementEmployeeRequest($request->request->all());
 
         $response = $useCase->execute($request);
 
         return new JsonResponse([
-            'results' => $response->agreementStatus,
+            'results' => $response->employees,
             'pagination' => ['more' => false],
         ]);
     }
@@ -241,6 +243,26 @@ final class AgreementController extends AbstractController
 
         return new JsonResponse([
             'results' => $response->currencies,
+            'pagination' => ['more' => false],
+        ]);
+    }
+
+    /**
+     * @Cache(smaxage="3600")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_AGREEMENTSTATUS_INDEX')", statusCode=401)
+     */
+    public function findAgreementStatus(Request $request, FindAgreementAgreementStatusUseCase $useCase): Response
+    {
+        if (!$request->isXmlHttpRequest()) {
+            return new JsonResponse([], Response::HTTP_BAD_REQUEST);
+        }
+
+        $request = new FindAgreementAgreementStatusRequest($request->request->all());
+
+        $response = $useCase->execute($request);
+
+        return new JsonResponse([
+            'results' => $response->agreementStatus,
             'pagination' => ['more' => false],
         ]);
     }

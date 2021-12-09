@@ -89,9 +89,10 @@
     <route id="flexphp.payroll.agreements.edit" controller="flexphp.payroll.bundle.agreement_controller::edit" path="/agreements/edit/{id}" methods="GET" />
     <route id="flexphp.payroll.agreements.update" controller="flexphp.payroll.bundle.agreement_controller::update" path="/agreements/update/{id}" methods="PUT" />
     <route id="flexphp.payroll.agreements.delete" controller="flexphp.payroll.bundle.agreement_controller::delete" path="/agreements/delete/{id}" methods="DELETE" />
-    <route id="flexphp.payroll.agreements.find.agreement-status" controller="flexphp.payroll.bundle.agreement_controller::findAgreementStatus" path="/agreements/find-agreement-status" methods="POST" />
+    <route id="flexphp.payroll.agreements.find.employees" controller="flexphp.payroll.bundle.agreement_controller::findEmployee" path="/agreements/find-employees" methods="POST" />
     <route id="flexphp.payroll.agreements.find.agreement-types" controller="flexphp.payroll.bundle.agreement_controller::findAgreementType" path="/agreements/find-agreement-types" methods="POST" />
     <route id="flexphp.payroll.agreements.find.agreement-periods" controller="flexphp.payroll.bundle.agreement_controller::findAgreementPeriod" path="/agreements/find-agreement-periods" methods="POST" />
     <route id="flexphp.payroll.agreements.find.currencies" controller="flexphp.payroll.bundle.agreement_controller::findCurrency" path="/agreements/find-currencies" methods="POST" />
+    <route id="flexphp.payroll.agreements.find.agreement-status" controller="flexphp.payroll.bundle.agreement_controller::findAgreementStatus" path="/agreements/find-agreement-status" methods="POST" />
 </routes>
 

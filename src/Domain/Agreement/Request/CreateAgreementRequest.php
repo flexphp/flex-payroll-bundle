@@ -13,7 +13,9 @@ use FlexPHP\Messages\RequestInterface;
 
 final class CreateAgreementRequest implements RequestInterface
 {
-    public $status;
+    public $name;
+
+    public $employee;
 
     public $type;
 
@@ -31,17 +33,18 @@ final class CreateAgreementRequest implements RequestInterface
 
     public $highRisk;
 
-    public $isActive;
-
     public $initAt;
 
     public $finishAt;
+
+    public $status;
 
     public $createdBy;
 
     public function __construct(array $data, int $createdBy)
     {
-        $this->status = $data['status'] ?? null;
+        $this->name = $data['name'] ?? null;
+        $this->employee = $data['employee'] ?? null;
         $this->type = $data['type'] ?? null;
         $this->period = $data['period'] ?? null;
         $this->currency = $data['currency'] ?? null;
@@ -50,9 +53,9 @@ final class CreateAgreementRequest implements RequestInterface
         $this->pensionPercentage = $data['pensionPercentage'] ?? null;
         $this->integralSalary = $data['integralSalary'] ?? null;
         $this->highRisk = $data['highRisk'] ?? null;
-        $this->isActive = $data['isActive'] ?? null;
         $this->initAt = $data['initAt'] ?? null;
         $this->finishAt = $data['finishAt'] ?? null;
+        $this->status = $data['status'] ?? null;
         $this->createdBy = $createdBy;
     }
 }

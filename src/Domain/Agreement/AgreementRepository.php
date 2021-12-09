@@ -15,6 +15,7 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\FindAgreementAgreement
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\FindAgreementAgreementStatusRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\FindAgreementAgreementTypeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\FindAgreementCurrencyRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\FindAgreementEmployeeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\IndexAgreementRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\ReadAgreementRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\UpdateAgreementRequest;
@@ -76,9 +77,9 @@ final class AgreementRepository
         return $agreement;
     }
 
-    public function findAgreementStatusBy(FindAgreementAgreementStatusRequest $request): array
+    public function findEmployeesBy(FindAgreementEmployeeRequest $request): array
     {
-        return $this->gateway->filterAgreementStatus($request, $request->_page, $request->_limit);
+        return $this->gateway->filterEmployees($request, $request->_page, $request->_limit);
     }
 
     public function findAgreementTypesBy(FindAgreementAgreementTypeRequest $request): array
@@ -94,5 +95,10 @@ final class AgreementRepository
     public function findCurrenciesBy(FindAgreementCurrencyRequest $request): array
     {
         return $this->gateway->filterCurrencies($request, $request->_page, $request->_limit);
+    }
+
+    public function findAgreementStatusBy(FindAgreementAgreementStatusRequest $request): array
+    {
+        return $this->gateway->filterAgreementStatus($request, $request->_page, $request->_limit);
     }
 }

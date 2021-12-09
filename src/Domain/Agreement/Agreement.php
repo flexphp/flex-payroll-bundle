@@ -13,6 +13,7 @@ use FlexPHP\Bundle\PayrollBundle\Domain\AgreementPeriod\AgreementPeriod;
 use FlexPHP\Bundle\PayrollBundle\Domain\AgreementStatus\AgreementStatus;
 use FlexPHP\Bundle\PayrollBundle\Domain\AgreementType\AgreementType;
 use FlexPHP\Bundle\LocationBundle\Domain\Currency\Currency;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Employee;
 use FlexPHP\Bundle\HelperBundle\Domain\Helper\ToArrayTrait;
 use FlexPHP\Bundle\UserBundle\Domain\User\User;
 
@@ -22,7 +23,9 @@ final class Agreement
 
     private $id;
 
-    private $status;
+    private $name;
+
+    private $employee;
 
     private $type;
 
@@ -40,11 +43,11 @@ final class Agreement
 
     private $highRisk;
 
-    private $isActive;
-
     private $initAt;
 
     private $finishAt;
+
+    private $status;
 
     private $createdAt;
 
@@ -54,13 +57,15 @@ final class Agreement
 
     private $updatedBy;
 
-    private $statusInstance;
+    private $employeeInstance;
 
     private $typeInstance;
 
     private $periodInstance;
 
     private $currencyInstance;
+
+    private $statusInstance;
 
     private $createdByInstance;
 
@@ -71,9 +76,14 @@ final class Agreement
         return $this->id;
     }
 
-    public function status(): ?string
+    public function name(): ?string
     {
-        return $this->status;
+        return $this->name;
+    }
+
+    public function employee(): ?int
+    {
+        return $this->employee;
     }
 
     public function type(): ?int
@@ -116,11 +126,6 @@ final class Agreement
         return $this->highRisk;
     }
 
-    public function isActive(): ?bool
-    {
-        return $this->isActive;
-    }
-
     public function initAt(): ?\DateTime
     {
         return $this->initAt;
@@ -129,6 +134,11 @@ final class Agreement
     public function finishAt(): ?\DateTime
     {
         return $this->finishAt;
+    }
+
+    public function status(): ?string
+    {
+        return $this->status;
     }
 
     public function createdAt(): ?\DateTime
@@ -151,9 +161,9 @@ final class Agreement
         return $this->updatedBy;
     }
 
-    public function statusInstance(): AgreementStatus
+    public function employeeInstance(): Employee
     {
-        return $this->statusInstance ?: new AgreementStatus;
+        return $this->employeeInstance ?: new Employee;
     }
 
     public function typeInstance(): AgreementType
@@ -171,6 +181,11 @@ final class Agreement
         return $this->currencyInstance ?: new Currency;
     }
 
+    public function statusInstance(): AgreementStatus
+    {
+        return $this->statusInstance ?: new AgreementStatus;
+    }
+
     public function createdByInstance(): ?User
     {
         return $this->createdByInstance;
@@ -186,9 +201,14 @@ final class Agreement
         $this->id = $id;
     }
 
-    public function setStatus(string $status): void
+    public function setName(string $name): void
     {
-        $this->status = $status;
+        $this->name = $name;
+    }
+
+    public function setEmployee(int $employee): void
+    {
+        $this->employee = $employee;
     }
 
     public function setType(int $type): void
@@ -231,11 +251,6 @@ final class Agreement
         $this->highRisk = $highRisk;
     }
 
-    public function setIsActive(?bool $isActive): void
-    {
-        $this->isActive = $isActive;
-    }
-
     public function setInitAt(\DateTime $initAt): void
     {
         $this->initAt = $initAt;
@@ -244,6 +259,11 @@ final class Agreement
     public function setFinishAt(?\DateTime $finishAt): void
     {
         $this->finishAt = $finishAt;
+    }
+
+    public function setStatus(string $status): void
+    {
+        $this->status = $status;
     }
 
     public function setCreatedAt(?\DateTime $createdAt): void
@@ -266,9 +286,9 @@ final class Agreement
         $this->updatedBy = $updatedBy;
     }
 
-    public function setStatusInstance(AgreementStatus $agreementStatus): void
+    public function setEmployeeInstance(Employee $employee): void
     {
-        $this->statusInstance = $agreementStatus;
+        $this->employeeInstance = $employee;
     }
 
     public function setTypeInstance(AgreementType $agreementType): void
@@ -284,6 +304,11 @@ final class Agreement
     public function setCurrencyInstance(Currency $currency): void
     {
         $this->currencyInstance = $currency;
+    }
+
+    public function setStatusInstance(AgreementStatus $agreementStatus): void
+    {
+        $this->statusInstance = $agreementStatus;
     }
 
     public function setCreatedByInstance(?User $user): void

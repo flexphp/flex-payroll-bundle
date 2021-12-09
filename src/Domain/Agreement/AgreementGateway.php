@@ -13,6 +13,7 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\FindAgreementAgreement
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\FindAgreementAgreementStatusRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\FindAgreementAgreementTypeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\FindAgreementCurrencyRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\FindAgreementEmployeeRequest;
 
 interface AgreementGateway
 {
@@ -26,11 +27,13 @@ interface AgreementGateway
 
     public function pop(Agreement $agreement): void;
 
-    public function filterAgreementStatus(FindAgreementAgreementStatusRequest $request, int $page, int $limit): array;
+    public function filterEmployees(FindAgreementEmployeeRequest $request, int $page, int $limit): array;
 
     public function filterAgreementTypes(FindAgreementAgreementTypeRequest $request, int $page, int $limit): array;
 
     public function filterAgreementPeriods(FindAgreementAgreementPeriodRequest $request, int $page, int $limit): array;
 
     public function filterCurrencies(FindAgreementCurrencyRequest $request, int $page, int $limit): array;
+
+    public function filterAgreementStatus(FindAgreementAgreementStatusRequest $request, int $page, int $limit): array;
 }

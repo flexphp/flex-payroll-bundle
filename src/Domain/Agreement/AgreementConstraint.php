@@ -39,7 +39,7 @@ final class AgreementConstraint
         ];
     }
 
-    private function status(): array
+    private function name(): array
     {
         return [
             new Assert\NotNull(),
@@ -48,7 +48,18 @@ final class AgreementConstraint
                 'type' => 'string',
             ]),
             new Assert\Length([
-                'max' => 2,
+                'max' => 255,
+            ]),
+        ];
+    }
+
+    private function employee(): array
+    {
+        return [
+            new Assert\NotNull(),
+            new Assert\NotBlank(),
+            new Assert\Type([
+                'type' => 'int',
             ]),
         ];
     }
@@ -143,15 +154,6 @@ final class AgreementConstraint
         ];
     }
 
-    private function isActive(): array
-    {
-        return [
-            new Assert\Type([
-                'type' => 'bool',
-            ]),
-        ];
-    }
-
     private function initAt(): array
     {
         return [
@@ -165,6 +167,20 @@ final class AgreementConstraint
     {
         return [
             new Assert\DateTime(),
+        ];
+    }
+
+    private function status(): array
+    {
+        return [
+            new Assert\NotNull(),
+            new Assert\NotBlank(),
+            new Assert\Type([
+                'type' => 'string',
+            ]),
+            new Assert\Length([
+                'max' => 2,
+            ]),
         ];
     }
 

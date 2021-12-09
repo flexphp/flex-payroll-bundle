@@ -7,10 +7,14 @@ Agreements:
       Name: Id
       DataType: integer
       Constraints: pk|ai|required
-    status:
-      Name: Status
+    name:
+      Name: Name
       DataType: string
-      Constraints: 'required|fk:AgreementStatus,Id|maxlength:2|fchars:0'
+      Constraints: 'required|maxlength:255'
+    employee:
+      Name: Employee
+      DataType: integer
+      Constraints: 'required|fk:Employees,DocumentNumber'
     type:
       Name: Type
       DataType: integer
@@ -41,9 +45,6 @@ Agreements:
     highRisk:
       Name: HighRisk
       DataType: boolean
-    isActive:
-      Name: IsActive
-      DataType: boolean
     initAt:
       Name: InitAt
       DataType: datetime
@@ -51,6 +52,10 @@ Agreements:
     finishAt:
       Name: FinishAt
       DataType: datetime
+    status:
+      Name: Status
+      DataType: string
+      Constraints: 'required|fk:AgreementStatus,Id|maxlength:2|fchars:0'
     createdAt:
       Name: CreatedAt
       DataType: datetime

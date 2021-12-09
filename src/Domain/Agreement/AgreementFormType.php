@@ -19,6 +19,8 @@ use FlexPHP\Bundle\PayrollBundle\Domain\AgreementType\Request\ReadAgreementTypeR
 use FlexPHP\Bundle\PayrollBundle\Domain\AgreementType\UseCase\ReadAgreementTypeUseCase;
 use FlexPHP\Bundle\LocationBundle\Domain\Currency\Request\ReadCurrencyRequest;
 use FlexPHP\Bundle\LocationBundle\Domain\Currency\UseCase\ReadCurrencyUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\ReadEmployeeRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\UseCase\ReadEmployeeUseCase;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type as InputType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -30,7 +32,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class AgreementFormType extends AbstractType
 {
-    private ReadAgreementStatusUseCase $readAgreementStatusUseCase;
+    private ReadEmployeeUseCase $readEmployeeUseCase;
 
     private ReadAgreementTypeUseCase $readAgreementTypeUseCase;
 
@@ -38,56 +40,60 @@ final class AgreementFormType extends AbstractType
 
     private ReadCurrencyUseCase $readCurrencyUseCase;
 
+    private ReadAgreementStatusUseCase $readAgreementStatusUseCase;
+
     private UrlGeneratorInterface $router;
 
     public function __construct(
-        ReadAgreementStatusUseCase $readAgreementStatusUseCase,
+        ReadEmployeeUseCase $readEmployeeUseCase,
         ReadAgreementTypeUseCase $readAgreementTypeUseCase,
         ReadAgreementPeriodUseCase $readAgreementPeriodUseCase,
         ReadCurrencyUseCase $readCurrencyUseCase,
+        ReadAgreementStatusUseCase $readAgreementStatusUseCase,
         UrlGeneratorInterface $router
     ) {
-        $this->readAgreementStatusUseCase = $readAgreementStatusUseCase;
+        $this->readEmployeeUseCase = $readEmployeeUseCase;
         $this->readAgreementTypeUseCase = $readAgreementTypeUseCase;
         $this->readAgreementPeriodUseCase = $readAgreementPeriodUseCase;
         $this->readCurrencyUseCase = $readCurrencyUseCase;
+        $this->readAgreementStatusUseCase = $readAgreementStatusUseCase;
         $this->router = $router;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $statusModifier = function (FormInterface $form, ?string $value): void {
+        $employeeModifier = function (FormInterface $form, ?int $value): void {
             $choices = null;
 
             if (!empty($value)) {
-                $response = $this->readAgreementStatusUseCase->execute(new ReadAgreementStatusRequest($value));
+                $response = $this->readEmployeeUseCase->execute(new ReadEmployeeRequest($value));
 
-                if ($response->agreementStatus->id()) {
-                    $choices = [$response->agreementStatus->id() => $value];
+                if ($response->employee->id()) {
+                    $choices = [$response->employee->documentNumber() => $value];
                 }
             }
 
-            $form->add('status', Select2Type::class, [
-                'label' => 'label.status',
+            $form->add('employee', Select2Type::class, [
+                'label' => 'label.employee',
                 'required' => true,
                 'attr' => [
-                    'data-autocomplete-url' => $this->router->generate('flexphp.payroll.agreements.find.agreement-status'),
+                    'data-autocomplete-url' => $this->router->generate('flexphp.payroll.agreements.find.employees'),
                 ],
                 'choices' => $choices,
                 'data' => $value,
             ]);
         };
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($statusModifier) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($employeeModifier) {
             if (!$event->getData()) {
                 return null;
             }
 
-            $statusModifier($event->getForm(), $event->getData()->status());
+            $employeeModifier($event->getForm(), $event->getData()->employee());
         });
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($statusModifier): void {
-            $statusModifier($event->getForm(), (string)$event->getData()['status'] ?: null);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($employeeModifier): void {
+            $employeeModifier($event->getForm(), (int)$event->getData()['employee'] ?: null);
         });
 
         $typeModifier = function (FormInterface $form, ?int $value): void {
@@ -192,12 +198,52 @@ final class AgreementFormType extends AbstractType
             $currencyModifier($event->getForm(), (string)$event->getData()['currency'] ?: null);
         });
 
-        $builder->add('status', Select2Type::class, [
-            'label' => 'label.status',
+        $statusModifier = function (FormInterface $form, ?string $value): void {
+            $choices = null;
+
+            if (!empty($value)) {
+                $response = $this->readAgreementStatusUseCase->execute(new ReadAgreementStatusRequest($value));
+
+                if ($response->agreementStatus->id()) {
+                    $choices = [$response->agreementStatus->id() => $value];
+                }
+            }
+
+            $form->add('status', Select2Type::class, [
+                'label' => 'label.status',
+                'required' => true,
+                'attr' => [
+                    'data-autocomplete-url' => $this->router->generate('flexphp.payroll.agreements.find.agreement-status'),
+                ],
+                'choices' => $choices,
+                'data' => $value,
+            ]);
+        };
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($statusModifier) {
+            if (!$event->getData()) {
+                return null;
+            }
+
+            $statusModifier($event->getForm(), $event->getData()->status());
+        });
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($statusModifier): void {
+            $statusModifier($event->getForm(), (string)$event->getData()['status'] ?: null);
+        });
+
+        $builder->add('name', InputType\TextType::class, [
+            'label' => 'label.name',
             'required' => true,
             'attr' => [
-                'data-autocomplete-url' => $this->router->generate('flexphp.payroll.agreements.find.agreement-status'),
-                'maxlength' => 2,
+                'maxlength' => 255,
+            ],
+        ]);
+        $builder->add('employee', Select2Type::class, [
+            'label' => 'label.employee',
+            'required' => true,
+            'attr' => [
+                'data-autocomplete-url' => $this->router->generate('flexphp.payroll.agreements.find.employees'),
             ],
         ]);
         $builder->add('type', Select2Type::class, [
@@ -243,10 +289,6 @@ final class AgreementFormType extends AbstractType
             'label' => 'label.highRisk',
             'required' => false,
         ]);
-        $builder->add('isActive', InputType\CheckboxType::class, [
-            'label' => 'label.isActive',
-            'required' => false,
-        ]);
         $builder->add('initAt', DatetimepickerType::class, [
             'label' => 'label.initAt',
             'required' => true,
@@ -254,6 +296,14 @@ final class AgreementFormType extends AbstractType
         $builder->add('finishAt', DatetimepickerType::class, [
             'label' => 'label.finishAt',
             'required' => false,
+        ]);
+        $builder->add('status', Select2Type::class, [
+            'label' => 'label.status',
+            'required' => true,
+            'attr' => [
+                'data-autocomplete-url' => $this->router->generate('flexphp.payroll.agreements.find.agreement-status'),
+                'maxlength' => 2,
+            ],
         ]);
     }
 
