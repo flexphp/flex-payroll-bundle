@@ -54,13 +54,13 @@ class MySQLEmployeeGateway implements EmployeeGateway
             'documentTypeId.id as `documentTypeId.id`',
             'documentTypeId.name as `documentTypeId.name`',
             'type.id as `type.id`',
-            'type.id as `type.id`',
+            'type.name as `type.name`',
             'subType.id as `subType.id`',
-            'subType.id as `subType.id`',
+            'subType.name as `subType.name`',
             'paymentMethod.id as `paymentMethod.id`',
             'paymentMethod.name as `paymentMethod.name`',
             'accountType.id as `accountType.id`',
-            'accountType.id as `accountType.id`',
+            'accountType.name as `accountType.name`',
         ]);
         $query->from('`Employees`', '`employee`');
         $query->join('`employee`', '`DocumentTypes`', '`documentTypeId`', 'employee.DocumentTypeId = documentTypeId.id');
@@ -151,13 +151,13 @@ class MySQLEmployeeGateway implements EmployeeGateway
             'documentTypeId.id as `documentTypeId.id`',
             'documentTypeId.name as `documentTypeId.name`',
             'type.id as `type.id`',
-            'type.id as `type.id`',
+            'type.name as `type.name`',
             'subType.id as `subType.id`',
-            'subType.id as `subType.id`',
+            'subType.name as `subType.name`',
             'paymentMethod.id as `paymentMethod.id`',
             'paymentMethod.name as `paymentMethod.name`',
             'accountType.id as `accountType.id`',
-            'accountType.id as `accountType.id`',
+            'accountType.name as `accountType.name`',
             'createdBy.id as `createdBy.id`',
             'createdBy.name as `createdBy.name`',
             'updatedBy.id as `updatedBy.id`',
@@ -256,12 +256,12 @@ class MySQLEmployeeGateway implements EmployeeGateway
 
         $query->select([
             'employeeType.id as id',
-            'employeeType.id as text',
+            'employeeType.name as text',
         ]);
         $query->from('`EmployeeTypes`', '`employeeType`');
 
-        $query->where('employeeType.id like :employeeType_id');
-        $query->setParameter(':employeeType_id', "%{$request->term}%");
+        $query->where('employeeType.name like :employeeType_name');
+        $query->setParameter(':employeeType_name', "%{$request->term}%");
 
         $query->setFirstResult($page ? ($page - 1) * $limit : 0);
         $query->setMaxResults($limit);
@@ -275,12 +275,12 @@ class MySQLEmployeeGateway implements EmployeeGateway
 
         $query->select([
             'employeeSubType.id as id',
-            'employeeSubType.id as text',
+            'employeeSubType.name as text',
         ]);
         $query->from('`EmployeeSubTypes`', '`employeeSubType`');
 
-        $query->where('employeeSubType.id like :employeeSubType_id');
-        $query->setParameter(':employeeSubType_id', "%{$request->term}%");
+        $query->where('employeeSubType.name like :employeeSubType_name');
+        $query->setParameter(':employeeSubType_name', "%{$request->term}%");
 
         $query->setFirstResult($page ? ($page - 1) * $limit : 0);
         $query->setMaxResults($limit);
@@ -313,12 +313,12 @@ class MySQLEmployeeGateway implements EmployeeGateway
 
         $query->select([
             'accountType.id as id',
-            'accountType.id as text',
+            'accountType.name as text',
         ]);
         $query->from('`AccountTypes`', '`accountType`');
 
-        $query->where('accountType.id like :accountType_id');
-        $query->setParameter(':accountType_id', "%{$request->term}%");
+        $query->where('accountType.name like :accountType_name');
+        $query->setParameter(':accountType_name', "%{$request->term}%");
 
         $query->setFirstResult($page ? ($page - 1) * $limit : 0);
         $query->setMaxResults($limit);

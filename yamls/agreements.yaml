@@ -18,15 +18,15 @@ Agreements:
     type:
       Name: Type
       DataType: integer
-      Constraints: 'required|fk:AgreementTypes,Id|fchars:0'
+      Constraints: 'required|fk:AgreementTypes,Name|fchars:0'
     period:
       Name: Period
       DataType: string
-      Constraints: 'required|fk:AgreementPeriods,Id|maxlength:2|fchars:0'
+      Constraints: 'required|fk:AgreementPeriods,Name|maxlength:2|fchars:0'
     currency:
       Name: Currency
       DataType: string
-      Constraints: 'required|fk:Currencies,Id|maxlength:3|fchars:0'
+      Constraints: 'required|fk:Currencies,Name|maxlength:3|fchars:0'
     salary:
       Name: Salary
       DataType: string
@@ -55,7 +55,7 @@ Agreements:
     status:
       Name: Status
       DataType: string
-      Constraints: 'required|fk:AgreementStatus,Id|maxlength:2|fchars:0'
+      Constraints: 'required|fk:AgreementStatus,Name|maxlength:2|fchars:0'
     createdAt:
       Name: CreatedAt
       DataType: datetime

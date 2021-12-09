@@ -34,19 +34,19 @@ Employees:
     type:
       Name: Type
       DataType: integer
-      Constraints: 'required|fk:EmployeeTypes,Id|fchars:0'
+      Constraints: 'required|fk:EmployeeTypes,Name|fchars:0'
     subType:
       Name: SubType
       DataType: integer
-      Constraints: 'required|fk:EmployeeSubTypes,Id|fchars:0'
+      Constraints: 'required|fk:EmployeeSubTypes,Name|fchars:0'
     paymentMethod:
       Name: PaymentMethod
       DataType: string
-      Constraints: 'required|fk:PaymentMethods,Name|maxlength:5'
+      Constraints: 'required|fk:PaymentMethods,Name|fchars:0|maxlength:5'
     accountType:
       Name: AccountType
       DataType: string
-      Constraints: 'required|fk:AccountTypes,Id|maxlength:3|fchars:0'
+      Constraints: 'required|fk:AccountTypes,Name|maxlength:3|fchars:0'
     accountNumber:
       Name: AccountNumber
       DataType: string

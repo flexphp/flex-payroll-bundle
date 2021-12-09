@@ -55,13 +55,13 @@ class MySQLAgreementGateway implements AgreementGateway
             'employee.id as `employee.id`',
             'employee.documentNumber as `employee.documentNumber`',
             'type.id as `type.id`',
-            'type.id as `type.id`',
+            'type.name as `type.name`',
             'period.id as `period.id`',
-            'period.id as `period.id`',
+            'period.name as `period.name`',
             'currency.id as `currency.id`',
-            'currency.id as `currency.id`',
+            'currency.name as `currency.name`',
             'status.id as `status.id`',
-            'status.id as `status.id`',
+            'status.name as `status.name`',
         ]);
         $query->from('`Agreements`', '`agreement`');
         $query->join('`agreement`', '`Employees`', '`employee`', 'agreement.Employee = employee.id');
@@ -155,13 +155,13 @@ class MySQLAgreementGateway implements AgreementGateway
             'employee.id as `employee.id`',
             'employee.documentNumber as `employee.documentNumber`',
             'type.id as `type.id`',
-            'type.id as `type.id`',
+            'type.name as `type.name`',
             'period.id as `period.id`',
-            'period.id as `period.id`',
+            'period.name as `period.name`',
             'currency.id as `currency.id`',
-            'currency.id as `currency.id`',
+            'currency.name as `currency.name`',
             'status.id as `status.id`',
-            'status.id as `status.id`',
+            'status.name as `status.name`',
             'createdBy.id as `createdBy.id`',
             'createdBy.name as `createdBy.name`',
             'updatedBy.id as `updatedBy.id`',
@@ -262,12 +262,12 @@ class MySQLAgreementGateway implements AgreementGateway
 
         $query->select([
             'agreementType.id as id',
-            'agreementType.id as text',
+            'agreementType.name as text',
         ]);
         $query->from('`AgreementTypes`', '`agreementType`');
 
-        $query->where('agreementType.id like :agreementType_id');
-        $query->setParameter(':agreementType_id', "%{$request->term}%");
+        $query->where('agreementType.name like :agreementType_name');
+        $query->setParameter(':agreementType_name', "%{$request->term}%");
 
         $query->setFirstResult($page ? ($page - 1) * $limit : 0);
         $query->setMaxResults($limit);
@@ -281,12 +281,12 @@ class MySQLAgreementGateway implements AgreementGateway
 
         $query->select([
             'agreementPeriod.id as id',
-            'agreementPeriod.id as text',
+            'agreementPeriod.name as text',
         ]);
         $query->from('`AgreementPeriods`', '`agreementPeriod`');
 
-        $query->where('agreementPeriod.id like :agreementPeriod_id');
-        $query->setParameter(':agreementPeriod_id', "%{$request->term}%");
+        $query->where('agreementPeriod.name like :agreementPeriod_name');
+        $query->setParameter(':agreementPeriod_name', "%{$request->term}%");
 
         $query->setFirstResult($page ? ($page - 1) * $limit : 0);
         $query->setMaxResults($limit);
@@ -300,12 +300,12 @@ class MySQLAgreementGateway implements AgreementGateway
 
         $query->select([
             'currency.id as id',
-            'currency.id as text',
+            'currency.name as text',
         ]);
         $query->from('`Currencies`', '`currency`');
 
-        $query->where('currency.id like :currency_id');
-        $query->setParameter(':currency_id', "%{$request->term}%");
+        $query->where('currency.name like :currency_name');
+        $query->setParameter(':currency_name', "%{$request->term}%");
 
         $query->setFirstResult($page ? ($page - 1) * $limit : 0);
         $query->setMaxResults($limit);
@@ -319,12 +319,12 @@ class MySQLAgreementGateway implements AgreementGateway
 
         $query->select([
             'agreementStatus.id as id',
-            'agreementStatus.id as text',
+            'agreementStatus.name as text',
         ]);
         $query->from('`AgreementStatus`', '`agreementStatus`');
 
-        $query->where('agreementStatus.id like :agreementStatus_id');
-        $query->setParameter(':agreementStatus_id', "%{$request->term}%");
+        $query->where('agreementStatus.name like :agreementStatus_name');
+        $query->setParameter(':agreementStatus_name', "%{$request->term}%");
 
         $query->setFirstResult($page ? ($page - 1) * $limit : 0);
         $query->setMaxResults($limit);

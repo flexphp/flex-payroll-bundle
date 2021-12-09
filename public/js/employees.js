@@ -78,7 +78,7 @@ jQuery(document).ready(function ($) {
 
     $('[id$=form_paymentMethod]').select2({
         theme: 'bootstrap4',
-        minimumInputLength: 3,
+        minimumInputLength: 0,
         allowClear: true,
         placeholder: '',
         ajax: {
