@@ -107,5 +107,18 @@
     <route id="flexphp.payroll.employees.find.employee-sub-types" controller="flexphp.payroll.bundle.employee_controller::findEmployeeSubType" path="/employees/find-employee-sub-types" methods="POST" />
     <route id="flexphp.payroll.employees.find.payment-methods" controller="flexphp.payroll.bundle.employee_controller::findPaymentMethod" path="/employees/find-payment-methods" methods="POST" />
     <route id="flexphp.payroll.employees.find.account-types" controller="flexphp.payroll.bundle.employee_controller::findAccountType" path="/employees/find-account-types" methods="POST" />
+
+    <route id="flexphp.payroll.payrolls.index" controller="flexphp.payroll.bundle.payroll_controller::index" path="/payrolls" methods="GET" />
+    <route id="flexphp.payroll.payrolls.new" controller="flexphp.payroll.bundle.payroll_controller::new" path="/payrolls/new" methods="GET" />
+    <route id="flexphp.payroll.payrolls.create" controller="flexphp.payroll.bundle.payroll_controller::create" path="/payrolls/create" methods="POST" />
+    <route id="flexphp.payroll.payrolls.read" controller="flexphp.payroll.bundle.payroll_controller::read" path="/payrolls/{id}" methods="GET" />
+    <route id="flexphp.payroll.payrolls.edit" controller="flexphp.payroll.bundle.payroll_controller::edit" path="/payrolls/edit/{id}" methods="GET" />
+    <route id="flexphp.payroll.payrolls.update" controller="flexphp.payroll.bundle.payroll_controller::update" path="/payrolls/update/{id}" methods="PUT" />
+    <route id="flexphp.payroll.payrolls.delete" controller="flexphp.payroll.bundle.payroll_controller::delete" path="/payrolls/delete/{id}" methods="DELETE" />
+    <route id="flexphp.payroll.payrolls.find.employees" controller="flexphp.payroll.bundle.payroll_controller::findEmployee" path="/payrolls/find-employees" methods="POST" />
+    <route id="flexphp.payroll.payrolls.find.providers" controller="flexphp.payroll.bundle.payroll_controller::findProvider" path="/payrolls/find-providers" methods="POST" />
+    <route id="flexphp.payroll.payrolls.find.payroll-status" controller="flexphp.payroll.bundle.payroll_controller::findPayrollStatus" path="/payrolls/find-payroll-status" methods="POST" />
+    <route id="flexphp.payroll.payrolls.find.payroll-types" controller="flexphp.payroll.bundle.payroll_controller::findPayrollType" path="/payrolls/find-payroll-types" methods="POST" />
+    <route id="flexphp.payroll.payrolls.find.payrolls" controller="flexphp.payroll.bundle.payroll_controller::findPayroll" path="/payrolls/find-payrolls" methods="POST" />
 </routes>
 

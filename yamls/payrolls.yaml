@@ -1,0 +1,78 @@
+Payrolls:
+  Title: Payrolls
+  Icon: ''
+  Actions: icrudf
+  Attributes:
+    id:
+      Name: Id
+      DataType: integer
+      Constraints: pk|ai|required
+    prefix:
+      Name: Prefix
+      DataType: string
+      Constraints: required
+    number:
+      Name: Number
+      DataType: integer
+      Constraints: required
+    employee:
+      Name: Employee
+      DataType: integer
+      Constraints: 'required|fk:Employees,DocumentNumber'
+    provider:
+      Name: Provider
+      DataType: string
+      Constraints: 'required|fk:Providers,Name'
+    status:
+      Name: Status
+      DataType: string
+      Constraints: 'required|fk:PayrollStatus,Name|maxlength:2'
+    type:
+      Name: Type
+      DataType: string
+      Constraints: 'required|fk:PayrollTypes,Name|maxlength:3'
+    traceId:
+      Name: TraceId
+      DataType: string
+    hash:
+      Name: Hash
+      DataType: string
+    hashType:
+      Name: HashType
+      DataType: string
+      Constraints: 'maxlength:20'
+    message:
+      Name: Message
+      DataType: string
+      Constraints: 'maxlength:1024'
+    pdfPath:
+      Name: PdfPath
+      DataType: string
+      Constraints: 'maxlength:1024'
+    xmlPath:
+      Name: XmlPath
+      DataType: string
+      Constraints: 'maxlength:1024'
+    parentId:
+      Name: ParentId
+      DataType: integer
+      Constraints: 'fk:Payrolls,Number'
+    downloadedAt:
+      Name: DownloadedAt
+      DataType: datetime
+    createdAt:
+      Name: CreatedAt
+      DataType: datetime
+      Constraints: ca
+    updatedAt:
+      Name: UpdatedAt
+      DataType: datetime
+      Constraints: ua
+    createdBy:
+      Name: CreatedBy
+      DataType: integer
+      Constraints: 'cb|fk:Users,Name'
+    updatedBy:
+      Name: UpdatedBy
+      DataType: integer
+      Constraints: 'ub|fk:Users,Name'
