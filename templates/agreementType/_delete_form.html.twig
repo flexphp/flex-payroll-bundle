@@ -1,0 +1,9 @@
+{{ include('form/_delete_confirmation.html.twig') }}
+<form id="delete-form" name="delete-form" method="post" action="{{ url('flexphp.payroll.agreement-types.delete', {id: agreementType.id}) }}" data-confirmation="true">
+    <input type="hidden" name="token" value="{{ csrf_token('delete') }}" />
+    <input type="hidden" name="_method" value="delete" />
+    <button type="submit" class="btn btn-outline-danger" tabindex="-1">
+        <i class="fa fa-trash" aria-hidden="true"></i>
+        <span class="btn-text">{% trans from 'messages' %}action.delete{% endtrans %}</span>
+    </button>
+</form>
