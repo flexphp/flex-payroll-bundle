@@ -7,22 +7,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace FlexPHP\Bundle\PayrollBundle\Domain\EmployeeSubType;
+namespace FlexPHP\Bundle\PayrollBundle\Domain\AgreementStatus;
 
 use FlexPHP\Bundle\HelperBundle\Domain\Helper\ToArrayTrait;
 use FlexPHP\Bundle\UserBundle\Domain\User\User;
 
-final class EmployeeSubType
+final class AgreementStatus
 {
     use ToArrayTrait;
 
     private $id;
 
     private $name;
-
-    private $code;
-
-    private $isActive;
 
     private $createdAt;
 
@@ -36,7 +32,7 @@ final class EmployeeSubType
 
     private $updatedByInstance;
 
-    public function id(): ?int
+    public function id(): ?string
     {
         return $this->id;
     }
@@ -44,16 +40,6 @@ final class EmployeeSubType
     public function name(): ?string
     {
         return $this->name;
-    }
-
-    public function code(): ?string
-    {
-        return $this->code;
-    }
-
-    public function isActive(): ?bool
-    {
-        return $this->isActive;
     }
 
     public function createdAt(): ?\DateTime
@@ -86,7 +72,7 @@ final class EmployeeSubType
         return $this->updatedByInstance;
     }
 
-    public function setId(int $id): void
+    public function setId(string $id): void
     {
         $this->id = $id;
     }
@@ -94,16 +80,6 @@ final class EmployeeSubType
     public function setName(string $name): void
     {
         $this->name = $name;
-    }
-
-    public function setCode(string $code): void
-    {
-        $this->code = $code;
-    }
-
-    public function setIsActive(?bool $isActive): void
-    {
-        $this->isActive = $isActive;
     }
 
     public function setCreatedAt(?\DateTime $createdAt): void

@@ -1,0 +1,28 @@
+AgreementStatus:
+  Title: AgreementStatus
+  Icon: ''
+  Attributes:
+    id:
+      Name: Id
+      DataType: string
+      Constraints: 'pk|required|maxlength:2'
+    name:
+      Name: Name
+      DataType: string
+      Constraints: 'required|maxlength:80'
+    createdAt:
+      Name: CreatedAt
+      DataType: datetime
+      Constraints: ca
+    updatedAt:
+      Name: UpdatedAt
+      DataType: datetime
+      Constraints: ua
+    createdBy:
+      Name: CreatedBy
+      DataType: integer
+      Constraints: 'cb|fk:Users,Name'
+    updatedBy:
+      Name: UpdatedBy
+      DataType: integer
+      Constraints: 'ub|fk:Users,Name'

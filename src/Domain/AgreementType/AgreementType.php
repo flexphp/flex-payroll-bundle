@@ -10,7 +10,7 @@
 namespace FlexPHP\Bundle\PayrollBundle\Domain\AgreementType;
 
 use FlexPHP\Bundle\HelperBundle\Domain\Helper\ToArrayTrait;
-use FlexPHP\Bundle\PayrollBundle\Domain\User\User;
+use FlexPHP\Bundle\UserBundle\Domain\User\User;
 
 final class AgreementType
 {

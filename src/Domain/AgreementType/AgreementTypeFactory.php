@@ -10,7 +10,7 @@
 namespace FlexPHP\Bundle\PayrollBundle\Domain\AgreementType;
 
 use FlexPHP\Bundle\HelperBundle\Domain\Helper\FactoryExtendedTrait;
-use FlexPHP\Bundle\PayrollBundle\Domain\User\UserFactory;
+use FlexPHP\Bundle\UserBundle\Domain\User\UserFactory;
 
 final class AgreementTypeFactory
 {
