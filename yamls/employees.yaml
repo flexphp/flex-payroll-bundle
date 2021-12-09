@@ -1,0 +1,72 @@
+Employees:
+  Title: Employees
+  Icon: ''
+  Actions: icrudf
+  Attributes:
+    id:
+      Name: Id
+      DataType: integer
+      Constraints: pk|ai|required
+    documentTypeId:
+      Name: DocumentTypeId
+      DataType: string
+      Constraints: 'required|fk:DocumentTypes,Name|maxlength:3|fchars:0'
+    documentNumber:
+      Name: DocumentNumber
+      DataType: string
+      Constraints: required|trim
+    firstName:
+      Name: FirstName
+      DataType: string
+      Constraints: 'required|maxlength:80'
+    secondName:
+      Name: SecondName
+      DataType: string
+      Constraints: 'maxlength:80'
+    firstSurname:
+      Name: FirstSurname
+      DataType: string
+      Constraints: 'required|maxlength:80'
+    secondSurname:
+      Name: SecondSurname
+      DataType: string
+      Constraints: 'maxlength:80'
+    type:
+      Name: Type
+      DataType: integer
+      Constraints: 'required|fk:EmployeeTypes,Id|fchars:0'
+    subType:
+      Name: SubType
+      DataType: integer
+      Constraints: 'required|fk:EmployeeSubTypes,Id|fchars:0'
+    paymentMethod:
+      Name: PaymentMethod
+      DataType: string
+      Constraints: 'required|fk:PaymentMethods,Name|maxlength:5'
+    accountType:
+      Name: AccountType
+      DataType: string
+      Constraints: 'required|fk:AccountTypes,Id|maxlength:3|fchars:0'
+    accountNumber:
+      Name: AccountNumber
+      DataType: string
+      Constraints: 'maxlength:80'
+    isActive:
+      Name: IsActive
+      DataType: boolean
+    createdAt:
+      Name: CreatedAt
+      DataType: datetime
+      Constraints: ca
+    updatedAt:
+      Name: UpdatedAt
+      DataType: datetime
+      Constraints: ua
+    createdBy:
+      Name: CreatedBy
+      DataType: integer
+      Constraints: 'cb|fk:Users,Name'
+    updatedBy:
+      Name: UpdatedBy
+      DataType: integer
+      Constraints: 'ub|fk:Users,Name'

@@ -1,0 +1,54 @@
+{% trans_default_domain 'employee' %}
+{% extends 'form/layout.html.twig' %}
+
+{% block title %}{% trans %}title.show{% endtrans %}{% endblock %}
+
+{% block main %}
+    <div class="card">
+        <div class="card-header d-flex">
+            <h3 class="card-header-title">
+                {% trans %}entity{% endtrans %}: {{ employee.id }}
+            </h3>
+            <div class="toolbar ml-auto">
+                <a href="{{ path('flexphp.payroll.employees.index') }}" class="btn btn-outline-secondary">
+                    <i class="fa fa-list-ol" aria-hidden="true"></i>
+                    <span class="btn-text">{% trans from 'messages' %}action.list{% endtrans %}</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="form-group"><label>{% trans %}label.documentTypeId{% endtrans %}</label><div class="form-control-plaintext">{{ employee.documentTypeIdInstance.name|default('-') }}</div></div>
+            <div class="form-group"><label>{% trans %}label.documentNumber{% endtrans %}</label><div class="form-control-plaintext">{{ employee.documentNumber }}</div></div>
+            <div class="form-group"><label>{% trans %}label.firstName{% endtrans %}</label><div class="form-control-plaintext">{{ employee.firstName }}</div></div>
+            <div class="form-group"><label>{% trans %}label.secondName{% endtrans %}</label><div class="form-control-plaintext">{{ employee.secondName }}</div></div>
+            <div class="form-group"><label>{% trans %}label.firstSurname{% endtrans %}</label><div class="form-control-plaintext">{{ employee.firstSurname }}</div></div>
+            <div class="form-group"><label>{% trans %}label.secondSurname{% endtrans %}</label><div class="form-control-plaintext">{{ employee.secondSurname }}</div></div>
+            <div class="form-group"><label>{% trans %}label.type{% endtrans %}</label><div class="form-control-plaintext">{{ employee.typeInstance.id|default('-') }}</div></div>
+            <div class="form-group"><label>{% trans %}label.subType{% endtrans %}</label><div class="form-control-plaintext">{{ employee.subTypeInstance.id|default('-') }}</div></div>
+            <div class="form-group"><label>{% trans %}label.paymentMethod{% endtrans %}</label><div class="form-control-plaintext">{{ employee.paymentMethodInstance.name|default('-') }}</div></div>
+            <div class="form-group"><label>{% trans %}label.accountType{% endtrans %}</label><div class="form-control-plaintext">{{ employee.accountTypeInstance.id|default('-') }}</div></div>
+            <div class="form-group"><label>{% trans %}label.accountNumber{% endtrans %}</label><div class="form-control-plaintext">{{ employee.accountNumber }}</div></div>
+            <div class="form-group"><label>{% trans %}label.isActive{% endtrans %}</label><div class="form-control-plaintext">{% if employee.isActive %}{% trans from 'messages' %}label.yes{% endtrans %}{% else %}{% trans from 'messages' %}label.no{% endtrans %}{% endif %}</div></div>
+            <div class="form-group"><label>{% trans %}label.createdAt{% endtrans %}</label><div class="form-control-plaintext">{{ employee.createdAt ? employee.createdAt|date('Y-m-d H:i:s') : '-' }}</div></div>
+            <div class="form-group"><label>{% trans %}label.updatedAt{% endtrans %}</label><div class="form-control-plaintext">{{ employee.updatedAt ? employee.updatedAt|date('Y-m-d H:i:s') : '-' }}</div></div>
+            <div class="form-group"><label>{% trans %}label.createdBy{% endtrans %}</label><div class="form-control-plaintext">{{ employee.createdByInstance.name|default('-') }}</div></div>
+            <div class="form-group"><label>{% trans %}label.updatedBy{% endtrans %}</label><div class="form-control-plaintext">{{ employee.updatedByInstance.name|default('-') }}</div></div>
+        </div>
+
+        <div class="card-footer">
+            <div class="row">
+                <div class="col">
+                    {{ include('@FlexPHPPayroll/employee/_delete_form.html.twig', {employee: employee}, with_context = false) }}
+                </div>
+
+                <div class="col text-right">
+                    <a href="{{ path('flexphp.payroll.employees.edit', {id: employee.id}) }}" class="btn btn-outline-primary">
+                        <i class="fa fa-edit" aria-hidden="true"></i>
+                        <span class="btn-text">{% trans from 'messages' %}action.edit{% endtrans %}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

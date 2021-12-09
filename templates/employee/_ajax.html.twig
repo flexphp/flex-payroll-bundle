@@ -1,0 +1,28 @@
+{% for _employee in employees %}
+    <tr>
+        <td>{{ _employee.id }}</td>
+        <td>{{ _employee.documentTypeIdInstance.name|default('-') }}</td>
+        <td>{{ _employee.documentNumber }}</td>
+        <td>{{ _employee.firstName }}</td>
+        <td>{{ _employee.secondName }}</td>
+        <td>{{ _employee.firstSurname }}</td>
+        <td>{{ _employee.secondSurname }}</td>
+        <td>{{ _employee.typeInstance.id|default('-') }}</td>
+        <td>{{ _employee.subTypeInstance.id|default('-') }}</td>
+        <td>{{ _employee.paymentMethodInstance.name|default('-') }}</td>
+        <td>{{ _employee.accountTypeInstance.id|default('-') }}</td>
+        <td>{{ _employee.accountNumber }}</td>
+        <td>{% if _employee.isActive %}{% trans from 'messages' %}label.yes{% endtrans %}{% else %}{% trans from 'messages' %}label.no{% endtrans %}{% endif %}</td>
+        <td class="text-center">
+            <div class="btn-group">
+                <a href="{{ path('flexphp.payroll.employees.read', {id: _employee.id}) }}" class="btn btn-sm btn-outline-light" title="{% trans from 'messages' %}action.read{% endtrans %}">
+                    <i class="fa fa-eye text-dark" aria-hidden="true"></i>
+                </a>
+
+                <a href="{{ path('flexphp.payroll.employees.edit', {id: _employee.id}) }}" class="btn btn-sm btn-outline-light" title="{% trans from 'messages' %}action.edit{% endtrans %}">
+                    <i class="fa fa-edit text-info" aria-hidden="true"></i>
+                </a>
+            </div>
+        </td>
+    </tr>
+{% endfor %}

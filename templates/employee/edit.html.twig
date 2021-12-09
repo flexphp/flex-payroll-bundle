@@ -1,0 +1,45 @@
+{% trans_default_domain 'employee' %}
+{% extends 'form/layout.html.twig' %}
+
+{% block title %}{% trans %}title.edit{% endtrans %}{% endblock %}
+
+{% block main %}
+    <div class="card">
+        <div class="card-header d-flex">
+            <h3 class="card-header-title">
+                {% trans %}title.edit{% endtrans %}
+            </h3>
+            <div class="toolbar ml-auto">
+                <a href="{{ path('flexphp.payroll.employees.index') }}" class="btn btn-outline-secondary">
+                    <i class="fa fa-list-ol" aria-hidden="true"></i>
+                    <span class="btn-text">{% trans from 'messages' %}action.list{% endtrans %}</span>
+                </a>
+            </div>
+        </div>
+
+        {{ form_start(form, {'action': path('flexphp.payroll.employees.update', {id: employee.id}), 'method': 'PUT', 'attr': {'id': 'employee'}}) }}
+            <div class="card-body">
+                {{ form_widget(form) }}
+            </div>
+        {{ form_end(form) }}
+
+        <div class="card-footer">
+            <div class="row">
+                <div class="col">
+                    {{ include('@FlexPHPPayroll/employee/_delete_form.html.twig', {employee: employee}, with_context = false) }}
+                </div>
+
+                <div class="col text-right">
+                    <button type="submit" form="employee" class="btn btn-primary">
+                        <i class="fa fa-save" aria-hidden="true"></i>
+                        <span class="btn-text">{% trans from 'messages' %}action.update{% endtrans %}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/flexphp.payroll.employees.js') }}"></script>
+{% endblock %}
