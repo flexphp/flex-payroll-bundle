@@ -18,6 +18,7 @@
         <service id="flexphp.payroll.bundle.payroll_status_controller" class="FlexPHP\Bundle\PayrollBundle\Controller\PayrollStatusController" public="true" />
         <service id="flexphp.payroll.bundle.account_type_controller" class="FlexPHP\Bundle\PayrollBundle\Controller\AccountTypeController" public="true" />
         <service id="flexphp.payroll.bundle.bank_controller" class="FlexPHP\Bundle\PayrollBundle\Controller\BankController" public="true" />
+        <service id="flexphp.payroll.bundle.agreement_controller" class="FlexPHP\Bundle\PayrollBundle\Controller\AgreementController" public="true" />
 
         <prototype namespace="FlexPHP\Bundle\PayrollBundle\" resource="../src/*" exclude="../src/{DependencyInjection}">
             <tag name="@router"/>

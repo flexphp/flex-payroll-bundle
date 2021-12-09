@@ -1,0 +1,69 @@
+Agreements:
+  Title: Agreements
+  Icon: ''
+  Actions: icrudf
+  Attributes:
+    id:
+      Name: Id
+      DataType: integer
+      Constraints: pk|ai|required
+    status:
+      Name: Status
+      DataType: string
+      Constraints: 'required|fk:AgreementStatus,Id|maxlength:2|fchars:0'
+    type:
+      Name: Type
+      DataType: integer
+      Constraints: 'required|fk:AgreementTypes,Id|fchars:0'
+    period:
+      Name: Period
+      DataType: string
+      Constraints: 'required|fk:AgreementPeriods,Id|maxlength:2|fchars:0'
+    currency:
+      Name: Currency
+      DataType: string
+      Constraints: 'required|fk:Currencies,Id|maxlength:3|fchars:0'
+    salary:
+      Name: Salary
+      DataType: string
+      Constraints: required
+    healthPercentage:
+      Name: HealthPercentage
+      DataType: integer
+      Constraints: 'required|default:4'
+    pensionPercentage:
+      Name: PensionPercentage
+      DataType: integer
+      Constraints: 'required|default:4'
+    integralSalary:
+      Name: IntegralSalary
+      DataType: boolean
+    highRisk:
+      Name: HighRisk
+      DataType: boolean
+    isActive:
+      Name: IsActive
+      DataType: boolean
+    initAt:
+      Name: InitAt
+      DataType: datetime
+      Constraints: required
+    finishAt:
+      Name: FinishAt
+      DataType: datetime
+    createdAt:
+      Name: CreatedAt
+      DataType: datetime
+      Constraints: ca
+    updatedAt:
+      Name: UpdatedAt
+      DataType: datetime
+      Constraints: ua
+    createdBy:
+      Name: CreatedBy
+      DataType: integer
+      Constraints: 'cb|fk:Users,Name'
+    updatedBy:
+      Name: UpdatedBy
+      DataType: integer
+      Constraints: 'ub|fk:Users,Name'
