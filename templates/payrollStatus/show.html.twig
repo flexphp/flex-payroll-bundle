@@ -1,0 +1,43 @@
+{% trans_default_domain 'payrollStatus' %}
+{% extends 'form/layout.html.twig' %}
+
+{% block title %}{% trans %}title.show{% endtrans %}{% endblock %}
+
+{% block main %}
+    <div class="card">
+        <div class="card-header d-flex">
+            <h3 class="card-header-title">
+                {% trans %}entity{% endtrans %}: {{ payrollStatus.id }}
+            </h3>
+            <div class="toolbar ml-auto">
+                <a href="{{ path('flexphp.payroll.payroll-status.index') }}" class="btn btn-outline-secondary">
+                    <i class="fa fa-list-ol" aria-hidden="true"></i>
+                    <span class="btn-text">{% trans from 'messages' %}action.list{% endtrans %}</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="form-group"><label>{% trans %}label.name{% endtrans %}</label><div class="form-control-plaintext">{{ payrollStatus.name }}</div></div>
+            <div class="form-group"><label>{% trans %}label.createdAt{% endtrans %}</label><div class="form-control-plaintext">{{ payrollStatus.createdAt ? payrollStatus.createdAt|date('Y-m-d H:i:s') : '-' }}</div></div>
+            <div class="form-group"><label>{% trans %}label.updatedAt{% endtrans %}</label><div class="form-control-plaintext">{{ payrollStatus.updatedAt ? payrollStatus.updatedAt|date('Y-m-d H:i:s') : '-' }}</div></div>
+            <div class="form-group"><label>{% trans %}label.createdBy{% endtrans %}</label><div class="form-control-plaintext">{{ payrollStatus.createdByInstance.name|default('-') }}</div></div>
+            <div class="form-group"><label>{% trans %}label.updatedBy{% endtrans %}</label><div class="form-control-plaintext">{{ payrollStatus.updatedByInstance.name|default('-') }}</div></div>
+        </div>
+
+        <div class="card-footer">
+            <div class="row">
+                <div class="col">
+                    {{ include('@FlexPHPPayroll/payrollStatus/_delete_form.html.twig', {payrollStatus: payrollStatus}, with_context = false) }}
+                </div>
+
+                <div class="col text-right">
+                    <a href="{{ path('flexphp.payroll.payroll-status.edit', {id: payrollStatus.id}) }}" class="btn btn-outline-primary">
+                        <i class="fa fa-edit" aria-hidden="true"></i>
+                        <span class="btn-text">{% trans from 'messages' %}action.edit{% endtrans %}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

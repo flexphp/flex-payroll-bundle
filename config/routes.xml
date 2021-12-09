@@ -50,6 +50,14 @@
     <route id="flexphp.payroll.agreement-status.update" controller="flexphp.payroll.bundle.agreement_status_controller::update" path="/agreement-status/update/{id}" methods="PUT" />
     <route id="flexphp.payroll.agreement-status.delete" controller="flexphp.payroll.bundle.agreement_status_controller::delete" path="/agreement-status/delete/{id}" methods="DELETE" />
 
+    <route id="flexphp.payroll.payroll-status.index" controller="flexphp.payroll.bundle.payroll_status_controller::index" path="/payroll-status" methods="GET" />
+    <route id="flexphp.payroll.payroll-status.new" controller="flexphp.payroll.bundle.payroll_status_controller::new" path="/payroll-status/new" methods="GET" />
+    <route id="flexphp.payroll.payroll-status.create" controller="flexphp.payroll.bundle.payroll_status_controller::create" path="/payroll-status/create" methods="POST" />
+    <route id="flexphp.payroll.payroll-status.read" controller="flexphp.payroll.bundle.payroll_status_controller::read" path="/payroll-status/{id}" methods="GET" />
+    <route id="flexphp.payroll.payroll-status.edit" controller="flexphp.payroll.bundle.payroll_status_controller::edit" path="/payroll-status/edit/{id}" methods="GET" />
+    <route id="flexphp.payroll.payroll-status.update" controller="flexphp.payroll.bundle.payroll_status_controller::update" path="/payroll-status/update/{id}" methods="PUT" />
+    <route id="flexphp.payroll.payroll-status.delete" controller="flexphp.payroll.bundle.payroll_status_controller::delete" path="/payroll-status/delete/{id}" methods="DELETE" />
+
 <!--     <route id="flexphp.payroll.account-types.index" controller="flexphp.payroll.bundle.account_type_controller::index" path="/employee-types" methods="GET" /> -->
 <!--     <route id="flexphp.payroll.account-types.new" controller="flexphp.payroll.bundle.account_type_controller::new" path="/employee-types/new" methods="GET" /> -->
 <!--     <route id="flexphp.payroll.account-types.create" controller="flexphp.payroll.bundle.account_type_controller::create" path="/employee-types/create" methods="POST" /> -->
