@@ -1,0 +1,31 @@
+PayrollTypes:
+  Title: PayrollTypes
+  Icon: ''
+  Attributes:
+    id:
+      Name: Id
+      DataType: string
+      Constraints: 'pk|required|maxlength:3'
+    name:
+      Name: Name
+      DataType: string
+      Constraints: 'required|maxlength:255'
+    isActive:
+      Name: IsActive
+      DataType: boolean
+    createdAt:
+      Name: CreatedAt
+      DataType: datetime
+      Constraints: ca
+    updatedAt:
+      Name: UpdatedAt
+      DataType: datetime
+      Constraints: ua
+    createdBy:
+      Name: CreatedBy
+      DataType: integer
+      Constraints: 'cb|fk:Users,Name'
+    updatedBy:
+      Name: UpdatedBy
+      DataType: integer
+      Constraints: 'ub|fk:Users,Name'

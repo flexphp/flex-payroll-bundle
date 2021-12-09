@@ -50,6 +50,14 @@
     <route id="flexphp.payroll.agreement-status.update" controller="flexphp.payroll.bundle.agreement_status_controller::update" path="/agreement-status/update/{id}" methods="PUT" />
     <route id="flexphp.payroll.agreement-status.delete" controller="flexphp.payroll.bundle.agreement_status_controller::delete" path="/agreement-status/delete/{id}" methods="DELETE" />
 
+    <route id="flexphp.payroll.payroll-types.index" controller="flexphp.payroll.bundle.payroll_type_controller::index" path="/payroll-types" methods="GET" />
+    <route id="flexphp.payroll.payroll-types.new" controller="flexphp.payroll.bundle.payroll_type_controller::new" path="/payroll-types/new" methods="GET" />
+    <route id="flexphp.payroll.payroll-types.create" controller="flexphp.payroll.bundle.payroll_type_controller::create" path="/payroll-types/create" methods="POST" />
+    <route id="flexphp.payroll.payroll-types.read" controller="flexphp.payroll.bundle.payroll_type_controller::read" path="/payroll-types/{id}" methods="GET" />
+    <route id="flexphp.payroll.payroll-types.edit" controller="flexphp.payroll.bundle.payroll_type_controller::edit" path="/payroll-types/edit/{id}" methods="GET" />
+    <route id="flexphp.payroll.payroll-types.update" controller="flexphp.payroll.bundle.payroll_type_controller::update" path="/payroll-types/update/{id}" methods="PUT" />
+    <route id="flexphp.payroll.payroll-types.delete" controller="flexphp.payroll.bundle.payroll_type_controller::delete" path="/payroll-types/delete/{id}" methods="DELETE" />
+
     <route id="flexphp.payroll.payroll-status.index" controller="flexphp.payroll.bundle.payroll_status_controller::index" path="/payroll-status" methods="GET" />
     <route id="flexphp.payroll.payroll-status.new" controller="flexphp.payroll.bundle.payroll_status_controller::new" path="/payroll-status/new" methods="GET" />
     <route id="flexphp.payroll.payroll-status.create" controller="flexphp.payroll.bundle.payroll_status_controller::create" path="/payroll-status/create" methods="POST" />

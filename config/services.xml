@@ -14,6 +14,7 @@
         <service id="flexphp.payroll.bundle.agreement_type_controller" class="FlexPHP\Bundle\PayrollBundle\Controller\AgreementTypeController" public="true" />
         <service id="flexphp.payroll.bundle.agreement_period_controller" class="FlexPHP\Bundle\PayrollBundle\Controller\AgreementPeriodController" public="true" />
         <service id="flexphp.payroll.bundle.agreement_status_controller" class="FlexPHP\Bundle\PayrollBundle\Controller\AgreementStatusController" public="true" />
+        <service id="flexphp.payroll.bundle.payroll_type_controller" class="FlexPHP\Bundle\PayrollBundle\Controller\PayrollTypeController" public="true" />
         <service id="flexphp.payroll.bundle.payroll_status_controller" class="FlexPHP\Bundle\PayrollBundle\Controller\PayrollStatusController" public="true" />
         <!-- <service id="flexphp.payroll.bundle.account_type_controller" class="FlexPHP\Bundle\PayrollBundle\Controller\AccountTypeController" public="true" /> -->
 
