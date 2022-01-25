@@ -19,8 +19,8 @@ use FlexPHP\Bundle\PayrollBundle\Domain\PayrollType\Request\ReadPayrollTypeReque
 use FlexPHP\Bundle\PayrollBundle\Domain\PayrollType\UseCase\ReadPayrollTypeUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\ReadPayrollRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\UseCase\ReadPayrollUseCase;
-use FlexPHP\Bundle\InvoiceBundle\Domain\Provider\Request\ReadProviderRequest;
-use FlexPHP\Bundle\InvoiceBundle\Domain\Provider\UseCase\ReadProviderUseCase;
+use FlexPHP\Bundle\NumerationBundle\Domain\Provider\Request\ReadProviderRequest;
+use FlexPHP\Bundle\NumerationBundle\Domain\Provider\UseCase\ReadProviderUseCase;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type as InputType;
 use Symfony\Component\Form\FormBuilderInterface;

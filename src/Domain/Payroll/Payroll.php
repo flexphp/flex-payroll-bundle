@@ -13,7 +13,7 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Employee;
 use FlexPHP\Bundle\HelperBundle\Domain\Helper\ToArrayTrait;
 use FlexPHP\Bundle\PayrollBundle\Domain\PayrollStatus\PayrollStatus;
 use FlexPHP\Bundle\PayrollBundle\Domain\PayrollType\PayrollType;
-use FlexPHP\Bundle\InvoiceBundle\Domain\Provider\Provider;
+use FlexPHP\Bundle\NumerationBundle\Domain\Provider\Provider;
 use FlexPHP\Bundle\UserBundle\Domain\User\User;
 
 final class Payroll

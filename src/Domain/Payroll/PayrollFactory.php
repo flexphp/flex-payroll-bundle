@@ -13,7 +13,7 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Employee\EmployeeFactory;
 use FlexPHP\Bundle\HelperBundle\Domain\Helper\FactoryExtendedTrait;
 use FlexPHP\Bundle\PayrollBundle\Domain\PayrollStatus\PayrollStatusFactory;
 use FlexPHP\Bundle\PayrollBundle\Domain\PayrollType\PayrollTypeFactory;
-use FlexPHP\Bundle\InvoiceBundle\Domain\Provider\ProviderFactory;
+use FlexPHP\Bundle\NumerationBundle\Domain\Provider\ProviderFactory;
 use FlexPHP\Bundle\UserBundle\Domain\User\UserFactory;
 
 final class PayrollFactory
