@@ -12,6 +12,7 @@ return [
         'id' => 'Id',
         'prefix' => 'Prefix',
         'number' => 'Number',
+        'numeration' => 'Numeration',
         'employee' => 'Employee',
         'provider' => 'Provider',
         'status' => 'Status',

@@ -1,29 +1,28 @@
 {% for _payroll in payrolls %}
     <tr>
         <td>{{ _payroll.id }}</td>
-        <td>{{ _payroll.prefix }}</td>
-        <td>{{ _payroll.number }}</td>
+        <td>{{ _payroll.prefix }}{{ _payroll.number }}</td>
         <td>{{ _payroll.employeeInstance.documentNumber|default('-') }}</td>
         <td>{{ _payroll.providerInstance.name|default('-') }}</td>
         <td>{{ _payroll.statusInstance.name|default('-') }}</td>
         <td>{{ _payroll.typeInstance.name|default('-') }}</td>
-        <td>{{ _payroll.traceId }}</td>
-        <td>{{ _payroll.hash }}</td>
-        <td>{{ _payroll.hashType }}</td>
-        <td>{{ _payroll.message }}</td>
-        <td>{{ _payroll.pdfPath }}</td>
-        <td>{{ _payroll.xmlPath }}</td>
-        <td>{{ _payroll.parentIdInstance.number|default('-') }}</td>
-        <td>{{ _payroll.downloadedAt ? _payroll.downloadedAt|date('Y-m-d H:i:s') : '-' }}</td>
+        {# <td>{{ _payroll.traceId }}</td> #}
+        {# <td>{{ _payroll.hash }}</td> #}
+        {# <td>{{ _payroll.hashType }}</td> #}
+        {# <td>{{ _payroll.message }}</td> #}
+        {# <td>{{ _payroll.pdfPath }}</td> #}
+        {# <td>{{ _payroll.xmlPath }}</td> #}
+        {# <td>{{ _payroll.parentIdInstance.number|default('-') }}</td> #}
+        {# <td>{{ _payroll.downloadedAt ? _payroll.downloadedAt|date('Y-m-d H:i:s') : '-' }}</td> #}
         <td class="text-center">
             <div class="btn-group">
                 <a href="{{ path('flexphp.payroll.payrolls.read', {id: _payroll.id}) }}" class="btn btn-sm btn-outline-light" title="{% trans from 'messages' %}action.read{% endtrans %}">
                     <i class="fa fa-eye text-dark" aria-hidden="true"></i>
                 </a>
 
-                <a href="{{ path('flexphp.payroll.payrolls.edit', {id: _payroll.id}) }}" class="btn btn-sm btn-outline-light" title="{% trans from 'messages' %}action.edit{% endtrans %}">
-                    <i class="fa fa-edit text-info" aria-hidden="true"></i>
-                </a>
+                {# <a href="{{ path('flexphp.payroll.payrolls.edit', {id: _payroll.id}) }}" class="btn btn-sm btn-outline-light" title="{% trans from 'messages' %}action.edit{% endtrans %}"> #}
+                {#     <i class="fa fa-edit text-info" aria-hidden="true"></i> #}
+                {# </a> #}
             </div>
         </td>
     </tr>

@@ -1,17 +1,18 @@
 <?php
 
 return [
-    'entity' => 'Payroll',
+    'entity' => 'Nómina',
     'title' => [
-        'new' => 'New Payroll',
-        'edit' => 'Edit Payroll',
-        'show' => 'Payroll Details',
-        'list' => 'Payrolls',
+        'new' => 'Nueva Nómina',
+        'edit' => 'Editar Nómina',
+        'show' => 'Detalles Nómina',
+        'list' => 'Nóminas',
     ],
     'label' => [
         'id' => 'Id',
         'prefix' => 'Prefijo',
         'number' => 'Número',
+        'numeration' => 'Numeración',
         'employee' => 'Empleado',
         'provider' => 'Proveedor',
         'status' => 'Estado',
@@ -24,18 +25,18 @@ return [
         'xmlPath' => 'Ruta XML',
         'parentId' => 'Parent Id',
         'downloadedAt' => 'Descargada el',
-        'createdAt' => 'Created At',
-        'updatedAt' => 'Updated At',
-        'createdBy' => 'Created By',
-        'updatedBy' => 'Updated By',
+        'createdAt' => 'Creada',
+        'updatedAt' => 'Actualizada',
+        'createdBy' => 'Creada por',
+        'updatedBy' => 'Actualizada por',
     ],
     'message' => [
-        'created' => 'Payroll created',
-        'updated' => 'Payroll updated',
-        'deleted' => 'Payroll deleted',
+        'created' => 'Nómina creada',
+        'updated' => 'Nómina actualizada',
+        'deleted' => 'Nómina eliminada',
     ],
     'filter' => [
-        'createdAtStart' => 'Date Start',
-        'createdAtEnd' => 'Date End',
+        'createdAtStart' => 'Fecha Inicial',
+        'createdAtEnd' => 'Fecha Final',
     ],
 ];
