@@ -21,6 +21,7 @@
         <service id="flexphp.payroll.bundle.agreement_controller" class="FlexPHP\Bundle\PayrollBundle\Controller\AgreementController" public="true" />
         <service id="flexphp.payroll.bundle.employee_controller" class="FlexPHP\Bundle\PayrollBundle\Controller\EmployeeController" public="true" />
         <service id="flexphp.payroll.bundle.payroll_controller" class="FlexPHP\Bundle\PayrollBundle\Controller\PayrollController" public="true" />
+        <service id="flexphp.payroll.bundle.paysheet_controller" class="FlexPHP\Bundle\PayrollBundle\Controller\PaysheetController" public="true" />
 
         <prototype namespace="FlexPHP\Bundle\PayrollBundle\" resource="../src/*" exclude="../src/{DependencyInjection}">
             <tag name="@router"/>

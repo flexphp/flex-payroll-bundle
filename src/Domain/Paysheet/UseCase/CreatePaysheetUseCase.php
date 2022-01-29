@@ -1,0 +1,57 @@
+<?php declare(strict_types=1);
+/*
+ * This file is part of FlexPHP.
+ *
+ * (c) Freddie Gar <freddie.gar@outlook.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase;
+
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreatePaysheetRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Response\CreatePaysheetResponse;
+
+final class CreatePaysheetUseCase extends AbstractPaysheetUseCase
+{
+    /**
+     * @param CreatePaysheetRequest $request
+     *
+     * @return CreatePaysheetResponse
+     */
+    public function execute($request)
+    {
+        if (!empty($request->vehicle)) {
+            $request->vehicleId = $this->getVehicleId($request);
+        }
+
+        if (!empty($request->customer)) {
+            $request->customerId = $this->getCustomerId($request);
+        }
+
+        $orderDetails = $this->getPaysheetDetails($request);
+        $request->subtotal = $this->getSubTotal($orderDetails);
+        $request->taxes = $this->getTotalTaxes($orderDetails);
+        $request->kilometers = $this->getKilometers($request);
+        $request->kilometersToChange = $this->getKilometersToChange($request);
+        $request->discount = $this->getDiscount($request);
+        $request->total = $this->getTotal($request);
+
+        $payments = $this->getPayments($request);
+        $request->totalPaid = $this->getTotalPaid($payments);
+        $request->paidAt = $this->getPaidAt($request);
+        $request->statusId = $this->getStatusId($request);
+
+        $request->vehicle = null;
+        $request->customer = null;
+        $request->orderDetail = null;
+        $request->payment = null;
+
+        $order = $this->orderRepository->add($request);
+
+        $this->createPaysheetDetails($orderDetails, $order->id(), $request->createdBy);
+        $this->createPayments($payments, $order->id(), $request->createdBy);
+
+        return new CreatePaysheetResponse($order);
+    }
+}

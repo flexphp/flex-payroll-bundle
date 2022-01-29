@@ -1,0 +1,25 @@
+{% for _paysheet in paysheets %}
+    <tr>
+        <td>{{ _paysheet.id }}</td>
+        <td>{{ _paysheet.statusIdInstance.name|default('-') }}</td>
+        <td class="money-format text-right">{{ _paysheet.isDraft ? 0 : _paysheet.totalPaid }}</td>
+        <td class="money-format text-right">{{ _paysheet.total }}</td>
+        <td class="money-format text-right">{{ _paysheet.isDraft ? 0 : (_paysheet.total - _paysheet.totalPaid) }}</td>
+        <td class="timeago-format">{{ _paysheet.createdAt ? _paysheet.createdAt|date('Y-m-d H:i:s') : '-' }}</td>
+        <td class="text-left">
+            <div class="btn-group">
+                <a href="{{ path('paysheets.read', {id: _paysheet.id}) }}" class="btn btn-sm btn-outline-light" title="{% trans from 'messages' %}action.read{% endtrans %}">
+                    <i class="fa fa-eye text-dark" aria-hidden="true"></i>
+                </a>
+
+{#                 <a href="{{ path('paysheets.edit', {id: _paysheet.id}) }}" class="btn btn-sm btn-outline-light" title="{% trans from 'messages' %}action.edit{% endtrans %}"> #}
+{#                     <i class="fa fa-edit text-info" aria-hidden="true"></i> #}
+{#                 </a> #}
+
+                {# {{ include('paysheet/_get_prepaysheet_button.html.twig', {paysheet: _paysheet, style: 'btn-sm'}, with_context = false) }} #}
+
+                {# {{ include('paysheet/_get_bill_button.html.twig', {paysheet: _paysheet, style: 'btn-sm'}, with_context = false) }} #}
+            </div>
+        </td>
+    </tr>
+{% endfor %}
