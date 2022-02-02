@@ -9,11 +9,10 @@
  */
 namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet;
 
-use FlexPHP\Bundle\PayrollBundle\Domain\Customer\Customer;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Employee;
 use FlexPHP\Bundle\PayrollBundle\Domain\PayrollStatus\PayrollStatus;
 use FlexPHP\Bundle\PayrollBundle\Domain\PayrollType\PayrollType;
-use FlexPHP\Bundle\PayrollBundle\Domain\Vehicle\Vehicle;
-use FlexPHP\Bundle\PayrollBundle\Domain\Worker\Worker;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Agreement;
 use FlexPHP\Bundle\HelperBundle\Domain\Helper\ToArrayTrait;
 use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\Bill;
 use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\BillFactory;
@@ -29,7 +28,7 @@ final class Paysheet
 
     private $type;
 
-    private $customerId;
+    private $employeeId;
 
     private $vehicleId;
 
@@ -57,8 +56,6 @@ final class Paysheet
 
     private $expiratedAt;
 
-    private $worker;
-
     private $createdAt;
 
     private $updatedAt;
@@ -69,13 +66,11 @@ final class Paysheet
 
     private $typeInstance;
 
-    private $customerIdInstance;
+    private $employeeIdInstance;
 
     private $vehicleIdInstance;
 
     private $statusIdInstance;
-
-    private $workerInstance;
 
     private $createdByInstance;
 
@@ -93,9 +88,9 @@ final class Paysheet
         return $this->type;
     }
 
-    public function customerId(): ?int
+    public function employeeId(): ?int
     {
-        return $this->customerId;
+        return $this->employeeId;
     }
 
     public function vehicleId(): ?int
@@ -163,11 +158,6 @@ final class Paysheet
         return $this->expiratedAt;
     }
 
-    public function worker(): ?int
-    {
-        return $this->worker;
-    }
-
     public function createdAt(): ?\DateTime
     {
         return $this->createdAt;
@@ -193,12 +183,12 @@ final class Paysheet
         return $this->typeInstance ?: new PayrollType;
     }
 
-    public function customerIdInstance(): ?Customer
+    public function employeeIdInstance(): ?Employee
     {
-        return $this->customerIdInstance;
+        return $this->employeeIdInstance;
     }
 
-    public function vehicleIdInstance(): ?Vehicle
+    public function vehicleIdInstance(): ?Agreement
     {
         return $this->vehicleIdInstance;
     }
@@ -206,11 +196,6 @@ final class Paysheet
     public function statusIdInstance(): ?PayrollStatus
     {
         return $this->statusIdInstance;
-    }
-
-    public function workerInstance(): ?Worker
-    {
-        return $this->workerInstance;
     }
 
     public function createdByInstance(): ?User
@@ -233,12 +218,12 @@ final class Paysheet
         $this->type = $type;
     }
 
-    public function setCustomerId(?int $customerId): void
+    public function setEmployeeId(?int $employeeId): void
     {
-        $this->customerId = $customerId;
+        $this->employeeId = $employeeId;
     }
 
-    public function setVehicleId(?int $vehicleId): void
+    public function setAgreementId(?int $vehicleId): void
     {
         $this->vehicleId = $vehicleId;
     }
@@ -303,11 +288,6 @@ final class Paysheet
         $this->expiratedAt = $expiratedAt;
     }
 
-    public function setWorker(?int $worker): void
-    {
-        $this->worker = $worker;
-    }
-
     public function setCreatedAt(?\DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
@@ -333,12 +313,12 @@ final class Paysheet
         $this->typeInstance = $orderType;
     }
 
-    public function setCustomerIdInstance(?Customer $customer): void
+    public function setEmployeeIdInstance(?Employee $employee): void
     {
-        $this->customerIdInstance = $customer;
+        $this->employeeIdInstance = $employee;
     }
 
-    public function setVehicleIdInstance(?Vehicle $vehicle): void
+    public function setAgreementIdInstance(?Agreement $vehicle): void
     {
         $this->vehicleIdInstance = $vehicle;
     }
@@ -346,11 +326,6 @@ final class Paysheet
     public function setStatusIdInstance(?PayrollStatus $orderStatus): void
     {
         $this->statusIdInstance = $orderStatus;
-    }
-
-    public function setWorkerInstance(?Worker $worker): void
-    {
-        $this->workerInstance = $worker;
     }
 
     public function setCreatedByInstance(?User $user): void

@@ -54,13 +54,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/paysheets")
- */
 final class PaysheetController extends AbstractController
 {
     /**
-     * @Route("/", methods={"GET","POST"}, name="paysheets.index")
      * @Cache(smaxage="3600")
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_INDEX')", statusCode=401)
      */
@@ -82,40 +78,36 @@ final class PaysheetController extends AbstractController
         ]);
     }
 
-//     /**
-//      * @Route("/new", methods={"GET"}, name="paysheets.new")
-//      * @Cache(smaxage="3600")
-//      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_CREATE')", statusCode=401)
-//      */
-//     public function new(): Response
-//     {
-//         return $this->render('@FlexPHPPayroll/paysheet/__paysheet_vehicle.html.twig', [
-//             'paysheet' => new Paysheet(),
-//             'inputRequired' => $this->getInputRequired(),
-//         ]);
-//     }
+    /**
+     * @Cache(smaxage="3600")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_CREATE')", statusCode=401)
+     */
+    public function new(): Response
+    {
+        return $this->render('@FlexPHPPayroll/paysheet/__paysheet_base.html.twig', [
+            'paysheet' => new Paysheet(),
+        ]);
+    }
+
+    /**
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_CREATE')", statusCode=401)
+     */
+    public function create(Request $request, CreatePaysheetUseCase $useCase, TranslatorInterface $trans): Response
+    {
+        if (!$this->isCsrfTokenValid('create.paysheet', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $request = new CreatePaysheetRequest($request->request->all(), $this->getUser()->id(), $this->getUser()->timezone());
+
+        $response = $useCase->execute($request);
+
+        $this->addFlash('success', $trans->trans('message.created', [], 'paysheet'));
+
+        return $this->redirectToRoute('paysheets.read', ['id' => $response->paysheet->id()], 201);
+    }
 
 //     /**
-//      * @Route("/create", methods={"POST"}, name="paysheets.create")
-//      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_CREATE')", statusCode=401)
-//      */
-//     public function create(Request $request, CreatePaysheetUseCase $useCase, TranslatorInterface $trans): Response
-//     {
-//         if (!$this->isCsrfTokenValid('create.paysheet', $request->request->get('_token'))) {
-//             throw $this->createAccessDeniedException();
-//         }
-
-//         $request = new CreatePaysheetRequest($request->request->all(), $this->getUser()->id(), $this->getUser()->timezone());
-
-//         $response = $useCase->execute($request);
-
-//         $this->addFlash('success', $trans->trans('message.created', [], 'paysheet'));
-
-//         return $this->redirectToRoute('paysheets.read', ['id' => $response->paysheet->id()], 201);
-//     }
-
-//     /**
-//      * @Route("/{id}", methods={"GET"}, name="paysheets.read")
 //      * @Cache(smaxage="3600")
 //      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_READ')", statusCode=401)
 //      */
@@ -141,7 +133,6 @@ final class PaysheetController extends AbstractController
 //     }
 
 //     /**
-//      * @Route("/edit/{id}", methods={"GET"}, name="paysheets.edit")
 //      * @Cache(smaxage="3600")
 //      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_UPDATE')", statusCode=401)
 //      */
@@ -163,12 +154,10 @@ final class PaysheetController extends AbstractController
 
 //         return $this->render($template, [
 //             'paysheet' => $response->paysheet,
-//             'inputRequired' => $this->getInputRequired(),
 //         ]);
 //     }
 
 //     /**
-//      * @Route("/update/{id}", methods={"PUT"}, name="paysheets.update")
 //      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_UPDATE')", statusCode=401)
 //      */
 //     public function update(Request $request, UpdatePaysheetUseCase $useCase, TranslatorInterface $trans, int $id): Response
@@ -187,7 +176,6 @@ final class PaysheetController extends AbstractController
 //     }
 
 //     /**
-//      * @Route("/delete/{id}", methods={"DELETE"}, name="paysheets.delete")
 //      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_DELETE')", statusCode=401)
 //      */
 //     public function delete(DeletePaysheetUseCase $useCase, TranslatorInterface $trans, int $id): Response
@@ -202,7 +190,6 @@ final class PaysheetController extends AbstractController
 //     }
 
 //     /**
-//      * @Route("/find-customers", methods={"POST"}, name="paysheets.find.customers")
 //      * @Cache(smaxage="3600")
 //      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_CUSTOMER_INDEX')", statusCode=401)
 //      */
@@ -223,7 +210,6 @@ final class PaysheetController extends AbstractController
 //     }
 
 //     /**
-//      * @Route("/find-vehicles", methods={"POST"}, name="paysheets.find.vehicles")
 //      * @Cache(smaxage="3600")
 //      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_VEHICLE_INDEX')", statusCode=401)
 //      */
@@ -244,7 +230,6 @@ final class PaysheetController extends AbstractController
 //     }
 
 //     /**
-//      * @Route("/find-paysheet-status", methods={"POST"}, name="paysheets.find.paysheet-status")
 //      * @Cache(smaxage="3600")
 //      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_ORDERSTATUS_INDEX')", statusCode=401)
 //      */
@@ -265,7 +250,6 @@ final class PaysheetController extends AbstractController
 //     }
 
 //     /**
-//      * @Route("/find-workers", methods={"POST"}, name="paysheets.find.workers")
 //      * @Cache(smaxage="3600")
 //      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_WORKER_INDEX')", statusCode=401)
 //      */
@@ -286,7 +270,6 @@ final class PaysheetController extends AbstractController
 //     }
 
 //     /**
-//      * @Route("/find-history-services", methods={"POST"}, name="paysheets.find.history-services")
 //      * @Cache(smaxage="3600")
 //      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_INDEX')", statusCode=401)
 //      */
@@ -307,7 +290,6 @@ final class PaysheetController extends AbstractController
 //     }
 
 //     /**
-//      * @Route("/get-last", methods={"POST"}, name="paysheets.get-last")
 //      * @Cache(smaxage="3600")
 //      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_INDEX')", statusCode=401)
 //      */
@@ -328,7 +310,6 @@ final class PaysheetController extends AbstractController
 //     }
 
 //     /**
-//      * @Route("/find-alternative-products", methods={"POST"}, name="paysheets.find.alternative-products")
 //      * @Cache(smaxage="3600")
 //      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_INDEX')", statusCode=401)
 //      */
@@ -349,7 +330,6 @@ final class PaysheetController extends AbstractController
 //     }
 
 //     /**
-//      * @Route("/{id}/prepaysheet", methods={"GET"}, name="paysheets.prepaysheet")
 //      * @Cache(smaxage="3600")
 //      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_READ')", statusCode=401)
 //      */
@@ -370,7 +350,6 @@ final class PaysheetController extends AbstractController
 //     }
 
 //     /**
-//      * @Route("/{id}/epayroll", methods={"GET"}, name="paysheets.epayroll")
 //      * @Cache(smaxage="3600")
 //      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_BILL_CREATE')", statusCode=401)
 //      */

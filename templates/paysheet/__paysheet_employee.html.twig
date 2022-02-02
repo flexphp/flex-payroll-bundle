@@ -1,0 +1,129 @@
+{% trans_default_domain 'paysheet' %}
+<div class="card-header d-flex">
+    <h4 class="card-header-title">
+        <i class="fas fa-user"></i> {% trans from 'employee' %}entity{% endtrans %}
+    </h4>
+    <div class="toolbar ml-auto">
+        <button class="btn btn-sm btn-link" type="button" data-toggle="collapse" data-target="#employeeData" aria-expanded="true" aria-controls="employeeData">
+            {% trans from 'messages' %}action.toggle{% endtrans %}
+        </button>
+    </div>
+</div>
+
+<div id="employeeData" class="collapse show card-body">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <input name="employee[id]" class="find-employee" type="hidden" value="{{ paysheet.employeeId }}" />
+            <label for="employee[documentTypeId]" class="col-form-label">{% trans from 'employee' %}label.documentTypeId{% endtrans %}</label>
+            <select name="employee[documentTypeId]" class="form-control custom-select find-employee" required autofocus>
+                <option value="CC" selected>CC</option>
+                <option value="CE">CE</option>
+            </select>
+        </div>
+
+        <div class="form-group col-md-6">
+            <label for="employee[documentNumber]" class="col-form-label">{% trans from 'employee' %}label.documentNumber{% endtrans %}</label>
+            <input name="employee[documentNumber]" class="form-control find-employee" type="text" required />
+        </div>
+
+        <div class="form-group col-6">
+            <label for="employee[firstName]">{% trans from 'employee' %}label.firstName{% endtrans %}</label>
+            <input name="employee[firstName]" class="form-control uppercase" type="text" required />
+        </div>
+
+        <div class="form-group col-6">
+            <label for="employee[secondName]">{% trans from 'employee' %}label.secondName{% endtrans %}</label>
+            <input name="employee[secondName]" class="form-control uppercase" type="text" />
+        </div>
+
+        <div class="form-group col-6">
+            <label for="employee[firstSurname]">{% trans from 'employee' %}label.firstSurname{% endtrans %}</label>
+            <input name="employee[firstSurname]" class="form-control uppercase" type="text" required />
+        </div>
+
+        <div class="form-group col-6">
+            <label for="employee[secondSurname]">{% trans from 'employee' %}label.secondSurname{% endtrans %}</label>
+            <input name="employee[secondSurname]" class="form-control uppercase" type="text" />
+        </div>
+
+        <div class="form-group col-md-6">
+            <label for="employee[type]" class="col-form-label">{% trans from 'employee' %}label.type{% endtrans %}</label>
+            <input name="employee[type]" class="form-control" type="text" required />
+        </div>
+
+        <div class="form-group col-md-6">
+            <label for="employee[subType]" class="col-form-label">{% trans from 'employee' %}label.subType{% endtrans %}</label>
+            <input name="employee[subType]" class="form-control"  required />
+        </div>
+
+        <div class="form-group col-md-6">
+            <label for="employee[paymentMethod]" class="col-form-label">{% trans from 'employee' %}label.paymentMethod{% endtrans %}</label>
+            <select name="employee[paymentMethod]" class="form-control custom-select find-payment-methods"></select>
+        </div>
+
+        <div class="form-group col-md-6">
+            <label for="employee[accountType]" class="col-form-label">{% trans from 'employee' %}label.accountType{% endtrans %}</label>
+            <input name="employee[accountType]" class="form-control uppercase" type="text" />
+        </div>
+
+        <div class="form-group col-md-6">
+            <label for="employee[accountNumber]" class="col-form-label">{% trans from 'employee' %}label.accountNumber{% endtrans %}</label>
+            <input name="employee[accountNumber]" class="form-control" type="text" />
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="col-12 text-right">
+            <button id="buttonLastPaysheet" class="btn btn-sm btn-link" style="display: none;" type="button" data-toggle="collapse" data-target="#lastPaysheet" aria-expanded="true" aria-controls="lastPaysheet">
+                {% trans %}__paysheet.seeLastPaysheet{% endtrans %}
+            </button>
+        </div>
+        <div class="col-12 table-responsive-sm">
+            <table id="lastPaysheet" class="collapse table table-bordered bg-light">
+                <thead>
+                    <tr>
+                        <th class="text-center" scope="col" style="width: 80px;">{% trans from 'paysheetDetail' %}label.quantity{% endtrans %}</th>
+                        <th scope="col">{% trans from 'paysheetDetail' %}label.productId{% endtrans %}</th>
+                        <th class="text-center" scope="col" style="width: 110px;">{% trans from 'paysheetDetail' %}label.price{% endtrans %}</th>
+                        <th class="text-center" scope="col" style="width: 90px;">{% trans from 'paysheetDetail' %}label.tax{% endtrans %}</th>
+                        <th class="text-center" scope="col" style="width: 120px;">{% trans from 'paysheetDetail' %}label.total{% endtrans %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="display: none;">
+                        <td scope="row" class="text-right">#quantity#</td>
+                        <td>#productName#</td>
+                        <td class="text-right">#price#</td>
+                        <td class="text-right">#tax#</td>
+                        <td class="text-right">#total#</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td scope="row" class="text-right text-uppercase" colspan="4">{% trans %}label.subtotal{% endtrans %}</td>
+                        <td class="text-right">
+                            <span name="last_paysheet[subTotal]"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td scope="row" class="text-right text-uppercase" colspan="4">{% trans %}label.taxes{% endtrans %}</td>
+                        <td class="text-right">
+                            <span name="last_paysheet[taxes]"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td scope="row" class="text-right text-uppercase" colspan="4">{% trans %}label.total{% endtrans %}</td>
+                        <td class="text-right font-weight-bold font">
+                            <span name="last_paysheet[total]"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted" colspan="5">
+                            {% trans %}label.notes{% endtrans %}: <span name="last_paysheet[notes]"></span>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>

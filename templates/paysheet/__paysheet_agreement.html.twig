@@ -1,0 +1,97 @@
+{% trans_default_domain 'paysheet' %}
+
+<div class="card-header d-flex">
+    <h4 class="card-header-title">
+        <i class="fas fa-file-contract"></i> {% trans from 'agreement' %}entity{% endtrans %}
+    </h4>
+    <div class="toolbar ml-auto">
+        <button class="btn btn-sm btn-link" type="button" data-toggle="collapse" data-target="#agreementData" aria-expanded="true" aria-controls="agreementData">
+            {% trans from 'messages' %}action.toggle{% endtrans %}
+        </button>
+    </div>
+</div>
+
+<div id="agreementData" class="collapse show card-body">
+    <div class="form-row">
+        <div class="form-group col-12">
+            <label for="agreement[id]" class="col-form-label">{% trans from 'agreement' %}title.agreement{% endtrans %}</label>
+            <select name="agreement[id]" class="form-control" autofocus>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-12 col-md-4">
+            <label for="agreement[status]" class="col-form-label required">{% trans from 'agreement' %}label.status{% endtrans %}</label>
+            <input name="agreement[status]" class="form-control" type="text"  value="" required />
+        </div>
+
+        <div class="form-group col-12 col-md-4">
+            <label for="agreement[type]" class="col-form-label required">{% trans from 'agreement' %}label.type{% endtrans %}</label>
+            <input name="agreement[type]" class="form-control" type="text"  value="" required />
+        </div>
+
+        <div class="form-group col-12 col-md-4">
+            <label for="agreement[period]" class="col-form-label required">{% trans from 'agreement' %}label.period{% endtrans %}</label>
+            <input name="agreement[period]" class="form-control" period="text"  value="" required />
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-12 col-md-4">
+            <label for="agreement[currency]" class="col-form-label required">{% trans from 'agreement' %}label.currency{% endtrans %}</label>
+            <select name="agreement[currency]" class="form-control" required></select>
+        </div>
+
+        <div class="form-group col-12 col-md-4">
+            <label for="agreement[salary]" class="col-form-label required">{% trans from 'agreement' %}label.salary{% endtrans %}</label>
+            <select name="agreement[salary]" class="form-control" required></select>
+        </div>
+
+        <div class="form-group col-12 col-md-2">
+            <label for="agreement[healthPercentage]" class="col-form-label">{% trans from 'agreement' %}label.healthPercentage{% endtrans %}</label>
+            <input name="agreement[healthPercentage]" class="form-control" type="number" />
+        </div>
+
+        <div class="form-group col-12 col-md-2">
+            <label for="agreement[pensionPercentage]" class="col-form-label">{% trans from 'agreement' %}label.pensionPercentage{% endtrans %}</label>
+            <input name="agreement[pensionPercentage]" class="form-control" type="number" />
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="agreement[initAt]" class="col-form-label">{% trans from 'agreement' %}label.initAt{% endtrans %}</label>
+            <input name="agreement[initAt]" data-zdp_show_icon="false" class="form-control date-picker" type="text" />
+        </div>
+
+        <div class="form-group col-md-4">
+            <label for="agreement[finishAt]" class="col-form-label">{% trans from 'agreement' %}label.finishAt{% endtrans %}</label>
+            <input name="agreement[finishAt]" data-zdp_show_icon="false" class="form-control date-picker" type="text" />
+        </div>
+
+        <div class="form-group col-md-4">
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="checkIntegralSalary">
+
+                <label class="custom-control-label" for="checkIntegralSalary">
+                    {% trans from 'agreement' %}label.integralSalary{% endtrans %}
+                </label>
+            </div>
+
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="checkHighRisk">
+
+                <label class="custom-control-label" for="checkHighRisk">
+                    {% trans from 'agreement' %}label.highRisk{% endtrans %}
+                </label>
+            </div>
+        </div>
+    </div>
+
+{#     <div class="col-12 text-right"> #}
+{#         <button id="buttonLastServiceInfo" class="btn btn-sm btn-link" style="display: none;" type="button" data-toggle="collapse" data-target="#lastServiceInfo" aria-expanded="true" aria-controls="lastServiceInfo"> #}
+{#             {% trans %}__paysheet.seeLastService{% endtrans %} #}
+{#         </button> #}
+{#     </div> #}
+</div>

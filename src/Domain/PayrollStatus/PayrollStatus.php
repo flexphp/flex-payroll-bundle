@@ -16,6 +16,12 @@ final class PayrollStatus
 {
     use ToArrayTrait;
 
+    public const PAYED = 'P';
+
+    public const PENDING = 'PP';
+
+    public const DRAFT = 'D';
+
     private $id;
 
     private $name;

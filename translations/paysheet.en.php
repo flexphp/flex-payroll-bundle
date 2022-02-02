@@ -38,6 +38,12 @@ return [
         'createdAtEnd' => 'Date End',
     ],
     '__paysheet' => [
+        'buttonCreate' => 'Create Paysheet',
+        'buttonUpdate' => 'Update Paysheet',
+        'buttonPartial' => 'Save Paysheet',
+        'draft' => 'Draft',
+        'buttonDraft' => 'Save Draft',
+        'buttonDraftUpdate' => 'Update Draft',
     ],
     '__payroll' => [
         // 'prepaysheet' => 'Download Pre-paysheet',
