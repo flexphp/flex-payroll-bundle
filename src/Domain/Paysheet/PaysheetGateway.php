@@ -22,15 +22,15 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\GetLastPaysheetRequest;
 
 interface PaysheetGateway
 {
-    public function search(array $wheres, array $orders, int $page, int $limit, int $offset): array;
+    public function search(array $wheres, array $paysheets, int $page, int $limit, int $offset): array;
 
-    public function push(Paysheet $order): int;
+    public function push(Paysheet $paysheet): int;
 
-    public function get(Paysheet $order): array;
+    public function get(Paysheet $paysheet): array;
 
-    public function shift(Paysheet $order): void;
+    public function shift(Paysheet $paysheet): void;
 
-    public function pop(Paysheet $order): void;
+    public function pop(Paysheet $paysheet): void;
 
     // public function filterPayrollTypes(FindPaysheetPayrollTypeRequest $request, int $page, int $limit): array;
 

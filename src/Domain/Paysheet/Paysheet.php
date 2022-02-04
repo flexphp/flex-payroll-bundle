@@ -30,13 +30,7 @@ final class Paysheet
 
     private $employeeId;
 
-    private $vehicleId;
-
-    private $kilometers;
-
-    private $kilometersToChange;
-
-    private $discount;
+    private $agreementId;
 
     private $subtotal;
 
@@ -52,7 +46,7 @@ final class Paysheet
 
     private $statusId;
 
-    private $billNotes;
+    private $paysheetNotes;
 
     private $expiratedAt;
 
@@ -68,7 +62,7 @@ final class Paysheet
 
     private $employeeIdInstance;
 
-    private $vehicleIdInstance;
+    private $agreementIdInstance;
 
     private $statusIdInstance;
 
@@ -76,7 +70,7 @@ final class Paysheet
 
     private $updatedByInstance;
 
-    private ?Bill $billInstance = null;
+    private ?Bill $paysheetInstance = null;
 
     public function id(): ?int
     {
@@ -93,24 +87,9 @@ final class Paysheet
         return $this->employeeId;
     }
 
-    public function vehicleId(): ?int
+    public function agreementId(): ?int
     {
-        return $this->vehicleId;
-    }
-
-    public function kilometers(): ?int
-    {
-        return $this->kilometers;
-    }
-
-    public function kilometersToChange(): ?int
-    {
-        return $this->kilometersToChange;
-    }
-
-    public function discount(): ?string
-    {
-        return $this->discount;
+        return $this->agreementId;
     }
 
     public function subtotal(): ?string
@@ -148,9 +127,9 @@ final class Paysheet
         return $this->statusId;
     }
 
-    public function billNotes(): ?string
+    public function paysheetNotes(): ?string
     {
-        return $this->billNotes;
+        return $this->paysheetNotes;
     }
 
     public function expiratedAt(): ?\DateTime
@@ -188,9 +167,9 @@ final class Paysheet
         return $this->employeeIdInstance;
     }
 
-    public function vehicleIdInstance(): ?Agreement
+    public function agreementIdInstance(): ?Agreement
     {
-        return $this->vehicleIdInstance;
+        return $this->agreementIdInstance;
     }
 
     public function statusIdInstance(): ?PayrollStatus
@@ -223,24 +202,9 @@ final class Paysheet
         $this->employeeId = $employeeId;
     }
 
-    public function setAgreementId(?int $vehicleId): void
+    public function setAgreementId(?int $agreementId): void
     {
-        $this->vehicleId = $vehicleId;
-    }
-
-    public function setKilometers(?int $kilometers): void
-    {
-        $this->kilometers = $kilometers;
-    }
-
-    public function setKilometersToChange(?int $kilometersToChange): void
-    {
-        $this->kilometersToChange = $kilometersToChange;
-    }
-
-    public function setDiscount(string $discount): void
-    {
-        $this->discount = $discount;
+        $this->agreementId = $agreementId;
     }
 
     public function setSubtotal(string $subtotal): void
@@ -278,9 +242,9 @@ final class Paysheet
         $this->statusId = $statusId;
     }
 
-    public function setBillNotes(?string $billNotes): void
+    public function setBillNotes(?string $paysheetNotes): void
     {
-        $this->billNotes = $billNotes;
+        $this->paysheetNotes = $paysheetNotes;
     }
 
     public function setExpiratedAt(?\DateTime $expiratedAt): void
@@ -308,9 +272,9 @@ final class Paysheet
         $this->updatedBy = $updatedBy;
     }
 
-    public function setTypeInstance(PayrollType $orderType): void
+    public function setTypeInstance(PayrollType $paysheetType): void
     {
-        $this->typeInstance = $orderType;
+        $this->typeInstance = $paysheetType;
     }
 
     public function setEmployeeIdInstance(?Employee $employee): void
@@ -318,14 +282,14 @@ final class Paysheet
         $this->employeeIdInstance = $employee;
     }
 
-    public function setAgreementIdInstance(?Agreement $vehicle): void
+    public function setAgreementIdInstance(?Agreement $agreement): void
     {
-        $this->vehicleIdInstance = $vehicle;
+        $this->agreementIdInstance = $agreement;
     }
 
-    public function setStatusIdInstance(?PayrollStatus $orderStatus): void
+    public function setStatusIdInstance(?PayrollStatus $paysheetStatus): void
     {
-        $this->statusIdInstance = $orderStatus;
+        $this->statusIdInstance = $paysheetStatus;
     }
 
     public function setCreatedByInstance(?User $user): void
@@ -338,25 +302,25 @@ final class Paysheet
         $this->updatedByInstance = $user;
     }
 
-    public function billInstance(): ?Bill
+    public function paysheetInstance(): ?Bill
     {
-        return $this->billInstance;
+        return $this->paysheetInstance;
     }
 
-    public function setBillInstance(?Bill $billInstance): void
+    public function setBillInstance(?Bill $paysheetInstance): void
     {
-        $this->billInstance = $billInstance;
+        $this->paysheetInstance = $paysheetInstance;
     }
 
-    public function withLastBill(BillGateway $billGateway, int $offset): self
+    public function withLastBill(BillGateway $paysheetGateway, int $offset): self
     {
-        if ($this->id() && !$this->billInstance) {
-            $bills = $billGateway->search([
-                'orderId' => $this->id(),
+        if ($this->id() && !$this->paysheetInstance) {
+            $paysheets = $paysheetGateway->search([
+                'paysheetId' => $this->id(),
                 'type' => BillType::INVOICE,
             ], [], 1, 1, $offset);
 
-            $this->setBillInstance((\count($bills) > 0 ? (new BillFactory)->make($bills[0]) : null));
+            $this->setBillInstance((\count($paysheets) > 0 ? (new BillFactory)->make($paysheets[0]) : null));
         }
 
         return $this;

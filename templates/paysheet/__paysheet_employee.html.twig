@@ -16,8 +16,10 @@
             <input name="employee[id]" class="find-employee" type="hidden" value="{{ paysheet.employeeId }}" />
             <label for="employee[documentTypeId]" class="col-form-label">{% trans from 'employee' %}label.documentTypeId{% endtrans %}</label>
             <select name="employee[documentTypeId]" class="form-control custom-select find-employee" required autofocus>
-                <option value="CC" selected>CC</option>
-                <option value="CE">CE</option>
+                <option value="CC" selected>Cédula de Ciudadanía</option>
+                <option value="CE">Cédula de Extranjeria</option>
+                <option value="TI">Tarjeta de Identidad</option>
+                <option value="PS">Pasaporte</option>
             </select>
         </div>
 

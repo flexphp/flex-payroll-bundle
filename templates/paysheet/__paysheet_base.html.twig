@@ -63,7 +63,7 @@
                 {{ include('@FlexPHPPayroll/paysheet/__paysheet_agreement.html.twig', {paysheet: paysheet}) }}
             </div>
 
-            <div class="card">
+            <div class="card" style="display: none;">
                 {# {{ include('@FlexPHPPayroll/paysheet/__paysheet_details.html.twig', {paysheet: paysheet}) }} #}
 
                 <div class="card-footer">
@@ -73,21 +73,21 @@
                                 {% trans %}__paysheet.emptyPaysheetDetails{% endtrans %}
                             </span>
 
-                            <button  type="submit" class="btn btn-outline-primary">
-                                <i class="fa fa-save" aria-hidden="true"></i>
+{#                             <button  type="submit" class="btn btn-outline-primary"> #}
+{#                                 <i class="fa fa-save" aria-hidden="true"></i> #}
 
-                                <span id="buttonPartial" class="btn-text">
-                                    {% trans %}__paysheet.buttonPartial{% endtrans %}
-                                </span>
+{#                                 <span id="buttonPartial" class="btn-text"> #}
+{#                                     {% trans %}__paysheet.buttonPartial{% endtrans %} #}
+{#                                 </span> #}
 
-                                <span id="buttonDraft" style="display: none;" class="btn-text">
-                                    {% if isNewPaysheet %}
-                                    {% trans %}__paysheet.buttonDraft{% endtrans %}
-                                    {% else %}
-                                    {% trans %}__paysheet.buttonDraftUpdate{% endtrans %}
-                                    {% endif %}
-                                </span>
-                            </button>
+{#                                 <span id="buttonDraft" style="display: none;" class="btn-text"> #}
+{#                                     {% if isNewPaysheet %} #}
+{#                                     {% trans %}__paysheet.buttonDraft{% endtrans %} #}
+{#                                     {% else %} #}
+{#                                     {% trans %}__paysheet.buttonDraftUpdate{% endtrans %} #}
+{#                                     {% endif %} #}
+{#                                 </span> #}
+{#                             </button> #}
 
                             {# <button id="buttonPayment" type="button" class="btn btn-warning"> #}
                             {#     <i class="fa fa-dollar-sign" aria-hidden="true"></i> #}
@@ -105,29 +105,30 @@
 {#             </div> #}
 
             {# <div id="__paysheetPayment" style="display: none;"> #}
-            {#     <div class="card"> #}
+            <div>
+                <div class="card">
             {#         {1# {{ include('@FlexPHPPayroll/paysheet/__paysheet_payment.html.twig', {paysheet: paysheet}) }} #1} #}
 
-            {#         <div class="card-footer"> #}
-            {#             <div class="row"> #}
-            {#                 <div class="col text-right"> #}
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col text-right">
             {#                     <span id="messagePayment" style="display: none;" class="mr-3"> #}
             {#                         {% trans %}__paysheet.paymentError{% endtrans %} #}
             {#                     </span> #}
 
-            {#                     <button type="submit" class="btn btn-primary"> #}
-            {#                         <i class="fa fa-save" aria-hidden="true"></i> #}
-            {#                         {% if isNewPaysheet %} #}
-            {#                         <span class="btn-text">{% trans %}__paysheet.buttonCreate{% endtrans %}</span> #}
-            {#                         {% else %} #}
-            {#                         <span class="btn-text">{% trans %}__paysheet.buttonUpdate{% endtrans %}</span> #}
-            {#                         {% endif %} #}
-            {#                     </button> #}
-            {#                 </div> #}
-            {#             </div> #}
-            {#         </div> #}
-            {#     </div> #}
-            {# </div> #}
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-save" aria-hidden="true"></i>
+                                    {% if isNewPaysheet %}
+                                    <span class="btn-text">{% trans %}__paysheet.buttonCreate{% endtrans %}</span>
+                                    {% else %}
+                                    <span class="btn-text">{% trans %}__paysheet.buttonUpdate{% endtrans %}</span>
+                                    {% endif %}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
 

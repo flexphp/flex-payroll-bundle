@@ -16,6 +16,14 @@ final class PayrollType
 {
     use ToArrayTrait;
 
+    public const NOVEL = 'N';
+
+    public const REPLACE = 'R';
+
+    public const UPDATE = 'U';
+
+    public const DELETE = 'D';
+
     private $id;
 
     private $name;

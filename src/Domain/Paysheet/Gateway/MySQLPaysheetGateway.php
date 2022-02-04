@@ -97,9 +97,6 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->setValue('Type', ':type');
         $query->setValue('EmployeeId', ':employeeId');
         $query->setValue('AgreementId', ':agreementId');
-        $query->setValue('Kilometers', ':kilometers');
-        $query->setValue('KilometersToChange', ':kilometersToChange');
-        $query->setValue('Discount', ':discount');
         $query->setValue('Subtotal', ':subtotal');
         $query->setValue('Taxes', ':taxes');
         $query->setValue('Total', ':total');
@@ -115,9 +112,6 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->setParameter(':type', $paysheet->type(), DB::STRING);
         $query->setParameter(':employeeId', $paysheet->employeeId(), DB::INTEGER);
         $query->setParameter(':agreementId', $paysheet->agreementId(), DB::INTEGER);
-        $query->setParameter(':kilometers', $paysheet->kilometers(), DB::INTEGER);
-        $query->setParameter(':kilometersToChange', $paysheet->kilometersToChange(), DB::INTEGER);
-        $query->setParameter(':discount', $paysheet->discount(), DB::STRING);
         $query->setParameter(':subtotal', $paysheet->subtotal(), DB::STRING);
         $query->setParameter(':taxes', $paysheet->taxes(), DB::STRING);
         $query->setParameter(':total', $paysheet->total(), DB::STRING);

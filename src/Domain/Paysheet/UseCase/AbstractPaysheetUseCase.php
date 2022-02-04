@@ -10,17 +10,17 @@
 namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase;
 
 use FlexPHP\Bundle\LocationBundle\Domain\Currency\CurrencyRepository;
-use FlexPHP\Bundle\PayrollBundle\Domain\Customer\Customer;
-use FlexPHP\Bundle\PayrollBundle\Domain\Customer\CustomerFactory;
-use FlexPHP\Bundle\PayrollBundle\Domain\Customer\CustomerRepository;
-use FlexPHP\Bundle\PayrollBundle\Domain\Customer\Request\CreateCustomerRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Customer\Request\IndexCustomerRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Customer\Request\ReadCustomerRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Customer\Request\UpdateCustomerRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Customer\UseCase\CreateCustomerUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Customer\UseCase\IndexCustomerUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Customer\UseCase\ReadCustomerUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Customer\UseCase\UpdateCustomerUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Employee;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\EmployeeFactory;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\EmployeeRepository;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\CreateEmployeeRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\IndexEmployeeRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\ReadEmployeeRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\UpdateEmployeeRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\UseCase\CreateEmployeeUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\UseCase\IndexEmployeeUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\UseCase\ReadEmployeeUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\UseCase\UpdateEmployeeUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\PaysheetRepository;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreatePaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetDetail\PaysheetDetail;
@@ -53,199 +53,199 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Payment\UseCase\UpdatePaymentUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Product\ProductRepository;
 use FlexPHP\Bundle\PayrollBundle\Domain\Product\Request\ReadProductRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Product\UseCase\ReadProductUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Vehicle\Request\CreateVehicleRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Vehicle\Request\IndexVehicleRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Vehicle\Request\ReadVehicleRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Vehicle\Request\UpdateVehicleRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Vehicle\UseCase\CreateVehicleUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Vehicle\UseCase\IndexVehicleUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Vehicle\UseCase\ReadVehicleUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Vehicle\UseCase\UpdateVehicleUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Vehicle\Vehicle;
-use FlexPHP\Bundle\PayrollBundle\Domain\Vehicle\VehicleFactory;
-use FlexPHP\Bundle\PayrollBundle\Domain\Vehicle\VehicleRepository;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\CreateAgreementRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\IndexAgreementRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\ReadAgreementRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\UpdateAgreementRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\CreateAgreementUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\IndexAgreementUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\ReadAgreementUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\UpdateAgreementUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Agreement;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\AgreementFactory;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\AgreementRepository;
 use Exception;
 
 abstract class AbstractPaysheetUseCase
 {
-    protected PaysheetRepository $orderRepository;
+    protected PaysheetRepository $paysheetRepository;
 
-    private VehicleRepository $vehicleRepository;
+    private EmployeeRepository $employeeRepository;
 
-    private CustomerRepository $customerRepository;
+    private AgreementRepository $agreementRepository;
 
-    private PaysheetDetailRepository $orderDetailRepository;
+    // private PaysheetDetailRepository $paysheetDetailRepository;
 
-    private ProductRepository $productRepository;
+//     private ProductRepository $productRepository;
 
-    private PaymentRepository $paymentRepository;
+//     private PaymentRepository $paymentRepository;
 
-    private CurrencyRepository $currencyRepository;
+//     private CurrencyRepository $currencyRepository;
 
     public function __construct(
-        PaysheetRepository $orderRepository,
-        VehicleRepository $vehicleRepository,
-        CustomerRepository $customerRepository,
-        PaysheetDetailRepository $orderDetailRepository,
-        ProductRepository $productRepository,
-        PaymentRepository $paymentRepository,
-        CurrencyRepository $currencyRepository
+        PaysheetRepository $paysheetRepository,
+        EmployeeRepository $employeeRepository,
+        AgreementRepository $agreementRepository
+        // PaysheetDetailRepository $paysheetDetailRepository,
+        // ProductRepository $productRepository,
+        // PaymentRepository $paymentRepository,
+        // CurrencyRepository $currencyRepository
     ) {
-        $this->orderRepository = $orderRepository;
-        $this->vehicleRepository = $vehicleRepository;
-        $this->customerRepository = $customerRepository;
-        $this->orderDetailRepository = $orderDetailRepository;
-        $this->productRepository = $productRepository;
-        $this->paymentRepository = $paymentRepository;
-        $this->currencyRepository = $currencyRepository;
+        $this->paysheetRepository = $paysheetRepository;
+        $this->employeeRepository = $employeeRepository;
+        $this->agreementRepository = $agreementRepository;
+        // $this->paysheetDetailRepository = $paysheetDetailRepository;
+        // $this->productRepository = $productRepository;
+        // $this->paymentRepository = $paymentRepository;
+        // $this->currencyRepository = $currencyRepository;
     }
 
     abstract public function execute($request);
 
-    protected function getVehicleId(CreatePaysheetRequest $request): ?int
+    protected function getAgreementId(CreatePaysheetRequest $request): ?int
     {
-        $_vehicle = (new VehicleFactory())->make($request->vehicle);
+        $_agreement = (new AgreementFactory())->make($request->agreement);
 
-        if ($_vehicle->id()) {
-            $vehicle = $this->getVehicleById($_vehicle);
-            $vehicle = $this->updateVehicle($vehicle->id(), $request);
-        } elseif ($_vehicle->placa()) {
-            $vehicle = $this->getVehicleByPlaca($_vehicle, $request);
+        if ($_agreement->id()) {
+            $agreement = $this->getAgreementById($_agreement);
+            $agreement = $this->updateAgreement($agreement->id(), $request);
         } else {
             return null;
         }
 
-        return $vehicle->id();
+        return $agreement->id();
     }
 
-    protected function getVehicleById(Vehicle $_vehicle): Vehicle
+    protected function getAgreementById(Agreement $_agreement): Agreement
     {
-        $useCase = new ReadVehicleUseCase($this->vehicleRepository);
+        $useCase = new ReadAgreementUseCase($this->agreementRepository);
 
-        $vehicle = ($useCase->execute(new ReadVehicleRequest($_vehicle->id())))->vehicle;
+        $agreement = ($useCase->execute(new ReadAgreementRequest($_agreement->id())))->agreement;
 
-        if (!$vehicle->id()) {
-            throw new Exception(\sprintf('Vehicle not found [%d]', $_vehicle->id()), 404);
+        if (!$agreement->id()) {
+            throw new Exception(\sprintf('Agreement not found [%d]', $_agreement->id()), 404);
         }
 
-        return $vehicle;
+        return $agreement;
     }
 
-    protected function getVehicleByPlaca(Vehicle $_vehicle, CreatePaysheetRequest $request): Vehicle
+    protected function getAgreementByPlaca(Agreement $_agreement, CreatePaysheetRequest $request): Agreement
     {
-        $useCase = new IndexVehicleUseCase($this->vehicleRepository);
+        $useCase = new IndexAgreementUseCase($this->agreementRepository);
 
-        $vehicles = ($useCase->execute(new IndexVehicleRequest([
-            'placa' => $_vehicle->placa(),
-        ], 1, 1)))->vehicles;
+        $agreements = ($useCase->execute(new IndexAgreementRequest([
+            'placa' => $_agreement->placa(),
+        ], 1, 1)))->agreements;
 
-        if (\count($vehicles) > 0) {
-            $vehicle = \end($vehicles);
+        if (\count($agreements) > 0) {
+            $agreement = \end($agreements);
 
-            return $this->updateVehicle($vehicle->id(), $request);
+            return $this->updateAgreement($agreement->id(), $request);
         }
 
-        return $this->createVehicle($request);
+        return $this->createAgreement($request);
     }
 
-    protected function createVehicle(CreatePaysheetRequest $request): Vehicle
+    protected function createAgreement(CreatePaysheetRequest $request): Agreement
     {
-        $request->vehicle['isActive'] = true;
+        $request->agreement['isActive'] = true;
 
-        $useCase = new CreateVehicleUseCase($this->vehicleRepository);
+        $useCase = new CreateAgreementUseCase($this->agreementRepository);
 
-        $vehicle = ($useCase->execute(new CreateVehicleRequest($request->vehicle, $request->createdBy)))->vehicle;
+        $agreement = ($useCase->execute(new CreateAgreementRequest($request->agreement, $request->createdBy)))->agreement;
 
-        if (!$vehicle->id()) {
-            throw new Exception('Vehicle not create', 404);
+        if (!$agreement->id()) {
+            throw new Exception('Agreement not create', 404);
         }
 
-        return $vehicle;
+        return $agreement;
     }
 
-    protected function updateVehicle(int $id, CreatePaysheetRequest $request): Vehicle
+    protected function updateAgreement(int $id, CreatePaysheetRequest $request): Agreement
     {
-        $request->vehicle['isActive'] = true;
+        $request->agreement['isActive'] = true;
 
-        $useCase = new UpdateVehicleUseCase($this->vehicleRepository);
+        $useCase = new UpdateAgreementUseCase($this->agreementRepository);
 
-        return ($useCase->execute(new UpdateVehicleRequest($id, $request->vehicle, $request->createdBy, true)))->vehicle;
+        return ($useCase->execute(new UpdateAgreementRequest($id, $request->agreement, $request->createdBy, true)))->agreement;
     }
 
-    protected function getCustomerId(CreatePaysheetRequest $request): int
+    protected function getEmployeeId(CreatePaysheetRequest $request): int
     {
-        $_customer = (new CustomerFactory())->make($request->customer);
+        $_employee = (new EmployeeFactory())->make($request->employee);
 
-        if ($_customer->id()) {
-            $customer = $this->getCustomerById($_customer);
-            $customer = $this->updateCustomer($customer->id(), $request->customer, $request->createdBy);
-        } elseif ($_customer->documentTypeId() && $_customer->documentNumber()) {
-            $customer = $this->getCustomerByDocument($_customer, $request);
+        if ($_employee->id()) {
+            $employee = $this->getEmployeeById($_employee);
+            $employee = $this->updateEmployee($employee->id(), $request->employee, $request->createdBy);
+        } elseif ($_employee->documentTypeId() && $_employee->documentNumber()) {
+            $employee = $this->getEmployeeByDocument($_employee, $request);
         } else {
-            $customer = $this->createCustomer($request->customer, $request->createdBy);
+            $employee = $this->createEmployee($request->employee, $request->createdBy);
         }
 
-        return $customer->id();
+        return $employee->id();
     }
 
-    protected function getCustomerById(Customer $_customer): Customer
+    protected function getEmployeeById(Employee $_employee): Employee
     {
-        $useCase = new ReadCustomerUseCase($this->customerRepository);
+        $useCase = new ReadEmployeeUseCase($this->employeeRepository);
 
-        $customer = ($useCase->execute(new ReadCustomerRequest($_customer->id())))->customer;
+        $employee = ($useCase->execute(new ReadEmployeeRequest($_employee->id())))->employee;
 
-        if (!$customer->id()) {
-            throw new Exception(\sprintf('Customer not found [%d]', $_customer->id()), 404);
+        if (!$employee->id()) {
+            throw new Exception(\sprintf('Employee not found [%d]', $_employee->id()), 404);
         }
 
-        return $customer;
+        return $employee;
     }
 
-    protected function getCustomerByDocument(Customer $_customer, CreatePaysheetRequest $request): Customer
+    protected function getEmployeeByDocument(Employee $_employee, CreatePaysheetRequest $request): Employee
     {
-        $useCase = new IndexCustomerUseCase($this->customerRepository);
+        $useCase = new IndexEmployeeUseCase($this->employeeRepository);
 
-        $customers = ($useCase->execute(new IndexCustomerRequest([
-            'documentTypeId' => $_customer->documentTypeId(),
-            'documentNumber' => $_customer->documentNumber(),
-        ], 1, 1)))->customers;
+        $employees = ($useCase->execute(new IndexEmployeeRequest([
+            'documentTypeId' => $_employee->documentTypeId(),
+            'documentNumber' => $_employee->documentNumber(),
+        ], 1, 1)))->employees;
 
-        if (\count($customers) > 0) {
-            $customer = \end($customers);
+        if (\count($employees) > 0) {
+            $employee = \end($employees);
 
-            return $this->updateCustomer($customer->id(), $request->customer, $request->createdBy);
+            return $this->updateEmployee($employee->id(), $request->employee, $request->createdBy);
         }
 
-        return $this->createCustomer($request->customer, $request->createdBy);
+        return $this->createEmployee($request->employee, $request->createdBy);
     }
 
-    protected function createCustomer(array $customer, int $userId): Customer
+    protected function createEmployee(array $employee, int $userId): Employee
     {
-        $useCase = new CreateCustomerUseCase($this->customerRepository);
+        $useCase = new CreateEmployeeUseCase($this->employeeRepository);
 
-        $customer = ($useCase->execute(new CreateCustomerRequest($customer, $userId)))->customer;
+        $employee = ($useCase->execute(new CreateEmployeeRequest($employee, $userId)))->employee;
 
-        if (!$customer->id()) {
-            throw new Exception('Customer not create', 404);
+        if (!$employee->id()) {
+            throw new Exception('Employee not create', 404);
         }
 
-        return $customer;
+        return $employee;
     }
 
-    protected function updateCustomer(int $id, array $customer, int $userId): Customer
+    protected function updateEmployee(int $id, array $employee, int $userId): Employee
     {
-        $useCase = new UpdateCustomerUseCase($this->customerRepository);
+        $useCase = new UpdateEmployeeUseCase($this->employeeRepository);
 
-        return ($useCase->execute(new UpdateCustomerRequest($id, $customer, $userId, true)))->customer;
+        return ($useCase->execute(new UpdateEmployeeRequest($id, $employee, $userId, true)))->employee;
     }
 
     protected function getPaysheetDetails(CreatePaysheetRequest $request): array
     {
-        $orderDetails = [];
-        $ids = $request->orderDetail['id'] ?? [];
-        $productIds = $request->orderDetail['productId'] ?? [];
-        $quantities = $request->orderDetail['quantity'] ?? [];
-        $prices = $request->orderDetail['price'] ?? [];
+        return [];
+
+        $paysheetDetails = [];
+        $ids = $request->paysheetDetail['id'] ?? [];
+        $productIds = $request->paysheetDetail['productId'] ?? [];
+        $quantities = $request->paysheetDetail['quantity'] ?? [];
+        $prices = $request->paysheetDetail['price'] ?? [];
 
         foreach ($productIds as $index => $productId) {
             $id = $ids[$index] ?? 0;
@@ -262,7 +262,7 @@ abstract class AbstractPaysheetUseCase
 
             $tax = $quantity * (($product->taxes() * $price) / 100);
 
-            $orderDetails[] = [
+            $paysheetDetails[] = [
                 'id' => $id,
                 'tax' => $this->numberFormat($tax),
                 'total' => $this->numberFormat(($quantity * $price) + $tax),
@@ -273,7 +273,7 @@ abstract class AbstractPaysheetUseCase
             ];
         }
 
-        return $orderDetails;
+        return $paysheetDetails;
     }
 
     protected function getPayments(CreatePaysheetRequest $request): array
@@ -281,7 +281,7 @@ abstract class AbstractPaysheetUseCase
         $payments = $this->getArrayPayments($request);
 
         if ($request->isDraft && \count($payments) > 0) {
-            throw new Exception('Draft order not allow payments');
+            throw new Exception('Draft paysheet not allow payments');
         }
 
         $payments = $this->getSortedPayments($payments);
@@ -289,78 +289,78 @@ abstract class AbstractPaysheetUseCase
         return $this->getFixedPayments($payments, $request->total);
     }
 
-    protected function savePaysheetDetails(array $orderDetails, int $orderId, int $userId): void
+    protected function savePaysheetDetails(array $paysheetDetails, int $paysheetId, int $userId): void
     {
-        $this->deletePaysheetDetails($orderDetails, $orderId);
+        $this->deletePaysheetDetails($paysheetDetails, $paysheetId);
 
-        foreach ($orderDetails as $orderDetail) {
-            $_orderDetail = (new PaysheetDetailFactory())->make($orderDetail);
+        foreach ($paysheetDetails as $paysheetDetail) {
+            $_paysheetDetail = (new PaysheetDetailFactory())->make($paysheetDetail);
 
-            if ($_orderDetail->id()) {
-                $_orderDetail = $this->getPaysheetDetail($_orderDetail);
-                $_orderDetail = $this->updatePaysheetDetail($_orderDetail->id(), $orderDetail + ['orderId' => $orderId], $userId);
+            if ($_paysheetDetail->id()) {
+                $_paysheetDetail = $this->getPaysheetDetail($_paysheetDetail);
+                $_paysheetDetail = $this->updatePaysheetDetail($_paysheetDetail->id(), $paysheetDetail + ['paysheetId' => $paysheetId], $userId);
             } else {
-                $orderDetail = $this->createPaysheetDetail($orderDetail, $orderId, $userId);
+                $paysheetDetail = $this->createPaysheetDetail($paysheetDetail, $paysheetId, $userId);
             }
         }
     }
 
-    protected function getPaysheetDetail(PaysheetDetail $_orderDetail): PaysheetDetail
+    protected function getPaysheetDetail(PaysheetDetail $_paysheetDetail): PaysheetDetail
     {
-        $useCase = new ReadPaysheetDetailUseCase($this->orderDetailRepository);
+        $useCase = new ReadPaysheetDetailUseCase($this->paysheetDetailRepository);
 
-        $orderDetail = ($useCase->execute(new ReadPaysheetDetailRequest($_orderDetail->id())))->orderDetail;
+        $paysheetDetail = ($useCase->execute(new ReadPaysheetDetailRequest($_paysheetDetail->id())))->paysheetDetail;
 
-        if (!$orderDetail->id()) {
-            throw new Exception(\sprintf('Paysheet detail not found [%d]', $_orderDetail->id()), 404);
+        if (!$paysheetDetail->id()) {
+            throw new Exception(\sprintf('Paysheet detail not found [%d]', $_paysheetDetail->id()), 404);
         }
 
-        return $orderDetail;
+        return $paysheetDetail;
     }
 
-    protected function createPaysheetDetail(array $orderDetail, int $orderId, int $userId): PaysheetDetail
+    protected function createPaysheetDetail(array $paysheetDetail, int $paysheetId, int $userId): PaysheetDetail
     {
-        $useCase = new CreatePaysheetDetailUseCase($this->orderDetailRepository);
+        $useCase = new CreatePaysheetDetailUseCase($this->paysheetDetailRepository);
 
-        $orderDetail = ($useCase->execute(new CreatePaysheetDetailRequest($orderDetail + [
-            'orderId' => $orderId,
-        ], $userId)))->orderDetail;
+        $paysheetDetail = ($useCase->execute(new CreatePaysheetDetailRequest($paysheetDetail + [
+            'paysheetId' => $paysheetId,
+        ], $userId)))->paysheetDetail;
 
-        if (!$orderDetail->id()) {
+        if (!$paysheetDetail->id()) {
             throw new Exception('Paysheet detail not create', 404);
         }
 
-        return $orderDetail;
+        return $paysheetDetail;
     }
 
-    protected function updatePaysheetDetail(int $id, array $orderDetail, int $userId): PaysheetDetail
+    protected function updatePaysheetDetail(int $id, array $paysheetDetail, int $userId): PaysheetDetail
     {
-        $useCase = new UpdatePaysheetDetailUseCase($this->orderDetailRepository);
+        $useCase = new UpdatePaysheetDetailUseCase($this->paysheetDetailRepository);
 
-        return ($useCase->execute(new UpdatePaysheetDetailRequest($id, $orderDetail, $userId)))->orderDetail;
+        return ($useCase->execute(new UpdatePaysheetDetailRequest($id, $paysheetDetail, $userId)))->paysheetDetail;
     }
 
     protected function deletePaysheetDetail(int $id): PaysheetDetail
     {
-        $useCase = new DeletePaysheetDetailUseCase($this->orderDetailRepository);
+        $useCase = new DeletePaysheetDetailUseCase($this->paysheetDetailRepository);
 
-        return ($useCase->execute(new DeletePaysheetDetailRequest($id)))->orderDetail;
+        return ($useCase->execute(new DeletePaysheetDetailRequest($id)))->paysheetDetail;
     }
 
-    protected function createPaysheetDetails(array $orderDetails, int $orderId, int $userId): void
+    protected function createPaysheetDetails(array $paysheetDetails, int $paysheetId, int $userId): void
     {
-        foreach ($orderDetails as $orderDetail) {
-            $this->createPaysheetDetail($orderDetail, $orderId, $userId);
+        foreach ($paysheetDetails as $paysheetDetail) {
+            $this->createPaysheetDetail($paysheetDetail, $paysheetId, $userId);
         }
     }
 
-    protected function deletePaysheetDetails(array $orderDetails, int $orderId): void
+    protected function deletePaysheetDetails(array $paysheetDetails, int $paysheetId): void
     {
-        $useCase = new IndexPaysheetDetailUseCase($this->orderDetailRepository);
-        $currentPaysheetDetails = $useCase->execute(new IndexPaysheetDetailRequest(['orderId' => $orderId], 1))->orderDetails;
+        $useCase = new IndexPaysheetDetailUseCase($this->paysheetDetailRepository);
+        $currentPaysheetDetails = $useCase->execute(new IndexPaysheetDetailRequest(['paysheetId' => $paysheetId], 1))->paysheetDetails;
 
-        $validIds = \array_reduce($orderDetails, function ($result, $orderDetail) {
-            $result[] = $orderDetail['id'];
+        $validIds = \array_reduce($paysheetDetails, function ($result, $paysheetDetail) {
+            $result[] = $paysheetDetail['id'];
 
             return $result;
         }, []);
@@ -374,23 +374,23 @@ abstract class AbstractPaysheetUseCase
         }
     }
 
-    protected function getSubTotal(array $orderDetails): float
+    protected function getSubTotal(array $paysheetDetails): float
     {
         $subTotal = 0;
 
-        foreach ($orderDetails as $orderDetail) {
-            $subTotal += $orderDetail['quantity'] * $orderDetail['price'];
+        foreach ($paysheetDetails as $paysheetDetail) {
+            $subTotal += $paysheetDetail['quantity'] * $paysheetDetail['price'];
         }
 
         return $this->numberFormat($subTotal);
     }
 
-    protected function getTotalTaxes(array $orderDetails): float
+    protected function getTotalTaxes(array $paysheetDetails): float
     {
         $taxes = 0;
 
-        foreach ($orderDetails as $orderDetail) {
-            $taxes += $orderDetail['tax'];
+        foreach ($paysheetDetails as $paysheetDetail) {
+            $taxes += $paysheetDetail['tax'];
         }
 
         return $this->numberFormat($taxes);
@@ -429,24 +429,24 @@ abstract class AbstractPaysheetUseCase
         return PayrollStatus::PENDING;
     }
 
-    protected function getKilometers(CreatePaysheetRequest $request): int
-    {
-        return empty($request->kilometers) ? 0 : (int)$request->kilometers;
-    }
+//     protected function getKilometers(CreatePaysheetRequest $request): int
+//     {
+//         return empty($request->kilometers) ? 0 : (int)$request->kilometers;
+//     }
 
-    protected function getKilometersToChange(CreatePaysheetRequest $request): int
-    {
-        return empty($request->kilometersToChange) ? 0 : (int)$request->kilometersToChange;
-    }
+//     protected function getKilometersToChange(CreatePaysheetRequest $request): int
+//     {
+//         return empty($request->kilometersToChange) ? 0 : (int)$request->kilometersToChange;
+//     }
 
-    protected function getDiscount(CreatePaysheetRequest $request): string
-    {
-        return empty($request->discount) ? '0' : $request->discount;
-    }
+//     protected function getDiscount(CreatePaysheetRequest $request): string
+//     {
+//         return empty($request->discount) ? '0' : $request->discount;
+//     }
 
     protected function getTotal(CreatePaysheetRequest $request): float
     {
-        return $this->numberFormat(($request->subtotal + $request->taxes) - $request->discount);
+        return $this->numberFormat($request->subtotal + $request->taxes);
     }
 
     protected function numberFormat(float $number): float
@@ -454,18 +454,18 @@ abstract class AbstractPaysheetUseCase
         return \round($number, 0);
     }
 
-    protected function savePayments(array $payments, int $orderId, int $userId): void
+    protected function savePayments(array $payments, int $paysheetId, int $userId): void
     {
-        $this->deletePayments($payments, $orderId);
+        $this->deletePayments($payments, $paysheetId);
 
         foreach ($payments as $payment) {
             $_payment = (new PaymentFactory())->make($payment);
 
             if ($_payment->id()) {
                 $_payment = $this->getPayment($_payment);
-                $_payment = $this->updatePayment($_payment->id(), $payment + ['orderId' => $orderId], $userId);
+                $_payment = $this->updatePayment($_payment->id(), $payment + ['paysheetId' => $paysheetId], $userId);
             } else {
-                $payment = $this->createPayment($payment, $orderId, $userId);
+                $payment = $this->createPayment($payment, $paysheetId, $userId);
             }
         }
     }
@@ -483,12 +483,12 @@ abstract class AbstractPaysheetUseCase
         return $payment;
     }
 
-    protected function createPayment(array $payment, int $orderId, int $userId): Payment
+    protected function createPayment(array $payment, int $paysheetId, int $userId): Payment
     {
         $useCase = new CreatePaymentUseCase($this->paymentRepository, $this->currencyRepository);
 
         $payment = ($useCase->execute(new CreatePaymentRequest($payment + [
-            'orderId' => $orderId,
+            'paysheetId' => $paysheetId,
         ], $userId)))->payment;
 
         if (!$payment->id()) {
@@ -512,17 +512,17 @@ abstract class AbstractPaysheetUseCase
         return ($useCase->execute(new DeletePaymentRequest($id)))->payment;
     }
 
-    protected function createPayments(array $payments, int $orderId, int $userId): void
+    protected function createPayments(array $payments, int $paysheetId, int $userId): void
     {
         foreach ($payments as $payment) {
-            $this->createPayment($payment, $orderId, $userId);
+            $this->createPayment($payment, $paysheetId, $userId);
         }
     }
 
-    protected function deletePayments(array $payments, int $orderId): void
+    protected function deletePayments(array $payments, int $paysheetId): void
     {
         $useCase = new IndexPaymentUseCase($this->paymentRepository, $this->currencyRepository);
-        $currentPayments = $useCase->execute(new IndexPaymentRequest(['orderId' => $orderId], 1))->payments;
+        $currentPayments = $useCase->execute(new IndexPaymentRequest(['paysheetId' => $paysheetId], 1))->payments;
 
         $validIds = \array_reduce($payments, function ($result, $payment) {
             $result[] = $payment['id'];

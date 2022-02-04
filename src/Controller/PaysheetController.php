@@ -104,7 +104,7 @@ final class PaysheetController extends AbstractController
 
         $this->addFlash('success', $trans->trans('message.created', [], 'paysheet'));
 
-        return $this->redirectToRoute('paysheets.read', ['id' => $response->paysheet->id()], 201);
+        return $this->redirectToRoute('flexphp.payroll.paysheets.read', ['id' => $response->paysheet->id()], 201);
     }
 
 //     /**

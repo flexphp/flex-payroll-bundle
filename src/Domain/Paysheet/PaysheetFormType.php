@@ -62,8 +62,8 @@ final class PaysheetFormType extends AbstractType
             if (!empty($value)) {
                 $response = $this->readPayrollTypeUseCase->execute(new ReadPayrollTypeRequest($value));
 
-                if ($response->orderType->id()) {
-                    $choices = [$response->orderType->name() => $value];
+                if ($response->paysheetType->id()) {
+                    $choices = [$response->paysheetType->name() => $value];
                 }
             }
 
@@ -164,8 +164,8 @@ final class PaysheetFormType extends AbstractType
             if (!empty($value)) {
                 $response = $this->readPayrollStatusUseCase->execute(new ReadPayrollStatusRequest($value));
 
-                if ($response->orderStatus->id()) {
-                    $choices = [$response->orderStatus->name() => $value];
+                if ($response->paysheetStatus->id()) {
+                    $choices = [$response->paysheetStatus->name() => $value];
                 }
             }
 
@@ -271,7 +271,7 @@ final class PaysheetFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'translation_domain' => 'order',
+            'translation_domain' => 'paysheet',
         ]);
     }
 }

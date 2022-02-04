@@ -9,19 +9,19 @@
  */
 namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request;
 
-use FlexPHP\Bundle\PayrollBundle\Domain\PayrollType\PayrollType;
 use FlexPHP\Bundle\HelperBundle\Domain\Helper\DateTimeTrait;
+use FlexPHP\Bundle\PayrollBundle\Domain\PayrollType\PayrollType;
 use FlexPHP\Messages\RequestInterface;
 
 class CreatePaysheetRequest implements RequestInterface
 {
     use DateTimeTrait;
 
-    public $customer;
+    public $employee;
 
-    public $vehicle;
+    public $agreement;
 
-    public $orderDetail;
+    public $paysheetDetail;
 
     public $payment;
 
@@ -29,15 +29,9 @@ class CreatePaysheetRequest implements RequestInterface
 
     public $type;
 
-    public $customerId;
+    public $employeeId;
 
-    public $vehicleId;
-
-    public $kilometers;
-
-    public $kilometersToChange;
-
-    public $discount;
+    public $agreementId;
 
     public $subtotal;
 
@@ -57,31 +51,25 @@ class CreatePaysheetRequest implements RequestInterface
 
     public $expiratedAt;
 
-    public $worker;
-
     public $createdBy;
 
     public function __construct(array $data, int $createdBy, ?string $timezone = null)
     {
-        $this->customer = $data['customer'] ?? [];
-        $this->vehicle = $data['vehicle'] ?? [];
-        $this->orderDetail = $data['order_detail'] ?? [];
+        $this->employee = $data['employee'] ?? [];
+        $this->agreement = $data['agreement'] ?? [];
+        $this->paysheetDetail = $data['paysheet_detail'] ?? [];
         $this->payment = $data['payment'] ?? [];
 
-        $this->type = $data['order']['type'] ?? PayrollType::VEHICLE;
-        $this->isDraft = $data['order']['isDraft'] ?? false;
-        $this->kilometers = $data['order']['kilometers'] ?? 0;
-        $this->kilometersToChange = $data['order']['kilometersToChange'] ?? 0;
-        $this->discount = $data['order']['discount'] ?? 0;
-        $this->notes = $data['order']['notes'] ?? null;
-        $this->billNotes = $data['order']['billNotes'] ?? null;
-        $this->expiratedAt = !empty($data['order']['expiratedAt'])
-            ? $this->dateTimeToUTC($data['order']['expiratedAt'], $this->getOffset($this->getTimezone($timezone)))
+        $this->type = $data['paysheet']['type'] ?? PayrollType::NOVEL;
+        $this->isDraft = $data['paysheet']['isDraft'] ?? false;
+        $this->notes = $data['paysheet']['notes'] ?? null;
+        $this->billNotes = $data['paysheet']['billNotes'] ?? null;
+        $this->expiratedAt = !empty($data['paysheet']['expiratedAt'])
+            ? $this->dateTimeToUTC($data['paysheet']['expiratedAt'], $this->getOffset($this->getTimezone($timezone)))
             : null;
-        $this->worker = $data['order']['worker'] ?? null;
 
-        $this->createdAt = !empty($data['order']['createdAt'])
-            ? $this->dateTimeToUTC($data['order']['createdAt'], $this->getOffset($this->getTimezone($timezone)))
+        $this->createdAt = !empty($data['paysheet']['createdAt'])
+            ? $this->dateTimeToUTC($data['paysheet']['createdAt'], $this->getOffset($this->getTimezone($timezone)))
             : null;
         $this->createdBy = $createdBy;
     }

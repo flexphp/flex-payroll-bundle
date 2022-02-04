@@ -43,21 +43,21 @@ final class PaysheetRepository
      */
     public function findBy(IndexPaysheetRequest $request): array
     {
-        return \array_map(function (array $order) use ($request) {
-            $order = (new PaysheetFactory())->make($order);
-            $order->withLastBill($this->billGateway, $request->_offset);
+        return \array_map(function (array $paysheet) use ($request) {
+            $paysheet = (new PaysheetFactory())->make($paysheet);
+            $paysheet->withLastBill($this->billGateway, $request->_offset);
 
-            return $order;
+            return $paysheet;
         }, $this->gateway->search((array)$request, [], $request->_page, $request->_limit, $request->_offset));
     }
 
     public function add(CreatePaysheetRequest $request): Paysheet
     {
-        $order = (new PaysheetFactory())->make($request);
+        $paysheet = (new PaysheetFactory())->make($request);
 
-        $order->setId($this->gateway->push($order));
+        $paysheet->setId($this->gateway->push($paysheet));
 
-        return $order;
+        return $paysheet;
     }
 
     public function getById(ReadPaysheetRequest $request): Paysheet
@@ -65,19 +65,19 @@ final class PaysheetRepository
         $factory = new PaysheetFactory();
         $data = $this->gateway->get($factory->make($request));
 
-        $order = $factory->make($data);
-        $order->withLastBill($this->billGateway, 0);
+        $paysheet = $factory->make($data);
+        $paysheet->withLastBill($this->billGateway, 0);
 
-        return $order;
+        return $paysheet;
     }
 
     public function change(UpdatePaysheetRequest $request): Paysheet
     {
-        $order = (new PaysheetFactory())->make($request);
+        $paysheet = (new PaysheetFactory())->make($request);
 
-        $this->gateway->shift($order);
+        $this->gateway->shift($paysheet);
 
-        return $order;
+        return $paysheet;
     }
 
     public function remove(DeletePaysheetRequest $request): Paysheet
@@ -85,11 +85,11 @@ final class PaysheetRepository
         $factory = new PaysheetFactory();
         $data = $this->gateway->get($factory->make($request));
 
-        $order = $factory->make($data);
+        $paysheet = $factory->make($data);
 
-        $this->gateway->pop($order);
+        $this->gateway->pop($paysheet);
 
-        return $order;
+        return $paysheet;
     }
 
     public function findPayrollTypesBy(FindPaysheetPayrollTypeRequest $request): array

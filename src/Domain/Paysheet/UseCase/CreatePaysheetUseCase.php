@@ -21,20 +21,20 @@ final class CreatePaysheetUseCase extends AbstractPaysheetUseCase
      */
     public function execute($request)
     {
-        if (!empty($request->vehicle)) {
-            $request->vehicleId = $this->getVehicleId($request);
+        if (!empty($request->employee)) {
+            $request->employeeId = $this->getEmployeeId($request);
         }
 
-        if (!empty($request->customer)) {
-            $request->customerId = $this->getCustomerId($request);
+        if (!empty($request->agreement)) {
+            $request->agreementId = $this->getAgreementId($request);
         }
 
-        $orderDetails = $this->getPaysheetDetails($request);
-        $request->subtotal = $this->getSubTotal($orderDetails);
-        $request->taxes = $this->getTotalTaxes($orderDetails);
-        $request->kilometers = $this->getKilometers($request);
-        $request->kilometersToChange = $this->getKilometersToChange($request);
-        $request->discount = $this->getDiscount($request);
+        $paysheetDetails = $this->getPaysheetDetails($request);
+        $request->subtotal = $this->getSubTotal($paysheetDetails);
+        $request->taxes = $this->getTotalTaxes($paysheetDetails);
+        // $request->kilometers = $this->getKilometers($request);
+        // $request->kilometersToChange = $this->getKilometersToChange($request);
+        // $request->discount = $this->getDiscount($request);
         $request->total = $this->getTotal($request);
 
         $payments = $this->getPayments($request);
@@ -42,16 +42,16 @@ final class CreatePaysheetUseCase extends AbstractPaysheetUseCase
         $request->paidAt = $this->getPaidAt($request);
         $request->statusId = $this->getStatusId($request);
 
-        $request->vehicle = null;
-        $request->customer = null;
-        $request->orderDetail = null;
+        $request->employee = null;
+        $request->agreement = null;
+        $request->paysheetDetail = null;
         $request->payment = null;
 
-        $order = $this->orderRepository->add($request);
+        $paysheet = $this->paysheetRepository->add($request);
 
-        $this->createPaysheetDetails($orderDetails, $order->id(), $request->createdBy);
-        $this->createPayments($payments, $order->id(), $request->createdBy);
+        $this->createPaysheetDetails($paysheetDetails, $paysheet->id(), $request->createdBy);
+        $this->createPayments($payments, $paysheet->id(), $request->createdBy);
 
-        return new CreatePaysheetResponse($order);
+        return new CreatePaysheetResponse($paysheet);
     }
 }

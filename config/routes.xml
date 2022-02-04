@@ -124,6 +124,7 @@
     <route id="flexphp.payroll.paysheets.index" controller="flexphp.payroll.bundle.paysheet_controller::index" path="/paysheets" methods="GET,POST" />
     <route id="flexphp.payroll.paysheets.new" controller="flexphp.payroll.bundle.paysheet_controller::new" path="/paysheets/new" methods="GET" />
     <route id="flexphp.payroll.paysheets.create" controller="flexphp.payroll.bundle.paysheet_controller::create" path="/paysheets/create" methods="POST" />
+    <route id="flexphp.payroll.paysheets.read" controller="flexphp.payroll.bundle.paysheet_controller::create" path="/paysheets/create" methods="GET" />
     <route id="flexphp.payroll.paysheets.find.employees" controller="flexphp.payroll.bundle.paysheet_controller::findEmployee" path="/paysheets/find-employees" methods="POST" />
     <route id="flexphp.payroll.paysheets.find.agreements" controller="flexphp.payroll.bundle.paysheet_controller::findAgreement" path="/paysheets/find-agreements" methods="POST" />
     <route id="flexphp.payroll.paysheets.find.payroll-status" controller="flexphp.payroll.bundle.paysheet_controller::findPayrollStatus" path="/paysheets/find-payroll-status" methods="POST" />
