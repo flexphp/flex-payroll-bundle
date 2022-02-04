@@ -9,7 +9,19 @@
  */
 namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase;
 
+use Exception;
 use FlexPHP\Bundle\LocationBundle\Domain\Currency\CurrencyRepository;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Agreement;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\AgreementFactory;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\AgreementRepository;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\CreateAgreementRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\IndexAgreementRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\ReadAgreementRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\UpdateAgreementRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\CreateAgreementUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\IndexAgreementUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\ReadAgreementUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\UpdateAgreementUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Employee;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\EmployeeFactory;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\EmployeeRepository;
@@ -21,6 +33,19 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Employee\UseCase\CreateEmployeeUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\UseCase\IndexEmployeeUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\UseCase\ReadEmployeeUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\UseCase\UpdateEmployeeUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Payment;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payment\PaymentFactory;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payment\PaymentRepository;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Request\CreatePaymentRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Request\DeletePaymentRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Request\IndexPaymentRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Request\ReadPaymentRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Request\UpdatePaymentRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payment\UseCase\CreatePaymentUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payment\UseCase\DeletePaymentUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payment\UseCase\IndexPaymentUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payment\UseCase\ReadPaymentUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payment\UseCase\UpdatePaymentUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\PaysheetRepository;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreatePaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetDetail\PaysheetDetail;
@@ -36,35 +61,10 @@ use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetDetail\UseCase\DeletePaysheetDet
 use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetDetail\UseCase\IndexPaysheetDetailUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetDetail\UseCase\ReadPaysheetDetailUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetDetail\UseCase\UpdatePaysheetDetailUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\PayrollStatus\PayrollStatus;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Payment;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payment\PaymentFactory;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payment\PaymentRepository;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Request\CreatePaymentRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Request\DeletePaymentRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Request\IndexPaymentRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Request\ReadPaymentRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Request\UpdatePaymentRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payment\UseCase\CreatePaymentUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payment\UseCase\DeletePaymentUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payment\UseCase\IndexPaymentUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payment\UseCase\ReadPaymentUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payment\UseCase\UpdatePaymentUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetStatus\PaysheetStatus;
 use FlexPHP\Bundle\PayrollBundle\Domain\Product\ProductRepository;
 use FlexPHP\Bundle\PayrollBundle\Domain\Product\Request\ReadProductRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Product\UseCase\ReadProductUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\CreateAgreementRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\IndexAgreementRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\ReadAgreementRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\UpdateAgreementRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\CreateAgreementUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\IndexAgreementUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\ReadAgreementUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\UpdateAgreementUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Agreement;
-use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\AgreementFactory;
-use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\AgreementRepository;
-use Exception;
 
 abstract class AbstractPaysheetUseCase
 {
@@ -419,14 +419,14 @@ abstract class AbstractPaysheetUseCase
     protected function getStatusId(CreatePaysheetRequest $request): string
     {
         if ($this->isDraft($request)) {
-            return PayrollStatus::DRAFT;
+            return PaysheetStatus::DRAFT;
         }
 
         if ($this->isPayed($request)) {
-            return PayrollStatus::PAYED;
+            return PaysheetStatus::PAYED;
         }
 
-        return PayrollStatus::PENDING;
+        return PaysheetStatus::PENDING;
     }
 
 //     protected function getKilometers(CreatePaysheetRequest $request): int

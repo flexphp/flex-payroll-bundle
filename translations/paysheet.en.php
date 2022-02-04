@@ -4,7 +4,7 @@ return [
     'entity' => 'Paysheet',
     'title' => [
         'new' => 'New Paysheet',
-        // 'edit' => 'Edit Paysheet',
+        'edit' => 'Edit Paysheet',
         // 'show' => 'Paysheet Details',
         'list' => 'Paysheets',
     ],

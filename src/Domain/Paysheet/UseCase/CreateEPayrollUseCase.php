@@ -15,10 +15,10 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreateEPayrollRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\ReadPaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Response\CreateEPayrollResponse;
 use Exception;
-use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\Request\CreateBillRequest;
-use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\UseCase\CreateBillUseCase;
-use FlexPHP\Bundle\InvoiceBundle\Domain\BillStatus\BillStatus;
-use FlexPHP\Bundle\InvoiceBundle\Domain\BillType\BillType;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\CreatePayrollRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\UseCase\CreatePayrollUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\PayrollStatus\PayrollStatus;
+use FlexPHP\Bundle\PayrollBundle\Domain\PayrollType\PayrollType;
 use FlexPHP\Bundle\NumerationBundle\Domain\Numeration\Request\UpdateNumerationRequest;
 use FlexPHP\Bundle\NumerationBundle\Domain\Numeration\UseCase\UpdateNumerationUseCase;
 
@@ -26,42 +26,42 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
 {
     public function execute(CreateEPayrollRequest $request): CreateEPayrollResponse
     {
-        if (!empty($request->orderId)) {
-            $order = $this->orderRepository->getById(new ReadPaysheetRequest($request->orderId));
+        if (!empty($request->paysheetId)) {
+            $paysheet = $this->paysheetRepository->getById(new ReadPaysheetRequest($request->paysheetId));
         }
 
-        if (empty($order) || !$order->id()) {
-            throw new Exception(\sprintf('Paysheet not exist [%d]', $request->orderId ?? 0), 404);
+        if (empty($paysheet) || !$paysheet->id()) {
+            throw new Exception(\sprintf('Paysheet not exist [%d]', $request->paysheetId ?? 0), 404);
         }
 
-        if (!$order->customerId()) {
+        if (!$paysheet->customerId()) {
             throw new Exception('Paysheet customer not found', 404);
         }
 
-        if ($order->isDraft()) {
+        if ($paysheet->isDraft()) {
             throw new Exception('Paysheet is draft', 400);
         }
 
-        $order->withLastBill($this->orderRepository->billGateway(), 0);
-        $bill = $order->billInstance();
+        $paysheet->withLastPayroll($this->paysheetRepository->payrollGateway(), 0);
+        $payroll = $paysheet->payrollInstance();
 
         $provider = $this->getProvider();
 
         $this->testingMode = $provider->url() === 'http://localhost';
 
-        if ($bill && $bill->downloadedAt()) {
-            return $this->getResponseOk($bill);
+        if ($payroll && $payroll->downloadedAt()) {
+            return $this->getResponseOk($payroll);
         }
 
-        $orderTimeout = clone $order->createdAt();
+        $paysheetTimeout = clone $paysheet->createdAt();
         $timeAllowed = new DateInterval(\sprintf('P%dD', $_ENV['EINVOICE_TIMEOUT'] ?? 10));
 
-        if ($orderTimeout->add($timeAllowed) < new DateTime()) {
+        if ($paysheetTimeout->add($timeAllowed) < new DateTime()) {
             throw new Exception('Paysheet is older', 400);
         }
 
         $sender = $this->getSender();
-        $setting = $this->getSetting(BillType::INVOICE);
+        $setting = $this->getSetting(PayrollType::INVOICE);
         $numeration = $this->getNumeration(
             $setting->resolution(),
             $setting->fromNumber(),
@@ -72,37 +72,37 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
             $setting->prefix()
         );
 
-        $receiver = $this->getReceiver($order->customerId());
-        $invoice = $this->getInvoice(
-            $order->createdAt(),
+        $receiver = $this->getReceiver($paysheet->customerId());
+        $payroll = $this->getPayroll(
+            $paysheet->createdAt(),
             $numeration,
-            $this->getItems($order),
-            $this->getDeposits($order),
-            $order->expiratedAt(),
-            $order->billNotes()
+            $this->getItems($paysheet),
+            $this->getDeposits($paysheet),
+            $paysheet->expiratedAt(),
+            $paysheet->payrollNotes()
         );
 
-        if (!$bill) {
-            $data = $this->orderRepository->getEPayrollData($request);
+        if (!$payroll) {
+            $data = $this->paysheetRepository->getEPayrollData($request);
 
             if (empty($data)) {
                 throw new Exception(\sprintf('Paysheet data not found [%d]', $request->id), 404);
             }
 
-            $useCase = new CreateBillUseCase($this->billRepository);
+            $useCase = new CreatePayrollUseCase($this->payrollRepository);
 
-            $bill = $useCase->execute(new CreateBillRequest([
+            $payroll = $useCase->execute(new CreatePayrollRequest([
                 'prefix' => $setting->prefix(),
                 'number' => $setting->currentNumber(),
-                'orderId' => $order->id(),
+                'paysheet' => $paysheet->id(),
                 'provider' => $provider->id(),
-                'status' => BillStatus::PENDING,
-                'type' => BillType::INVOICE,
+                'status' => PayrollStatus::PENDING,
+                'type' => PayrollType::INVOICE,
                 'message' => 'Pendiente de procesar',
-            ], -1))->bill;
+            ], -1))->payroll;
 
-            if (!$bill->id()) {
-                return new CreateEPayrollResponse($bill->status(), 'Bill error');
+            if (!$payroll->id()) {
+                return new CreateEPayrollResponse($payroll->status(), 'Payroll error');
             }
 
             (new UpdateNumerationUseCase($this->numerationRepository))->execute(
@@ -112,6 +112,6 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
             );
         }
 
-        return $this->processEPayroll($invoice, $bill, $provider, $sender, $receiver);
+        return $this->processEPayroll($payroll, $payroll, $provider, $sender, $receiver);
     }
 }

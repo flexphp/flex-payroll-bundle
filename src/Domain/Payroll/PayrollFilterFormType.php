@@ -45,11 +45,11 @@ final class PayrollFilterFormType extends AbstractType
             'required' => false,
         ]);
 
-        $builder->add('employee', Select2Type::class, [
-            'label' => 'label.employee',
+        $builder->add('paysheet', Select2Type::class, [
+            'label' => 'label.paysheet',
             'required' => false,
             'attr' => [
-                'data-autocomplete-url' => $this->router->generate('flexphp.payroll.payrolls.find.employees'),
+                'data-autocomplete-url' => $this->router->generate('flexphp.payroll.payrolls.find.paysheets'),
             ],
         ]);
 

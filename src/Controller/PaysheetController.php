@@ -132,30 +132,24 @@ final class PaysheetController extends AbstractController
 //         return $this->render('@FlexPHPPayroll/paysheet/show.html.twig', \compact('paysheet', 'payments'));
 //     }
 
-//     /**
-//      * @Cache(smaxage="3600")
-//      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_UPDATE')", statusCode=401)
-//      */
-//     public function edit(ReadPaysheetUseCase $useCase, int $id): Response
-//     {
-//         $request = new ReadPaysheetRequest($id);
+    /**
+     * @Cache(smaxage="3600")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_UPDATE')", statusCode=401)
+     */
+    public function edit(ReadPaysheetUseCase $useCase, int $id): Response
+    {
+        $request = new ReadPaysheetRequest($id);
 
-//         $response = $useCase->execute($request);
+        $response = $useCase->execute($request);
 
-//         if (!$response->paysheet->id()) {
-//             throw $this->createNotFoundException();
-//         }
+        if (!$response->paysheet->id()) {
+            throw $this->createNotFoundException();
+        }
 
-//         $template = '@FlexPHPPayroll/paysheet/__paysheet_simple.html.twig';
-
-//         if ($response->paysheet->type() === PayrollType::VEHICLE) {
-//             $template = '@FlexPHPPayroll/paysheet/__paysheet_vehicle.html.twig';
-//         }
-
-//         return $this->render($template, [
-//             'paysheet' => $response->paysheet,
-//         ]);
-//     }
+        return $this->render('@FlexPHPPayroll/paysheet/__paysheet_base.html.twig', [
+            'paysheet' => $response->paysheet,
+        ]);
+    }
 
 //     /**
 //      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_UPDATE')", statusCode=401)

@@ -9,7 +9,7 @@
  */
 namespace FlexPHP\Bundle\PayrollBundle\Domain\Payroll;
 
-use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Employee;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Paysheet;
 use FlexPHP\Bundle\HelperBundle\Domain\Helper\ToArrayTrait;
 use FlexPHP\Bundle\PayrollBundle\Domain\PayrollStatus\PayrollStatus;
 use FlexPHP\Bundle\PayrollBundle\Domain\PayrollType\PayrollType;
@@ -26,7 +26,7 @@ final class Payroll
 
     private $number;
 
-    private $employee;
+    private $paysheet;
 
     private $provider;
 
@@ -58,7 +58,7 @@ final class Payroll
 
     private $updatedBy;
 
-    private $employeeInstance;
+    private $paysheetInstance;
 
     private $providerInstance;
 
@@ -87,9 +87,9 @@ final class Payroll
         return $this->number;
     }
 
-    public function employee(): ?int
+    public function paysheet(): ?int
     {
-        return $this->employee;
+        return $this->paysheet;
     }
 
     public function provider(): ?string
@@ -167,9 +167,9 @@ final class Payroll
         return $this->updatedBy;
     }
 
-    public function employeeInstance(): Employee
+    public function paysheetInstance(): Paysheet
     {
-        return $this->employeeInstance ?: new Employee;
+        return $this->paysheetInstance ?: new Paysheet;
     }
 
     public function providerInstance(): Provider
@@ -217,9 +217,9 @@ final class Payroll
         $this->number = $number;
     }
 
-    public function setEmployee(int $employee): void
+    public function setPaysheet(int $paysheet): void
     {
-        $this->employee = $employee;
+        $this->paysheet = $paysheet;
     }
 
     public function setProvider(string $provider): void
@@ -297,9 +297,9 @@ final class Payroll
         $this->updatedBy = $updatedBy;
     }
 
-    public function setEmployeeInstance(Employee $employee): void
+    public function setPaysheetInstance(Paysheet $paysheet): void
     {
-        $this->employeeInstance = $employee;
+        $this->paysheetInstance = $paysheet;
     }
 
     public function setProviderInstance(Provider $provider): void

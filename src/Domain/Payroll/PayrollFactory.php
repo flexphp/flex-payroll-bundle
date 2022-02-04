@@ -9,7 +9,7 @@
  */
 namespace FlexPHP\Bundle\PayrollBundle\Domain\Payroll;
 
-use FlexPHP\Bundle\PayrollBundle\Domain\Employee\EmployeeFactory;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\PaysheetFactory;
 use FlexPHP\Bundle\HelperBundle\Domain\Helper\FactoryExtendedTrait;
 use FlexPHP\Bundle\PayrollBundle\Domain\PayrollStatus\PayrollStatusFactory;
 use FlexPHP\Bundle\PayrollBundle\Domain\PayrollType\PayrollTypeFactory;
@@ -40,8 +40,8 @@ final class PayrollFactory
             $payroll->setNumber((int)$data['number']);
         }
 
-        if (isset($data['employee'])) {
-            $payroll->setEmployee((int)$data['employee']);
+        if (isset($data['paysheet'])) {
+            $payroll->setPaysheet((int)$data['paysheet']);
         }
 
         if (isset($data['provider'])) {
@@ -104,8 +104,8 @@ final class PayrollFactory
             $payroll->setUpdatedBy((int)$data['updatedBy']);
         }
 
-        if (isset($data['employee.id'])) {
-            $payroll->setEmployeeInstance((new EmployeeFactory())->make($this->getFkEntity('employee.', $data)));
+        if (isset($data['paysheet.id'])) {
+            $payroll->setPaysheetInstance((new PaysheetFactory())->make($this->getFkEntity('paysheet.', $data)));
         }
 
         if (isset($data['provider.id'])) {

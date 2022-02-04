@@ -14,7 +14,7 @@ use Doctrine\DBAL\Types\Types as DB;
 use FlexPHP\Bundle\HelperBundle\Domain\Helper\DbalCriteriaHelper;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Payroll;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\PayrollGateway;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\FindPayrollEmployeeRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\FindPayrollPaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\FindPayrollPayrollRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\FindPayrollPayrollStatusRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\FindPayrollPayrollTypeRequest;
@@ -41,7 +41,7 @@ class MySQLPayrollGateway implements PayrollGateway
             'payroll.Id as id',
             'payroll.Prefix as prefix',
             'payroll.Number as number',
-            'payroll.Employee as employee',
+            'payroll.Paysheet as paysheet',
             'payroll.Provider as provider',
             'payroll.Status as status',
             'payroll.Type as type',
@@ -53,8 +53,8 @@ class MySQLPayrollGateway implements PayrollGateway
             'payroll.XmlPath as xmlPath',
             'payroll.ParentId as parentId',
             'payroll.DownloadedAt as downloadedAt',
-            'employee.id as `employee.id`',
-            'employee.documentNumber as `employee.documentNumber`',
+            'paysheet.id as `paysheet.id`',
+            'paysheet.createdAt as `paysheet.createdAt`',
             'provider.id as `provider.id`',
             'provider.name as `provider.name`',
             'status.id as `status.id`',
@@ -65,7 +65,7 @@ class MySQLPayrollGateway implements PayrollGateway
             'parentId.number as `parentId.number`',
         ]);
         $query->from('`Payrolls`', '`payroll`');
-        $query->join('`payroll`', '`Employees`', '`employee`', 'payroll.Employee = employee.id');
+        $query->join('`payroll`', '`Paysheets`', '`paysheet`', 'payroll.Paysheet = paysheet.id');
         $query->join('`payroll`', '`Providers`', '`provider`', 'payroll.Provider = provider.id');
         $query->join('`payroll`', '`PayrollStatus`', '`status`', 'payroll.Status = status.id');
         $query->join('`payroll`', '`PayrollTypes`', '`type`', 'payroll.Type = type.id');
@@ -93,7 +93,7 @@ class MySQLPayrollGateway implements PayrollGateway
 
         $query->setValue('Prefix', ':prefix');
         $query->setValue('Number', ':number');
-        $query->setValue('Employee', ':employee');
+        $query->setValue('Paysheet', ':paysheet');
         $query->setValue('Provider', ':provider');
         $query->setValue('Status', ':status');
         $query->setValue('Type', ':type');
@@ -111,7 +111,7 @@ class MySQLPayrollGateway implements PayrollGateway
 
         $query->setParameter(':prefix', $payroll->prefix(), DB::STRING);
         $query->setParameter(':number', $payroll->number(), DB::INTEGER);
-        $query->setParameter(':employee', $payroll->employee(), DB::INTEGER);
+        $query->setParameter(':paysheet', $payroll->paysheet(), DB::INTEGER);
         $query->setParameter(':provider', $payroll->provider(), DB::STRING);
         $query->setParameter(':status', $payroll->status(), DB::STRING);
         $query->setParameter(':type', $payroll->type(), DB::STRING);
@@ -140,7 +140,7 @@ class MySQLPayrollGateway implements PayrollGateway
             'payroll.Id as id',
             'payroll.Prefix as prefix',
             'payroll.Number as number',
-            'payroll.Employee as employee',
+            'payroll.Paysheet as paysheet',
             'payroll.Provider as provider',
             'payroll.Status as status',
             'payroll.Type as type',
@@ -156,8 +156,8 @@ class MySQLPayrollGateway implements PayrollGateway
             'payroll.UpdatedAt as updatedAt',
             'payroll.CreatedBy as createdBy',
             'payroll.UpdatedBy as updatedBy',
-            'employee.id as `employee.id`',
-            'employee.documentNumber as `employee.documentNumber`',
+            'paysheet.id as `paysheet.id`',
+            'paysheet.createdAt as `paysheet.createdAt`',
             'provider.id as `provider.id`',
             'provider.name as `provider.name`',
             'status.id as `status.id`',
@@ -172,7 +172,7 @@ class MySQLPayrollGateway implements PayrollGateway
             'updatedBy.name as `updatedBy.name`',
         ]);
         $query->from('`Payrolls`', '`payroll`');
-        $query->join('`payroll`', '`Employees`', '`employee`', 'payroll.Employee = employee.id');
+        $query->join('`payroll`', '`Paysheets`', '`paysheet`', 'payroll.Paysheet = paysheet.id');
         $query->join('`payroll`', '`Providers`', '`provider`', 'payroll.Provider = provider.id');
         $query->join('`payroll`', '`PayrollStatus`', '`status`', 'payroll.Status = status.id');
         $query->join('`payroll`', '`PayrollTypes`', '`type`', 'payroll.Type = type.id');
@@ -193,7 +193,7 @@ class MySQLPayrollGateway implements PayrollGateway
 
         $query->set('Prefix', ':prefix');
         $query->set('Number', ':number');
-        $query->set('Employee', ':employee');
+        $query->set('Paysheet', ':paysheet');
         $query->set('Provider', ':provider');
         $query->set('Status', ':status');
         $query->set('Type', ':type');
@@ -210,7 +210,7 @@ class MySQLPayrollGateway implements PayrollGateway
 
         $query->setParameter(':prefix', $payroll->prefix(), DB::STRING);
         $query->setParameter(':number', $payroll->number(), DB::INTEGER);
-        $query->setParameter(':employee', $payroll->employee(), DB::INTEGER);
+        $query->setParameter(':paysheet', $payroll->paysheet(), DB::INTEGER);
         $query->setParameter(':provider', $payroll->provider(), DB::STRING);
         $query->setParameter(':status', $payroll->status(), DB::STRING);
         $query->setParameter(':type', $payroll->type(), DB::STRING);
@@ -243,18 +243,18 @@ class MySQLPayrollGateway implements PayrollGateway
         $query->execute();
     }
 
-    public function filterEmployees(FindPayrollEmployeeRequest $request, int $page, int $limit): array
+    public function filterPaysheets(FindPayrollPaysheetRequest $request, int $page, int $limit): array
     {
         $query = $this->conn->createQueryBuilder();
 
         $query->select([
-            'employee.id as id',
-            'employee.documentNumber as text',
+            'paysheet.id as id',
+            'paysheet.id as text',
         ]);
-        $query->from('`Employees`', '`employee`');
+        $query->from('`Paysheets`', '`paysheet`');
 
-        $query->where('employee.documentNumber like :employee_documentNumber');
-        $query->setParameter(':employee_documentNumber', "%{$request->term}%");
+        $query->where('paysheet.id like :paysheet_id');
+        $query->setParameter(':paysheet_id', "%{$request->term}%");
 
         $query->setFirstResult($page ? ($page - 1) * $limit : 0);
         $query->setMaxResults($limit);

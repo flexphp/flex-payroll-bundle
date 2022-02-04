@@ -19,7 +19,7 @@ final class UpdatePayrollRequest implements RequestInterface
 
     public $number;
 
-    public $employee;
+    public $paysheet;
 
     public $provider;
 
@@ -50,7 +50,7 @@ final class UpdatePayrollRequest implements RequestInterface
         $this->id = $id;
         $this->prefix = $data['prefix'] ?? null;
         $this->number = $data['number'] ?? null;
-        $this->employee = $data['employee'] ?? null;
+        $this->paysheet = $data['paysheet'] ?? null;
         $this->provider = $data['provider'] ?? null;
         $this->status = $data['status'] ?? null;
         $this->type = $data['type'] ?? null;

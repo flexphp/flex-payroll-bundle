@@ -19,7 +19,7 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreatePrepaysheetReques
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetAlternativeProductRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetEmployeeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetHistoryServiceRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetPayrollStatusRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetPaysheetStatusRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetPayrollTypeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetAgreementRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetWorkerRequest;
@@ -39,7 +39,7 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $this->conn = $conn;
     }
 
-    public function search(array $wheres, array $paysheets, int $page, int $limit, int $offset): array
+    public function search(array $wheres, array $orders, int $page, int $limit, int $offset): array
     {
         $query = $this->conn->createQueryBuilder();
 
@@ -72,7 +72,7 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->join('`paysheet`', '`PayrollTypes`', '`type`', 'paysheet.Type = type.id');
         $query->leftJoin('`paysheet`', '`Employees`', '`employeeId`', 'paysheet.EmployeeId = employeeId.id');
         $query->leftJoin('`paysheet`', '`Agreements`', '`agreementId`', 'paysheet.AgreementId = agreementId.id');
-        $query->leftJoin('`paysheet`', '`PayrollStatus`', '`statusId`', 'paysheet.StatusId = statusId.id');
+        $query->leftJoin('`paysheet`', '`PaysheetStatus`', '`statusId`', 'paysheet.StatusId = statusId.id');
 
         $query->orderBy('paysheet.UpdatedAt', 'DESC');
 
@@ -138,9 +138,6 @@ class MySQLPaysheetGateway implements PaysheetGateway
             'paysheet.Type as type',
             'paysheet.EmployeeId as employeeId',
             'paysheet.AgreementId as agreementId',
-            'paysheet.Kilometers as kilometers',
-            'paysheet.KilometersToChange as kilometersToChange',
-            'paysheet.Discount as discount',
             'paysheet.Subtotal as subtotal',
             'paysheet.Taxes as taxes',
             'paysheet.Total as total',
@@ -156,12 +153,11 @@ class MySQLPaysheetGateway implements PaysheetGateway
             'type.id as `type.id`',
             'type.name as `type.name`',
             'employeeId.id as `employeeId.id`',
-            'employeeId.name as `employeeId.name`',
+            "CONCAT(employeeId.FirstName, ' ', employeeId.SecondName) as `employeeId.name`",
             'employeeId.documentTypeId as `employeeId.documentTypeId`',
             'employeeId.documentNumber as `employeeId.documentNumber`',
-            'employeeId.invoicingAllowed as `employeeId.invoicingAllowed`',
             'agreementId.id as `agreementId.id`',
-            'agreementId.placa as `agreementId.placa`',
+            'agreementId.name as `agreementId.name`',
             'statusId.id as `statusId.id`',
             'statusId.name as `statusId.name`',
             'createdBy.id as `createdBy.id`',
@@ -173,7 +169,7 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->join('`paysheet`', '`PayrollTypes`', '`type`', 'paysheet.Type = type.id');
         $query->leftJoin('`paysheet`', '`Employees`', '`employeeId`', 'paysheet.EmployeeId = employeeId.id');
         $query->leftJoin('`paysheet`', '`Agreements`', '`agreementId`', 'paysheet.AgreementId = agreementId.id');
-        $query->leftJoin('`paysheet`', '`PayrollStatus`', '`statusId`', 'paysheet.StatusId = statusId.id');
+        $query->leftJoin('`paysheet`', '`PaysheetStatus`', '`statusId`', 'paysheet.StatusId = statusId.id');
         $query->leftJoin('`paysheet`', '`Users`', '`createdBy`', 'paysheet.CreatedBy = createdBy.id');
         $query->leftJoin('`paysheet`', '`Users`', '`updatedBy`', 'paysheet.UpdatedBy = updatedBy.id');
         $query->where('paysheet.Id = :id');
@@ -191,9 +187,6 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->set('Type', ':type');
         $query->set('EmployeeId', ':employeeId');
         $query->set('AgreementId', ':agreementId');
-        $query->set('Kilometers', ':kilometers');
-        $query->set('KilometersToChange', ':kilometersToChange');
-        $query->set('Discount', ':discount');
         $query->set('Subtotal', ':subtotal');
         $query->set('Taxes', ':taxes');
         $query->set('Total', ':total');
@@ -208,9 +201,6 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->setParameter(':type', $paysheet->type(), DB::STRING);
         $query->setParameter(':employeeId', $paysheet->employeeId(), DB::INTEGER);
         $query->setParameter(':agreementId', $paysheet->agreementId(), DB::INTEGER);
-        $query->setParameter(':kilometers', $paysheet->kilometers(), DB::INTEGER);
-        $query->setParameter(':kilometersToChange', $paysheet->kilometersToChange(), DB::INTEGER);
-        $query->setParameter(':discount', $paysheet->discount(), DB::STRING);
         $query->setParameter(':subtotal', $paysheet->subtotal(), DB::STRING);
         $query->setParameter(':taxes', $paysheet->taxes(), DB::STRING);
         $query->setParameter(':total', $paysheet->total(), DB::STRING);
@@ -318,8 +308,7 @@ class MySQLPaysheetGateway implements PaysheetGateway
 
     //     $query->select([
     //         'agreement.id as id',
-    //         'agreement.placa as text',
-    //         'agreement.Placa as placa',
+    //         'agreement.name as text',
     //         'agreementType.Id as typeId',
     //         'agreementType.Name as typeName',
     //         'agreementBrand.Id as brandId',
@@ -336,8 +325,7 @@ class MySQLPaysheetGateway implements PaysheetGateway
     //     $query->leftjoin('`agreement`', '`AgreementBrands`', '`agreementBrand`', 'agreement.Brand = agreementBrand.Id');
     //     $query->leftJoin('`agreement`', '`AgreementSeries`', '`agreementSerie`', 'agreement.Serie = agreementSerie.Id');
 
-    //     $query->where('agreement.placa like :agreement_placa');
-    //     $query->setParameter(':agreement_placa', "{$request->term}%");
+    //     $query->setParameter(':agreement_name', "{$request->term}%");
     //     $query->andWhere('agreement.IsActive = :agreement_isActive');
     //     $query->setParameter(':agreement_isActive', 1);
 
@@ -347,7 +335,7 @@ class MySQLPaysheetGateway implements PaysheetGateway
     //     return $query->execute()->fetchAll();
     // }
 
-    // public function filterPayrollStatus(FindPaysheetPayrollStatusRequest $request, int $page, int $limit): array
+    // public function filterPaysheetStatus(FindPaysheetPaysheetStatusRequest $request, int $page, int $limit): array
     // {
     //     $query = $this->conn->createQueryBuilder();
 
@@ -355,7 +343,7 @@ class MySQLPaysheetGateway implements PaysheetGateway
     //         'paysheetStatus.id as id',
     //         'paysheetStatus.name as text',
     //     ]);
-    //     $query->from('`PayrollStatus`', '`paysheetStatus`');
+    //     $query->from('`PaysheetStatus`', '`paysheetStatus`');
 
     //     $query->where('paysheetStatus.name like :paysheetStatus_name');
     //     $query->setParameter(':paysheetStatus_name', "%{$request->term}%");
@@ -376,8 +364,6 @@ class MySQLPaysheetGateway implements PaysheetGateway
     //         'o.EmployeeId as employeeId',
     //         'c.DocumentTypeId as documentTypeId',
     //         'c.DocumentNumber as documentNumber',
-    //         'o.Kilometers as kilometers',
-    //         'o.KilometersToChange as kilometersToChange',
     //         'o.CreatedAt as createdAt',
     //     ]);
 
@@ -642,8 +628,6 @@ class MySQLPaysheetGateway implements PaysheetGateway
     //         'vs.Name as agreementSerie',
     //         'v.Placa as agreementPlaca',
     //         'v.OilQuantity as agreementOilQuantity',
-    //         'o.Kilometers as kilometers',
-    //         'o.KilometersToChange as kilometersToChange',
     //         'u.Name as userName',
     //         'o.Subtotal as paysheetSubtotal',
     //         'o.Taxes as paysheetTaxes',
@@ -655,7 +639,7 @@ class MySQLPaysheetGateway implements PaysheetGateway
 
     //     $query->from('`Paysheets`', '`o`');
     //     $query->Join('`o`', '`Users`', '`u`', 'o.CreatedBy  = u.Id');
-    //     $query->Join('`o`', '`PayrollStatus`', '`os`', 'o.StatusId  = os.Id');
+    //     $query->Join('`o`', '`PaysheetStatus`', '`os`', 'o.StatusId  = os.Id');
     //     $query->leftJoin('`o`', '`Agreements`', '`v`', 'o.AgreementId  = v.Id');
     //     $query->leftJoin('`v`', '`AgreementBrands`', '`vb`', 'v.Brand  = vb.Id');
     //     $query->leftJoin('`v`', '`AgreementSeries`', '`vs`', 'v.Serie  = vs.Id');

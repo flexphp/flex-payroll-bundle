@@ -7,26 +7,20 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace FlexPHP\Bundle\PayrollBundle\Domain\PayrollStatus;
+namespace FlexPHP\Bundle\PayrollBundle\Domain\PaysheetStatus;
 
 use FlexPHP\Bundle\HelperBundle\Domain\Helper\ToArrayTrait;
 use FlexPHP\Bundle\UserBundle\Domain\User\User;
 
-final class PayrollStatus
+final class PaysheetStatus
 {
     use ToArrayTrait;
 
-    public const PENDING = 'PD';
+    public const PAYED = 'P';
 
-    public const PROCESSING = 'PR';
+    public const PENDING = 'PP';
 
-    public const REJECTED = 'RJ';
-
-    public const APPROVED = 'OK';
-
-    public const AVAILABLE = 'AV';
-
-    public const VOID = 'VD';
+    public const DRAFT = 'D';
 
     private $id;
 

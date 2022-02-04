@@ -53,6 +53,7 @@
             <input type="hidden" name="_token" value="{{ csrf_token(tokenForm) }}">
             <input type="hidden" name="_method" value="{{ methodForm }}">
             <input type="hidden" name="paysheet[id]" value="{{ paysheet.id }}">
+            <input type="hidden" name="paysheet[type]" value="{{ paysheet.type }}">
             <input type="hidden" name="paysheet[isDraft]" value="{{ paysheet.isDraft ? '1' : '0' }}">
 
             <div class="card">

@@ -11,7 +11,7 @@ namespace FlexPHP\Bundle\PayrollBundle\Domain\Payroll;
 
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\CreatePayrollRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\DeletePayrollRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\FindPayrollEmployeeRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\FindPayrollPaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\FindPayrollPayrollRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\FindPayrollPayrollStatusRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\FindPayrollPayrollTypeRequest;
@@ -77,9 +77,9 @@ final class PayrollRepository
         return $payroll;
     }
 
-    public function findEmployeesBy(FindPayrollEmployeeRequest $request): array
+    public function findPaysheetsBy(FindPayrollPaysheetRequest $request): array
     {
-        return $this->gateway->filterEmployees($request, $request->_page, $request->_limit);
+        return $this->gateway->filterPaysheets($request, $request->_page, $request->_limit);
     }
 
     public function findProvidersBy(FindPayrollProviderRequest $request): array

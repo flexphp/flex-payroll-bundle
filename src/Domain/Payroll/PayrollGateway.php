@@ -9,7 +9,7 @@
  */
 namespace FlexPHP\Bundle\PayrollBundle\Domain\Payroll;
 
-use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\FindPayrollEmployeeRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\FindPayrollPaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\FindPayrollPayrollRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\FindPayrollPayrollStatusRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\FindPayrollPayrollTypeRequest;
@@ -27,7 +27,7 @@ interface PayrollGateway
 
     public function pop(Payroll $payroll): void;
 
-    public function filterEmployees(FindPayrollEmployeeRequest $request, int $page, int $limit): array;
+    public function filterPaysheets(FindPayrollPaysheetRequest $request, int $page, int $limit): array;
 
     public function filterProviders(FindPayrollProviderRequest $request, int $page, int $limit): array;
 

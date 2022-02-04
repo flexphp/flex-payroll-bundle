@@ -11,7 +11,7 @@ namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet;
 
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\EmployeeFactory;
 use FlexPHP\Bundle\HelperBundle\Domain\Helper\FactoryExtendedTrait;
-use FlexPHP\Bundle\PayrollBundle\Domain\PayrollStatus\PayrollStatusFactory;
+use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetStatus\PaysheetStatusFactory;
 use FlexPHP\Bundle\PayrollBundle\Domain\PayrollType\PayrollTypeFactory;
 use FlexPHP\Bundle\UserBundle\Domain\User\UserFactory;
 use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\AgreementFactory;
@@ -110,7 +110,7 @@ final class PaysheetFactory
         }
 
         if (isset($data['statusId.id'])) {
-            $paysheet->setStatusIdInstance((new PayrollStatusFactory())->make($this->getFkEntity('statusId.', $data)));
+            $paysheet->setStatusIdInstance((new PaysheetStatusFactory())->make($this->getFkEntity('statusId.', $data)));
         }
 
         if (isset($data['createdBy.id'])) {

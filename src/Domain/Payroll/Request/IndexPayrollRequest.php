@@ -22,7 +22,7 @@ final class IndexPayrollRequest implements RequestInterface
 
     public $number;
 
-    public $employee;
+    public $paysheet;
 
     public $provider;
 
@@ -65,7 +65,7 @@ final class IndexPayrollRequest implements RequestInterface
         $this->id = $data['id'] ?? null;
         $this->prefix = $data['prefix'] ?? null;
         $this->number = $data['number'] ?? null;
-        $this->employee = $data['employee'] ?? null;
+        $this->paysheet = $data['paysheet'] ?? null;
         $this->provider = $data['provider'] ?? null;
         $this->status = $data['status'] ?? null;
         $this->type = $data['type'] ?? null;

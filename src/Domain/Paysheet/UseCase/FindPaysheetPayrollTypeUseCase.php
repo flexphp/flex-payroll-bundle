@@ -15,17 +15,17 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Response\FindPaysheetPayrollTyp
 
 final class FindPaysheetPayrollTypeUseCase
 {
-    private PaysheetRepository $orderRepository;
+    private PaysheetRepository $paysheetRepository;
 
-    public function __construct(PaysheetRepository $orderRepository)
+    public function __construct(PaysheetRepository $paysheetRepository)
     {
-        $this->orderRepository = $orderRepository;
+        $this->paysheetRepository = $paysheetRepository;
     }
 
     public function execute(FindPaysheetPayrollTypeRequest $request): FindPaysheetPayrollTypeResponse
     {
-        $orderTypes = $this->orderRepository->findPayrollTypesBy($request);
+        $paysheetTypes = $this->paysheetRepository->findPayrollTypesBy($request);
 
-        return new FindPaysheetPayrollTypeResponse($orderTypes);
+        return new FindPaysheetPayrollTypeResponse($paysheetTypes);
     }
 }

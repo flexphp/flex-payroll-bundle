@@ -15,17 +15,17 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Response\ReadPaysheetResponse;
 
 final class ReadPaysheetUseCase
 {
-    private PaysheetRepository $orderRepository;
+    private PaysheetRepository $paysheetRepository;
 
-    public function __construct(PaysheetRepository $orderRepository)
+    public function __construct(PaysheetRepository $paysheetRepository)
     {
-        $this->orderRepository = $orderRepository;
+        $this->paysheetRepository = $paysheetRepository;
     }
 
     public function execute(ReadPaysheetRequest $request): ReadPaysheetResponse
     {
-        $order = $this->orderRepository->getById($request);
+        $paysheet = $this->paysheetRepository->getById($request);
 
-        return new ReadPaysheetResponse($order);
+        return new ReadPaysheetResponse($paysheet);
     }
 }

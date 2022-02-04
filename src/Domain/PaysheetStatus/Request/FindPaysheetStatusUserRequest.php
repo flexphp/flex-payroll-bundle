@@ -7,11 +7,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request;
+namespace FlexPHP\Bundle\PayrollBundle\Domain\PaysheetStatus\Request;
 
 use FlexPHP\Messages\RequestInterface;
 
-final class FindPayrollEmployeeRequest implements RequestInterface
+final class FindPaysheetStatusUserRequest implements RequestInterface
 {
     public $term;
 

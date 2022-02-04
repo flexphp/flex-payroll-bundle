@@ -24,31 +24,28 @@ final class UpdatePaysheetUseCase extends AbstractPaysheetUseCase
     public function execute($request)
     {
         if (!empty($request->id)) {
-            $order = $this->orderRepository->getById(new ReadPaysheetRequest($request->id));
+            $paysheet = $this->paysheetRepository->getById(new ReadPaysheetRequest($request->id));
         }
 
-        if (empty($order) || !$order->id()) {
+        if (empty($paysheet) || !$paysheet->id()) {
             throw new Exception(\sprintf('Paysheet not exist [%d]', $request->id ?? 0), 404);
         }
 
-        if ($request->isDraft && !$order->isDraft()) {
+        if ($request->isDraft && !$paysheet->isDraft()) {
             throw new Exception('Paysheet with payments cannot change to draft');
         }
 
-        if (!empty($request->vehicle)) {
-            $request->vehicleId = $this->getVehicleId($request);
+        if (!empty($request->agreement)) {
+            $request->agreementId = $this->getAgreementId($request);
         }
 
-        if (!empty($request->customer)) {
-            $request->customerId = $this->getCustomerId($request);
+        if (!empty($request->employee)) {
+            $request->employeeId = $this->getEmployeeId($request);
         }
 
-        $orderDetails = $this->getPaysheetDetails($request);
-        $request->subtotal = $this->getSubTotal($orderDetails);
-        $request->taxes = $this->getTotalTaxes($orderDetails);
-        $request->kilometers = $this->getKilometers($request);
-        $request->kilometersToChange = $this->getKilometersToChange($request);
-        $request->discount = $this->getDiscount($request);
+        $paysheetDetails = $this->getPaysheetDetails($request);
+        $request->subtotal = $this->getSubTotal($paysheetDetails);
+        $request->taxes = $this->getTotalTaxes($paysheetDetails);
         $request->total = $this->getTotal($request);
 
         $payments = $this->getPayments($request);
@@ -56,16 +53,16 @@ final class UpdatePaysheetUseCase extends AbstractPaysheetUseCase
         $request->paidAt = $this->getPaidAt($request);
         $request->statusId = $this->getStatusId($request);
 
-        $request->vehicle = null;
-        $request->customer = null;
-        $request->orderDetail = null;
+        $request->agreement = null;
+        $request->employee = null;
+        $request->paysheetDetail = null;
         $request->payment = null;
 
-        $order = $this->orderRepository->change($request);
+        $paysheet = $this->paysheetRepository->change($request);
 
-        $this->savePaysheetDetails($orderDetails, $order->id(), $request->updatedBy);
-        $this->savePayments($payments, $order->id(), $request->updatedBy);
+        $this->savePaysheetDetails($paysheetDetails, $paysheet->id(), $request->updatedBy);
+        $this->savePayments($payments, $paysheet->id(), $request->updatedBy);
 
-        return new UpdatePaysheetResponse($order);
+        return new UpdatePaysheetResponse($paysheet);
     }
 }

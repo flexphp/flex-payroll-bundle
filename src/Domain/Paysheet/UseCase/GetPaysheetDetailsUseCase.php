@@ -16,16 +16,16 @@ use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetDetail\PaysheetDetailRepository;
 use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetDetail\Request\IndexPaysheetDetailRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetDetail\UseCase\IndexPaysheetDetailUseCase;
 
-final class GetPaysheetPayrollDetailsUseCase
+final class GetPaysheetDetailsUseCase
 {
-    private PaysheetRepository $orderRepository;
+    private PaysheetRepository $paysheetRepository;
 
-    private PaysheetDetailRepository $orderDetailRepository;
+    private PaysheetDetailRepository $paysheetDetailRepository;
 
-    public function __construct(PaysheetRepository $orderRepository, PaysheetDetailRepository $orderDetailRepository)
+    public function __construct(PaysheetRepository $paysheetRepository, PaysheetDetailRepository $paysheetDetailRepository)
     {
-        $this->orderRepository = $orderRepository;
-        $this->orderDetailRepository = $orderDetailRepository;
+        $this->paysheetRepository = $paysheetRepository;
+        $this->paysheetDetailRepository = $paysheetDetailRepository;
     }
 
     /**
@@ -33,26 +33,26 @@ final class GetPaysheetPayrollDetailsUseCase
      */
     public function execute(ReadPaysheetRequest $request): array
     {
-        $useCasePaysheet = new ReadPaysheetUseCase($this->orderRepository);
+        $useCasePaysheet = new ReadPaysheetUseCase($this->paysheetRepository);
 
         $responsePaysheet = $useCasePaysheet->execute(new ReadPaysheetRequest($request->id));
 
-        $order = $responsePaysheet->order;
+        $paysheet = $responsePaysheet->paysheet;
 
-        $orderDetails = [];
+        $paysheetDetails = [];
 
-        if ($order->id()) {
+        if ($paysheet->id()) {
             $requestPaysheetDetails = new IndexPaysheetDetailRequest([
-                'orderId' => $order->id(),
+                'paysheetId' => $paysheet->id(),
             ], 1);
 
-            $useCasePaysheetDetails = new IndexPaysheetDetailUseCase($this->orderDetailRepository);
+            $useCasePaysheetDetails = new IndexPaysheetDetailUseCase($this->paysheetDetailRepository);
 
             $responsePaysheetDetails = $useCasePaysheetDetails->execute($requestPaysheetDetails);
 
-            $orderDetails = $responsePaysheetDetails->orderDetails;
+            $paysheetDetails = $responsePaysheetDetails->paysheetDetails;
         }
 
-        return $orderDetails;
+        return $paysheetDetails;
     }
 }

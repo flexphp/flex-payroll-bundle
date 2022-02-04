@@ -11,8 +11,8 @@ namespace FlexPHP\Bundle\PayrollBundle\Domain\Payroll;
 
 use App\Form\Type\DatetimepickerType;
 use App\Form\Type\Select2Type;
-use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\ReadEmployeeRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Employee\UseCase\ReadEmployeeUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\ReadPaysheetRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\ReadPaysheetUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\PayrollStatus\Request\ReadPayrollStatusRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\PayrollStatus\UseCase\ReadPayrollStatusUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\PayrollType\Request\ReadPayrollTypeRequest;
@@ -32,7 +32,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class PayrollFormType extends AbstractType
 {
-    private ReadEmployeeUseCase $readEmployeeUseCase;
+    private ReadPaysheetUseCase $readPaysheetUseCase;
 
     private ReadProviderUseCase $readProviderUseCase;
 
@@ -45,14 +45,14 @@ final class PayrollFormType extends AbstractType
     private UrlGeneratorInterface $router;
 
     public function __construct(
-        ReadEmployeeUseCase $readEmployeeUseCase,
+        ReadPaysheetUseCase $readPaysheetUseCase,
         ReadProviderUseCase $readProviderUseCase,
         ReadPayrollStatusUseCase $readPayrollStatusUseCase,
         ReadPayrollTypeUseCase $readPayrollTypeUseCase,
         ReadPayrollUseCase $readPayrollUseCase,
         UrlGeneratorInterface $router
     ) {
-        $this->readEmployeeUseCase = $readEmployeeUseCase;
+        $this->readPaysheetUseCase = $readPaysheetUseCase;
         $this->readProviderUseCase = $readProviderUseCase;
         $this->readPayrollStatusUseCase = $readPayrollStatusUseCase;
         $this->readPayrollTypeUseCase = $readPayrollTypeUseCase;
@@ -62,38 +62,38 @@ final class PayrollFormType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $employeeModifier = function (FormInterface $form, ?int $value): void {
+        $paysheetModifier = function (FormInterface $form, ?int $value): void {
             $choices = null;
 
             if (!empty($value)) {
-                $response = $this->readEmployeeUseCase->execute(new ReadEmployeeRequest($value));
+                $response = $this->readPaysheetUseCase->execute(new ReadPaysheetRequest($value));
 
-                if ($response->employee->id()) {
-                    $choices = [$response->employee->documentNumber() => $value];
+                if ($response->paysheet->id()) {
+                    $choices = [$response->paysheet->documentNumber() => $value];
                 }
             }
 
-            $form->add('employee', Select2Type::class, [
-                'label' => 'label.employee',
+            $form->add('paysheet', Select2Type::class, [
+                'label' => 'label.paysheet',
                 'required' => true,
                 'attr' => [
-                    'data-autocomplete-url' => $this->router->generate('flexphp.payroll.payrolls.find.employees'),
+                    'data-autocomplete-url' => $this->router->generate('flexphp.payroll.payrolls.find.paysheets'),
                 ],
                 'choices' => $choices,
                 'data' => $value,
             ]);
         };
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($employeeModifier) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($paysheetModifier) {
             if (!$event->getData()) {
                 return null;
             }
 
-            $employeeModifier($event->getForm(), $event->getData()->employee());
+            $paysheetModifier($event->getForm(), $event->getData()->paysheet());
         });
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($employeeModifier): void {
-            $employeeModifier($event->getForm(), (int)$event->getData()['employee'] ?: null);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($paysheetModifier): void {
+            $paysheetModifier($event->getForm(), (int)$event->getData()['paysheet'] ?: null);
         });
 
         $providerModifier = function (FormInterface $form, ?string $value): void {
@@ -240,11 +240,11 @@ final class PayrollFormType extends AbstractType
             'label' => 'label.number',
             'required' => true,
         ]);
-        $builder->add('employee', Select2Type::class, [
-            'label' => 'label.employee',
+        $builder->add('paysheet', Select2Type::class, [
+            'label' => 'label.paysheet',
             'required' => true,
             'attr' => [
-                'data-autocomplete-url' => $this->router->generate('flexphp.payroll.payrolls.find.employees'),
+                'data-autocomplete-url' => $this->router->generate('flexphp.payroll.payrolls.find.paysheets'),
             ],
         ]);
         $builder->add('provider', Select2Type::class, [

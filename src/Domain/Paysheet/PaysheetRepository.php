@@ -24,18 +24,18 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\GetLastPaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\IndexPaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\ReadPaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\UpdatePaysheetRequest;
-use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\BillGateway;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\PayrollGateway;
 
 final class PaysheetRepository
 {
     private PaysheetGateway $gateway;
 
-    private BillGateway $billGateway;
+    private PayrollGateway $payrollGateway;
 
-    public function __construct(PaysheetGateway $gateway, BillGateway $billGateway)
+    public function __construct(PaysheetGateway $gateway, PayrollGateway $payrollGateway)
     {
         $this->gateway = $gateway;
-        $this->billGateway = $billGateway;
+        $this->payrollGateway = $payrollGateway;
     }
 
     /**
@@ -45,7 +45,7 @@ final class PaysheetRepository
     {
         return \array_map(function (array $paysheet) use ($request) {
             $paysheet = (new PaysheetFactory())->make($paysheet);
-            $paysheet->withLastBill($this->billGateway, $request->_offset);
+            $paysheet->withLastPayroll($this->payrollGateway, $request->_offset);
 
             return $paysheet;
         }, $this->gateway->search((array)$request, [], $request->_page, $request->_limit, $request->_offset));
@@ -66,7 +66,7 @@ final class PaysheetRepository
         $data = $this->gateway->get($factory->make($request));
 
         $paysheet = $factory->make($data);
-        $paysheet->withLastBill($this->billGateway, 0);
+        $paysheet->withLastPayroll($this->payrollGateway, 0);
 
         return $paysheet;
     }
@@ -142,8 +142,8 @@ final class PaysheetRepository
         return $this->gateway->getEPayrollData($request);
     }
 
-    public function billGateway(): BillGateway
+    public function payrollGateway(): PayrollGateway
     {
-        return $this->billGateway;
+        return $this->payrollGateway;
     }
 }

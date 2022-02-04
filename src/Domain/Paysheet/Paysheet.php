@@ -9,15 +9,14 @@
  */
 namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet;
 
-use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Employee;
-use FlexPHP\Bundle\PayrollBundle\Domain\PayrollStatus\PayrollStatus;
-use FlexPHP\Bundle\PayrollBundle\Domain\PayrollType\PayrollType;
-use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Agreement;
 use FlexPHP\Bundle\HelperBundle\Domain\Helper\ToArrayTrait;
-use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\Bill;
-use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\BillFactory;
-use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\BillGateway;
-use FlexPHP\Bundle\InvoiceBundle\Domain\BillType\BillType;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Agreement;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Employee;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Payroll;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\PayrollFactory;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\PayrollGateway;
+use FlexPHP\Bundle\PayrollBundle\Domain\PayrollType\PayrollType;
+use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetStatus\PaysheetStatus;
 use FlexPHP\Bundle\UserBundle\Domain\User\User;
 
 final class Paysheet
@@ -70,7 +69,7 @@ final class Paysheet
 
     private $updatedByInstance;
 
-    private ?Bill $paysheetInstance = null;
+    private ?Payroll $payrollInstance = null;
 
     public function id(): ?int
     {
@@ -172,7 +171,7 @@ final class Paysheet
         return $this->agreementIdInstance;
     }
 
-    public function statusIdInstance(): ?PayrollStatus
+    public function statusIdInstance(): ?PaysheetStatus
     {
         return $this->statusIdInstance;
     }
@@ -242,7 +241,7 @@ final class Paysheet
         $this->statusId = $statusId;
     }
 
-    public function setBillNotes(?string $paysheetNotes): void
+    public function setPaysheetNotes(?string $paysheetNotes): void
     {
         $this->paysheetNotes = $paysheetNotes;
     }
@@ -272,9 +271,9 @@ final class Paysheet
         $this->updatedBy = $updatedBy;
     }
 
-    public function setTypeInstance(PayrollType $paysheetType): void
+    public function setTypeInstance(PayrollType $payrollType): void
     {
-        $this->typeInstance = $paysheetType;
+        $this->typeInstance = $payrollType;
     }
 
     public function setEmployeeIdInstance(?Employee $employee): void
@@ -287,7 +286,7 @@ final class Paysheet
         $this->agreementIdInstance = $agreement;
     }
 
-    public function setStatusIdInstance(?PayrollStatus $paysheetStatus): void
+    public function setStatusIdInstance(?PaysheetStatus $paysheetStatus): void
     {
         $this->statusIdInstance = $paysheetStatus;
     }
@@ -302,25 +301,25 @@ final class Paysheet
         $this->updatedByInstance = $user;
     }
 
-    public function paysheetInstance(): ?Bill
+    public function payrollInstance(): ?Payroll
     {
-        return $this->paysheetInstance;
+        return $this->payrollInstance;
     }
 
-    public function setBillInstance(?Bill $paysheetInstance): void
+    public function setPayrollInstance(?Payroll $payrollInstance): void
     {
-        $this->paysheetInstance = $paysheetInstance;
+        $this->payrollInstance = $payrollInstance;
     }
 
-    public function withLastBill(BillGateway $paysheetGateway, int $offset): self
+    public function withLastPayroll(PayrollGateway $payrollGateway, int $offset): self
     {
-        if ($this->id() && !$this->paysheetInstance) {
-            $paysheets = $paysheetGateway->search([
-                'paysheetId' => $this->id(),
-                'type' => BillType::INVOICE,
+        if ($this->id() && !$this->payrollInstance) {
+            $payrolls = $payrollGateway->search([
+                'paysheet' => $this->id(),
+                'type' => PayrollType::NOVEL,
             ], [], 1, 1, $offset);
 
-            $this->setBillInstance((\count($paysheets) > 0 ? (new BillFactory)->make($paysheets[0]) : null));
+            $this->setPayrollInstance((\count($payrolls) > 0 ? (new PayrollFactory)->make($payrolls[0]) : null));
         }
 
         return $this;
@@ -328,16 +327,16 @@ final class Paysheet
 
     public function isPayed(): bool
     {
-        return $this->statusId() === PayrollStatus::PAYED;
+        return $this->statusId() === PaysheetStatus::PAYED;
     }
 
     public function isPending(): bool
     {
-        return $this->statusId() === PayrollStatus::PENDING;
+        return $this->statusId() === PaysheetStatus::PENDING;
     }
 
     public function isDraft(): bool
     {
-        return $this->statusId() === PayrollStatus::DRAFT;
+        return $this->statusId() === PaysheetStatus::DRAFT;
     }
 }
