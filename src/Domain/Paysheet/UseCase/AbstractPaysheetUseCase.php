@@ -144,8 +144,6 @@ abstract class AbstractPaysheetUseCase
 
     protected function updateAgreement(int $id, CreatePaysheetRequest $request): Agreement
     {
-        $request->agreement['isActive'] = true;
-
         $useCase = new UpdateAgreementUseCase($this->agreementRepository);
 
         return ($useCase->execute(new UpdateAgreementRequest($id, $request->agreement, $request->createdBy, true)))->agreement;
