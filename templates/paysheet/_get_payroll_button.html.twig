@@ -1,0 +1,11 @@
+{% if (is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYROLL_CREATE')) and paysheet.total > 0 and not paysheet.isDraft and paysheet.employeeIdInstance %}
+{{ include('form/_action_confirmation.html.twig', {message: '__payroll.request'|trans([], 'paysheet')}) }}
+{% set _confirmation = paysheet.payrollInstance and paysheet.payrollInstance.downloadedAt ? '' : 'data-confirmation="true"' %}
+{% set _style = style|default('') %}
+    <form class="d-inline" id="get-payroll-{{ paysheet.id }}" name="get-payroll-{{ paysheet.id }}" method="get" action="{{ path('paysheets.einvoice', {id: paysheet.id}) }}" {{ _confirmation }}>
+        <button type="submit" class="btn {{ _style }} btn-outline-success" tabindex="-1" title="{{ (not _style) ? '' : '__payroll.einvoice'|trans([], 'paysheet') }}">
+            <i class="fa fa-file-invoice-dollar" aria-hidden="true"></i>
+            <span class="btn-text">{{ (not _style) ? '__payroll.einvoice'|trans([], 'paysheet') }}</span>
+        </button>
+    </form>
+{% endif %}

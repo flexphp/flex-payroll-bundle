@@ -60,8 +60,8 @@ final class UpdatePaysheetUseCase extends AbstractPaysheetUseCase
 
         $paysheet = $this->paysheetRepository->change($request);
 
-        $this->savePaysheetDetails($paysheetDetails, $paysheet->id(), $request->updatedBy);
-        $this->savePayments($payments, $paysheet->id(), $request->updatedBy);
+        // $this->savePaysheetDetails($paysheetDetails, $paysheet->id(), $request->updatedBy);
+        // $this->savePayments($payments, $paysheet->id(), $request->updatedBy);
 
         return new UpdatePaysheetResponse($paysheet);
     }

@@ -7,10 +7,10 @@ use FlexPHP\Messages\ResponseInterface;
 
 final class DeletePaysheetResponse implements ResponseInterface
 {
-    public $order;
+    public $paysheet;
 
-    public function __construct(Paysheet $order)
+    public function __construct(Paysheet $paysheet)
     {
-        $this->order = $order;
+        $this->paysheet = $paysheet;
     }
 }

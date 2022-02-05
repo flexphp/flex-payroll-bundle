@@ -11,7 +11,7 @@ namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase;
 
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\PaysheetRepository;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetPayrollStatusRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Response\FindPaysheetPayrollStatusResponse;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Response\FindPaysheetPaysheetStatusResponse;
 
 final class FindPaysheetPayrollStatusUseCase
 {
@@ -22,10 +22,10 @@ final class FindPaysheetPayrollStatusUseCase
         $this->orderRepository = $orderRepository;
     }
 
-    public function execute(FindPaysheetPayrollStatusRequest $request): FindPaysheetPayrollStatusResponse
+    public function execute(FindPaysheetPayrollStatusRequest $request): FindPaysheetPaysheetStatusResponse
     {
         $orderStatus = $this->orderRepository->findPayrollStatusBy($request);
 
-        return new FindPaysheetPayrollStatusResponse($orderStatus);
+        return new FindPaysheetPaysheetStatusResponse($orderStatus);
     }
 }

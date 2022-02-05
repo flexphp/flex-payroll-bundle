@@ -1,0 +1,7 @@
+{% if paysheet.total > 0 %}
+{% set _style = style|default('') %}
+    <a href="{{ path('flexphp.payroll.paysheets.prepaysheet', {id: paysheet.id}) }}" class="btn {{ _style }} btn-outline-primary" title="{{ (not _style) ? '' : '__payroll.prepaysheet'|trans([], 'paysheet') }}">
+        <i class="fa fa-file-invoice" aria-hidden="true"></i>
+        <span class="btn-text">{{ (not _style) ? '__payroll.prepaysheet'|trans([], 'paysheet') }}</span>
+    </a>
+{% endif %}

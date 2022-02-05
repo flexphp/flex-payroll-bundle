@@ -9,9 +9,10 @@
  */
 namespace FlexPHP\Bundle\PayrollBundle\Controller;
 
+use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Request\IndexPaymentRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payment\UseCase\IndexPaymentUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Paysheet;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\PaysheetFilterFormType;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreateEPayrollNDRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreateEPayrollRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreatePaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreatePrepaysheetRequest;
@@ -26,7 +27,6 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\GetLastPaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\IndexPaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\ReadPaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\UpdatePaysheetRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\CreateEPayrollNDUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\CreateEPayrollUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\CreatePaysheetUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\CreatePrepaysheetUseCase;
@@ -41,9 +41,6 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\GetLastPaysheetUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\IndexPaysheetUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\ReadPaysheetUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\UpdatePaysheetUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\PayrollType\PayrollType;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Request\IndexPaymentRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payment\UseCase\IndexPaymentUseCase;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -51,7 +48,6 @@ use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class PaysheetController extends AbstractController
@@ -107,30 +103,30 @@ final class PaysheetController extends AbstractController
         return $this->redirectToRoute('flexphp.payroll.paysheets.read', ['id' => $response->paysheet->id()], 201);
     }
 
-//     /**
-//      * @Cache(smaxage="3600")
-//      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_READ')", statusCode=401)
-//      */
-//     public function read(ReadPaysheetUseCase $useCase, IndexPaymentUseCase $indexPaymentUseCase, int $id): Response
-//     {
-//         $request = new ReadPaysheetRequest($id);
+    /**
+     * @Cache(smaxage="3600")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_READ')", statusCode=401)
+     */
+    public function read(ReadPaysheetUseCase $useCase, int $id): Response
+    {
+        $request = new ReadPaysheetRequest($id);
 
-//         $response = $useCase->execute($request);
+        $response = $useCase->execute($request);
 
-//         if (!$response->paysheet->id()) {
-//             throw $this->createNotFoundException();
-//         }
+        if (!$response->paysheet->id()) {
+            throw $this->createNotFoundException();
+        }
 
-//         $paysheet = $response->paysheet;
+        $paysheet = $response->paysheet;
 
-//         $request = new IndexPaymentRequest(['paysheetId' => $paysheet->id()], $this->getUser()->id());
+        // $request = new IndexPaymentRequest(['paysheetId' => $paysheet->id()], $this->getUser()->id());
 
-//         $response = $indexPaymentUseCase->execute($request);
+        // $response = $indexPaymentUseCase->execute($request);
 
-//         $payments = $response->payments;
+        // $payments = $response->payments;
 
-//         return $this->render('@FlexPHPPayroll/paysheet/show.html.twig', \compact('paysheet', 'payments'));
-//     }
+        return $this->render('@FlexPHPPayroll/paysheet/show.html.twig', \compact('paysheet'));
+    }
 
     /**
      * @Cache(smaxage="3600")
@@ -151,23 +147,23 @@ final class PaysheetController extends AbstractController
         ]);
     }
 
-//     /**
-//      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_UPDATE')", statusCode=401)
-//      */
-//     public function update(Request $request, UpdatePaysheetUseCase $useCase, TranslatorInterface $trans, int $id): Response
-//     {
-//         if (!$this->isCsrfTokenValid('edit.paysheet', $request->request->get('_token'))) {
-//             throw $this->createAccessDeniedException();
-//         }
+    /**
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_UPDATE')", statusCode=401)
+     */
+    public function update(Request $request, UpdatePaysheetUseCase $useCase, TranslatorInterface $trans, int $id): Response
+    {
+        if (!$this->isCsrfTokenValid('edit.paysheet', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException();
+        }
 
-//         $request = new UpdatePaysheetRequest($id, $request->request->all(), $this->getUser()->id(), $this->getUser()->timezone());
+        $request = new UpdatePaysheetRequest($id, $request->request->all(), $this->getUser()->id(), $this->getUser()->timezone());
 
-//         $response = $useCase->execute($request);
+        $response = $useCase->execute($request);
 
-//         $this->addFlash('success', $trans->trans('message.updated', [], 'paysheet'));
+        $this->addFlash('success', $trans->trans('message.updated', [], 'paysheet'));
 
-//         return $this->redirectToRoute('paysheets.read', ['id' => $response->paysheet->id()]);
-//     }
+        return $this->redirectToRoute('flexphp.payroll.paysheets.read', ['id' => $response->paysheet->id()]);
+    }
 
 //     /**
 //      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_DELETE')", statusCode=401)

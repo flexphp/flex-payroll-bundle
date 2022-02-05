@@ -6,10 +6,10 @@ use FlexPHP\Messages\ResponseInterface;
 
 final class GetLastPaysheetResponse implements ResponseInterface
 {
-    public $order;
+    public $paysheet;
 
-    public function __construct(array $order)
+    public function __construct(array $paysheet)
     {
-        $this->order = $order;
+        $this->paysheet = $paysheet;
     }
 }

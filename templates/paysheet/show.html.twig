@@ -1,0 +1,233 @@
+{% trans_default_domain 'paysheet' %}
+{% extends 'form/layout.html.twig' %}
+
+{% block title %}{% trans %}title.show{% endtrans %}{% endblock %}
+
+{% block main %}
+    <div class="card">
+        <div class="card-header d-flex">
+            <h3 class="card-header-title">
+                {% trans %}entity{% endtrans %}: {{ paysheet.id }}
+            </h3>
+            <div class="toolbar ml-auto">
+                <a href="{{ path('flexphp.payroll.paysheets.new') }}" class="btn btn-primary">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    <span class="btn-text">{% trans %}title.new{% endtrans %}</span>
+                </a>
+
+                {{ include('@FlexPHPPayroll/paysheet/_get_prepaysheet_button.html.twig', {paysheet: paysheet}, with_context = false) }}
+
+                {{ include('@FlexPHPPayroll/paysheet/_get_payroll_button.html.twig', {paysheet: paysheet}, with_context = false) }}
+
+                <a href="{{ path('flexphp.payroll.paysheets.index') }}" class="btn btn-outline-secondary">
+                    <i class="fa fa-list-ol" aria-hidden="true"></i>
+                    <span class="btn-text">{% trans from 'messages' %}action.list{% endtrans %}</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="form-row">
+                {% if paysheet.employeeIdInstance and not paysheet.employeeIdInstance.invoicingAllowed %}
+                <div class="col">
+                    <div class="alert alert-info" role="alert">
+                        <i class="fa fa-info-circle" aria-hidden="true"></i>
+                        <span class="btn-text">
+                            Para generar la factura electrónica debes completar la información requerida
+                            y habilitar el cliente.
+                            <ol>
+                                <li>Haz clic en nombre del cliente.</li>
+                                <li>Haz clic en el botón Editar.</li>
+                                <li>Diligencia los datos socilitados.</li>
+                                <li>Guarda los cambios haciendo clic en el botón Actualizar.</li>
+                                <li>Busca la orden que deseas facturar.</li>
+                            </ol>
+                        </span>
+                        </hr>
+                        <span class="text-muted small">Este proceso se hace una sola vez por cliente</span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-row">
+                <div class="col">
+                    <label>{% trans %}label.employeeId{% endtrans %}</label><div class="form-control-plaintext">
+                        {% if paysheet.employeeIdInstance %}
+                        <td>
+                            <a href="{{ path('flexphp.payroll.employees.read', {id: paysheet.employeeIdInstance.id}) }}" class="btn-link">
+                                {% if paysheet.employeeIdInstance.name|default(null) %}
+                                {{ paysheet.employeeIdInstance.name }}
+                                {% elseif paysheet.employeeIdInstance.documentTypeId or paysheet.employeeIdInstance.documentNumber %}
+                                {{ paysheet.employeeIdInstance.documentTypeId }} {{ paysheet.employeeIdInstance.documentNumber }}
+                                {% else %}
+                                {{ paysheet.employeeIdInstance.id }}
+                                {% endif %}
+                            </a>
+                        </td>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col">
+                    <label>{% trans %}label.agreementId{% endtrans %}</label><div class="form-control-plaintext">{{ paysheet.agreementIdInstance.placa|default('-') }}</div>
+                </div>
+
+                <div class="col">
+                    <label>{% trans %}label.statusId{% endtrans %}</label><div class="form-control-plaintext">
+                        <i class="far fa-circle text-{% if paysheet.isDraft %}primary{% elseif (paysheet.total - paysheet.totalPaid) > 0
+                            %}danger{% elseif paysheet.total == 0 %}warning{% else %}success{% endif %}"></i>
+                        {{ paysheet.statusIdInstance.name|default('-') }}
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <label>{% trans %}label.type{% endtrans %}</label>
+                    <div class="form-control-plaintext">{{ paysheet.typeInstance.name }}</div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col">
+                    <label>{% trans %}label.notes{% endtrans %}</label>
+                    <div class="form-control-plaintext">{{ paysheet.notes|default('-')|nl2br }}</div>
+                </div>
+
+                <div class="col-2">
+                    <label>{% trans %}label.worker{% endtrans %}</label>
+                    <div class="form-control-plaintext">{{ paysheet.workerInstance.name|default('-') }}</div>
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="form-row">
+                <div class="h5">
+                    {% trans from 'payroll' %}entity{% endtrans %}
+                </div>
+            </div>
+
+            <hr />
+
+            {% if paysheet.expiratedAt %}
+            <div class="form-row">
+                <div class="col">
+                    <label>{% trans %}label.expiratedAt{% endtrans %}</label>
+                    <div class="form-control-plaintext">
+                        <span class="date-format">{{ paysheet.expiratedAt|date('Y-m-d H:i:s') }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="form-row">
+                <div class="col">
+                    <label>{% trans %}label.paysheetNotes{% endtrans %}</label>
+                    <div class="form-control-plaintext">{{ paysheet.paysheetNotes|default('-')|nl2br }}</div>
+                </div>
+            </div>
+
+            {# {% if payments|length > 0 %} #}
+                {# <hr /> #}
+
+                {# <div class="form-row"> #}
+                {#     <div class="h5"> #}
+                {#         {% trans from 'payment' %}title.list{% endtrans %} #}
+                {#     </div> #}
+                {# </div> #}
+
+                {# <hr /> #}
+
+                {# <div class="form-row"> #}
+                {#     <div class="col"> #}
+                {#         {% trans from 'payment' %}label.createdAt{% endtrans %} #}
+                {#     </div> #}
+                {#     <div class="col"> #}
+                {#         {% trans from 'payment' %}label.paymentMethodId{% endtrans %} #}
+                {#     </div> #}
+                {#     <div class="col"> #}
+                {#         {% trans from 'payment' %}label.amount{% endtrans %} #}
+                {#     </div> #}
+                {# </div> #}
+                {# {% for _payment in payments %} #}
+                {#     <div class="form-row"> #}
+                {#         <div class="col"> #}
+                {#             <div class="form-control-plaintext"> #}
+                {#                 <span class="datetime-format">{{ _payment.createdAt ? _payment.createdAt|date('Y-m-d H:i:s') : '-' }}</span> #}
+                {#             </div> #}
+                {#         </div> #}
+                {#         <div class="col"> #}
+                {#             <div class="form-control-plaintext"> #}
+                {#                 {{ _payment.paymentMethodIdInstance.name }} #}
+                {#             </div> #}
+                {#         </div> #}
+                {#         <div class="col"> #}
+                {#             <div class="form-control-plaintext money-format"> #}
+                {#                 {{ _payment.amount }} #}
+                {#             </div> #}
+                {#         </div> #}
+                {#     </div> #}
+                {# {% endfor %} #}
+            {# {% endif %} #}
+
+            <hr />
+
+            <div class="form-row">
+                <div class="col"></div>
+                <div class="col">
+                    <label>{% trans %}__paysheet.total{% endtrans %}</label>
+                </div>
+                <div class="col">
+                    <div class="form-control-plaintext money-format">{{ paysheet.total  }}</div>
+                </div>
+            </div>
+            {% if not paysheet.isDraft %}
+            <div class="form-row">
+                <div class="col"></div>
+                <div class="col">
+                    <label>{% trans %}label.totalPaid{% endtrans %}</label>
+                </div>
+                <div class="col">
+                    <div class="form-control-plaintext money-format">{{ paysheet.totalPaid }}</div>
+                </div>
+            </div>
+            {% if (paysheet.total - paysheet.totalPaid) > 0 %}
+            <div class="form-row">
+                <div class="col"></div>
+                <div class="col">
+                    <label>{% trans %}__paysheet.totalDue{% endtrans %}</label>
+                </div>
+                <div class="col">
+                    <div class="form-control-plaintext money-format">{{ paysheet.total - paysheet.totalPaid }}</div>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+            {% if paysheet.paidAt %}
+                <div class="form-group"><label>{% trans %}label.paidAt{% endtrans %}</label><div class="form-control-plaintext"><span class="datetime-format">{{ paysheet.paidAt|date('Y-m-d H:i:s') }}</span></div></div>
+            {% endif %}
+            {% if paysheet.createdBy %}
+                <div class="form-group"><label>{% trans %}label.createdBy{% endtrans %}</label><div class="form-control-plaintext">{{ paysheet.createdByInstance.name }} (<span class="datetime-format">{{ paysheet.createdAt ? paysheet.createdAt|date('Y-m-d H:i:s') : '-' }}</span>)</div></div>
+            {% endif %}
+            {% if paysheet.updatedBy %}
+                <div class="form-group"><label>{% trans %}label.updatedBy{% endtrans %}</label><div class="form-control-plaintext">{{ paysheet.updatedByInstance.name }} (<span class="datetime-format">{{ paysheet.updatedAt ? paysheet.updatedAt|date('Y-m-d H:i:s') : '-' }}</span>)</div></div>
+            {% endif %}
+        </div>
+
+        <div class="card-footer">
+            <div class="row">
+                <div class="col">
+                    {{ include('@FlexPHPPayroll/paysheet/_delete_form.html.twig', {paysheet: paysheet}, with_context = false) }}
+                </div>
+
+                <div class="col text-right">
+                    <a href="{{ path('flexphp.payroll.paysheets.edit', {id: paysheet.id}) }}" class="btn btn-outline-primary">
+                        <i class="fa fa-edit" aria-hidden="true"></i>
+                        <span class="btn-text">{% trans from 'messages' %}action.edit{% endtrans %}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
