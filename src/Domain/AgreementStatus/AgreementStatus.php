@@ -16,6 +16,10 @@ final class AgreementStatus
 {
     use ToArrayTrait;
 
+    public const ACTIVE = 'A';
+
+    public const INACTIVE = 'I';
+
     private $id;
 
     private $name;

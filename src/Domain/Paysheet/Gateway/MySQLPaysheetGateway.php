@@ -12,6 +12,7 @@ namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Gateway;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Types as DB;
 use FlexPHP\Bundle\HelperBundle\Domain\Helper\DbalCriteriaHelper;
+use FlexPHP\Bundle\PayrollBundle\Domain\AgreementStatus\AgreementStatus;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Paysheet;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\PaysheetGateway;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreateEPayrollRequest;
@@ -305,38 +306,39 @@ class MySQLPaysheetGateway implements PaysheetGateway
         return $data;
     }
 
-    // public function filterAgreements(FindPaysheetAgreementRequest $request, int $page, int $limit): array
-    // {
-    //     $query = $this->conn->createQueryBuilder();
+    public function filterAgreements(FindPaysheetAgreementRequest $request, int $page, int $limit): array
+    {
+        $query = $this->conn->createQueryBuilder();
 
-    //     $query->select([
-    //         'agreement.id as id',
-    //         'agreement.name as text',
-    //         'agreementType.Id as typeId',
-    //         'agreementType.Name as typeName',
-    //         'agreementBrand.Id as brandId',
-    //         'agreementBrand.Name as brandName',
-    //         'agreementSerie.Id as serieId',
-    //         'agreementSerie.Name as serieName',
-    //         'agreement.Model as model',
-    //         'agreement.OilQuantity as oilQuantity',
-    //         'agreement.Liters as liters',
-    //         'agreement.Fuel as fuel',
-    //     ]);
-    //     $query->from('`Agreements`', '`agreement`');
-    //     $query->join('`agreement`', '`AgreementTypes`', '`agreementType`', 'agreement.Type = agreementType.Id');
-    //     $query->leftjoin('`agreement`', '`AgreementBrands`', '`agreementBrand`', 'agreement.Brand = agreementBrand.Id');
-    //     $query->leftJoin('`agreement`', '`AgreementSeries`', '`agreementSerie`', 'agreement.Serie = agreementSerie.Id');
+        $query->select([
+            'agreement.id as id',
+            'agreement.name as text',
+            'agreement.Status as status',
+            'agreement.Period as period',
+            'agreement.Currency as currency',
+            'agreement.Salary as salary',
+            'agreement.HealthPercentage as healthPercentage',
+            'agreement.PensionPercentage as pensionPercentage',
+            'agreement.InitAt as initAt',
+            'agreement.FinishAt as finishAt',
+            'agreement.IntegralSalary as integralSalary',
+            'agreement.HighRisk as highRisk',
+            'agreementType.Id as typeId',
+            'agreementType.Name as typeName',
+        ]);
+        $query->from('`Agreements`', '`agreement`');
+        $query->join('`agreement`', '`AgreementTypes`', '`agreementType`', 'agreement.Type = agreementType.Id');
 
-    //     $query->setParameter(':agreement_name', "{$request->term}%");
-    //     $query->andWhere('agreement.IsActive = :agreement_isActive');
-    //     $query->setParameter(':agreement_isActive', 1);
+        $query->andWhere('agreement.Name like :agreement_name');
+        $query->setParameter(':agreement_name', "{$request->term}%");
+        $query->andWhere('agreement.Status = :agreement_status');
+        $query->setParameter(':agreement_status', AgreementStatus::ACTIVE);
 
-    //     $query->setFirstResult($page ? ($page - 1) * $limit : 0);
-    //     $query->setMaxResults($limit);
+        $query->setFirstResult($page ? ($page - 1) * $limit : 0);
+        $query->setMaxResults($limit);
 
-    //     return $query->execute()->fetchAll();
-    // }
+        return $query->execute()->fetchAll();
+    }
 
     // public function filterPaysheetStatus(FindPaysheetPaysheetStatusRequest $request, int $page, int $limit): array
     // {

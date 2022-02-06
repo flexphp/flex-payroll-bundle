@@ -10,21 +10,21 @@
 namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase;
 
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\PaysheetRepository;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetVehicleRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetAgreementRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Response\FindPaysheetAgreementResponse;
 
-final class FindPaysheetVehicleUseCase
+final class FindPaysheetAgreementUseCase
 {
-    private PaysheetRepository $orderRepository;
+    private PaysheetRepository $paysheetRepository;
 
-    public function __construct(PaysheetRepository $orderRepository)
+    public function __construct(PaysheetRepository $paysheetRepository)
     {
-        $this->orderRepository = $orderRepository;
+        $this->paysheetRepository = $paysheetRepository;
     }
 
-    public function execute(FindPaysheetVehicleRequest $request): FindPaysheetAgreementResponse
+    public function execute(FindPaysheetAgreementRequest $request): FindPaysheetAgreementResponse
     {
-        $vehicles = $this->orderRepository->findVehiclesBy($request);
+        $vehicles = $this->paysheetRepository->findAgreementsBy($request);
 
         return new FindPaysheetAgreementResponse($vehicles);
     }

@@ -199,25 +199,25 @@ final class PaysheetController extends AbstractController
         ]);
     }
 
-//     /**
-//      * @Cache(smaxage="3600")
-//      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_AGREEMENT_INDEX')", statusCode=401)
-//      */
-//     public function findAgreement(Request $request, FindPaysheetAgreementUseCase $useCase): Response
-//     {
-//         if (!$request->isXmlHttpRequest()) {
-//             return new JsonResponse([], Response::HTTP_BAD_REQUEST);
-//         }
+    /**
+     * @Cache(smaxage="3600")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_AGREEMENT_INDEX')", statusCode=401)
+     */
+    public function findAgreement(Request $request, FindPaysheetAgreementUseCase $useCase): Response
+    {
+        if (!$request->isXmlHttpRequest()) {
+            return new JsonResponse([], Response::HTTP_BAD_REQUEST);
+        }
 
-//         $request = new FindPaysheetAgreementRequest($request->request->all());
+        $request = new FindPaysheetAgreementRequest($request->request->all());
 
-//         $response = $useCase->execute($request);
+        $response = $useCase->execute($request);
 
-//         return new JsonResponse([
-//             'results' => $response->agreements,
-//             'pagination' => ['more' => false],
-//         ]);
-//     }
+        return new JsonResponse([
+            'results' => $response->agreements,
+            'pagination' => ['more' => false],
+        ]);
+    }
 
 //     /**
 //      * @Cache(smaxage="3600")

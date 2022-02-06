@@ -34,9 +34,9 @@ interface PaysheetGateway
 
     // public function filterPayrollTypes(FindPaysheetPayrollTypeRequest $request, int $page, int $limit): array;
 
-    // public function filterEmployees(FindPaysheetEmployeeRequest $request, int $page, int $limit): array;
+    public function filterEmployees(FindPaysheetEmployeeRequest $request, int $page, int $limit): array;
 
-    // public function filterAgreements(FindPaysheetAgreementRequest $request, int $page, int $limit): array;
+    public function filterAgreements(FindPaysheetAgreementRequest $request, int $page, int $limit): array;
 
     // public function filterPayrollStatus(FindPaysheetPayrollStatusRequest $request, int $page, int $limit): array;
 
