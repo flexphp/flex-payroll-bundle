@@ -11,7 +11,7 @@ namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase;
 
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\PaysheetRepository;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetVehicleRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Response\FindPaysheetVehicleResponse;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Response\FindPaysheetAgreementResponse;
 
 final class FindPaysheetVehicleUseCase
 {
@@ -22,10 +22,10 @@ final class FindPaysheetVehicleUseCase
         $this->orderRepository = $orderRepository;
     }
 
-    public function execute(FindPaysheetVehicleRequest $request): FindPaysheetVehicleResponse
+    public function execute(FindPaysheetVehicleRequest $request): FindPaysheetAgreementResponse
     {
         $vehicles = $this->orderRepository->findVehiclesBy($request);
 
-        return new FindPaysheetVehicleResponse($vehicles);
+        return new FindPaysheetAgreementResponse($vehicles);
     }
 }

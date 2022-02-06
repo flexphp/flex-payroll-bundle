@@ -14,11 +14,11 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreatePaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreatePrepaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\DeletePaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetAlternativeProductRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetCustomerRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetEmployeeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetHistoryServiceRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetPayrollStatusRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetPayrollTypeRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetVehicleRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetAgreementRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetWorkerRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\GetLastPaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\IndexPaysheetRequest;
@@ -97,14 +97,14 @@ final class PaysheetRepository
         return $this->gateway->filterPayrollTypes($request, $request->_page, $request->_limit);
     }
 
-    public function findCustomersBy(FindPaysheetCustomerRequest $request): array
+    public function findEmployeesBy(FindPaysheetEmployeeRequest $request): array
     {
-        return $this->gateway->filterCustomers($request, $request->_page, $request->_limit);
+        return $this->gateway->filterEmployees($request, $request->_page, $request->_limit);
     }
 
-    public function findVehiclesBy(FindPaysheetVehicleRequest $request): array
+    public function findAgreementsBy(FindPaysheetAgreementRequest $request): array
     {
-        return $this->gateway->filterVehicles($request, $request->_page, $request->_limit);
+        return $this->gateway->filterAgreements($request, $request->_page, $request->_limit);
     }
 
     public function findPayrollStatusBy(FindPaysheetPayrollStatusRequest $request): array
@@ -112,25 +112,20 @@ final class PaysheetRepository
         return $this->gateway->filterPayrollStatus($request, $request->_page, $request->_limit);
     }
 
-    public function findWorkersBy(FindPaysheetWorkerRequest $request): array
-    {
-        return $this->gateway->filterWorkers($request, $request->_page, $request->_limit);
-    }
+//     public function findHistoryServiceBy(FindPaysheetHistoryServiceRequest $request): array
+//     {
+//         return $this->gateway->filterHistoryServices($request, 1);
+//     }
 
-    public function findHistoryServiceBy(FindPaysheetHistoryServiceRequest $request): array
-    {
-        return $this->gateway->filterHistoryServices($request, 1);
-    }
+//     public function getLastPaysheetBy(GetLastPaysheetRequest $request): array
+//     {
+//         return $this->gateway->getLastPaysheet($request);
+//     }
 
-    public function getLastPaysheetBy(GetLastPaysheetRequest $request): array
-    {
-        return $this->gateway->getLastPaysheet($request);
-    }
-
-    public function findAlternativeProductBy(FindPaysheetAlternativeProductRequest $request): array
-    {
-        return $this->gateway->getAlternativeProducts($request, 1);
-    }
+//     public function findAlternativeProductBy(FindPaysheetAlternativeProductRequest $request): array
+//     {
+//         return $this->gateway->getAlternativeProducts($request, 1);
+//     }
 
     public function getPrepaysheetData(CreatePrepaysheetRequest $request): array
     {

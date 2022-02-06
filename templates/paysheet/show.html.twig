@@ -28,28 +28,6 @@
 
         <div class="card-body">
             <div class="form-row">
-                {% if paysheet.employeeIdInstance and not paysheet.employeeIdInstance.invoicingAllowed %}
-                <div class="col">
-                    <div class="alert alert-info" role="alert">
-                        <i class="fa fa-info-circle" aria-hidden="true"></i>
-                        <span class="btn-text">
-                            Para generar la factura electrónica debes completar la información requerida
-                            y habilitar el cliente.
-                            <ol>
-                                <li>Haz clic en nombre del cliente.</li>
-                                <li>Haz clic en el botón Editar.</li>
-                                <li>Diligencia los datos socilitados.</li>
-                                <li>Guarda los cambios haciendo clic en el botón Actualizar.</li>
-                                <li>Busca la orden que deseas facturar.</li>
-                            </ol>
-                        </span>
-                        </hr>
-                        <span class="text-muted small">Este proceso se hace una sola vez por cliente</span>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-            <div class="form-row">
                 <div class="col">
                     <label>{% trans %}label.employeeId{% endtrans %}</label><div class="form-control-plaintext">
                         {% if paysheet.employeeIdInstance %}
@@ -71,7 +49,7 @@
                 </div>
 
                 <div class="col">
-                    <label>{% trans %}label.agreementId{% endtrans %}</label><div class="form-control-plaintext">{{ paysheet.agreementIdInstance.placa|default('-') }}</div>
+                    <label>{% trans %}label.agreementId{% endtrans %}</label><div class="form-control-plaintext">{{ paysheet.agreementIdInstance.name|default('-') }}</div>
                 </div>
 
                 <div class="col">
@@ -92,11 +70,6 @@
                 <div class="col">
                     <label>{% trans %}label.notes{% endtrans %}</label>
                     <div class="form-control-plaintext">{{ paysheet.notes|default('-')|nl2br }}</div>
-                </div>
-
-                <div class="col-2">
-                    <label>{% trans %}label.worker{% endtrans %}</label>
-                    <div class="form-control-plaintext">{{ paysheet.workerInstance.name|default('-') }}</div>
                 </div>
             </div>
 

@@ -249,58 +249,61 @@ class MySQLPaysheetGateway implements PaysheetGateway
     //     return $query->execute()->fetchAll();
     // }
 
-    // public function filterEmployees(FindPaysheetEmployeeRequest $request, int $page, int $limit): array
-    // {
-    //     $query = $this->conn->createQueryBuilder();
+    public function filterEmployees(FindPaysheetEmployeeRequest $request, int $page, int $limit): array
+    {
+        $query = $this->conn->createQueryBuilder();
 
-    //     $query->select([
-    //         'employee.Id as id',
-    //         "CONCAT(employee.Name, ' - ', IFNULL(employee.DocumentNumber, '')) as text",
-    //         'employee.DocumentTypeId as documentTypeId',
-    //         'employee.DocumentNumber as documentNumber',
-    //         'employee.Name as name',
-    //         'employee.PhoneNumber as phoneNumber',
-    //         'employee.Email as email',
-    //         'employee.Address as address',
-    //         'city.Id as cityId',
-    //         'city.Name as cityName',
-    //     ]);
-    //     $query->from('`Employees`', '`employee`');
-    //     $query->leftJoin('`employee`', '`Cities`', '`city`', 'city.Id = employee.CityId');
+        $query->select([
+            'employee.Id as id',
+            "CONCAT(IFNULL(employee.DocumentNumber, ''), ' - ', employee.FirstName, ' ', employee.FirstSurname) as text",
+            'employee.DocumentTypeId as documentTypeId',
+            'employee.DocumentNumber as documentNumber',
+            'employee.FirstName as firstName',
+            'employee.SecondName as secondName',
+            'employee.FirstSurname as firstSurname',
+            'employee.SecondSurname as secondSurname',
+            // 'employee.PhoneNumber as phoneNumber',
+            // 'employee.Email as email',
+            // 'employee.Address as address',
+            // 'city.Id as cityId',
+            // 'city.Name as cityName',
+        ]);
+        $query->from('`Employees`', '`employee`');
+        // $query->leftJoin('`employee`', '`Cities`', '`city`', 'city.Id = employee.CityId');
 
-    //     $data = [];
+        $data = [];
 
-    //     switch (true) {
-    //         case !empty($request->term):
-    //             $query->where('employee.Name like :employeeName');
-    //             $query->setParameter(':employeeName', "{$request->term}%");
+        switch (true) {
+            case !empty($request->term):
+                $query->where("CONCAT(IFNULL(employee.DocumentNumber, ''), ' - ', employee.FirstName, ' ', employee.FirstSurname) like :employeeName");
+                $query->setParameter(':employeeName', "{$request->term}%");
 
-    //             $query->setFirstResult($page ? ($page - 1) * $limit : 0);
-    //             $query->setMaxResults($limit);
+                $query->setFirstResult($page ? ($page - 1) * $limit : 0);
+                $query->setMaxResults($limit);
 
-    //             $data = $query->execute()->fetchAll();
+                $data = $query->execute()->fetchAll();
 
-    //             break;
-    //         case empty($request->documentNumber) && !empty($request->employeeId) && $request->employeeId > 0:
-    //             $query->where('employee.Id = :employeeId');
-    //             $query->setParameter(':employeeId', $request->employeeId);
+                break;
+            case empty($request->documentNumber) && !empty($request->employeeId) && $request->employeeId > 0:
+                $query->where('employee.Id = :employeeId');
+                $query->setParameter(':employeeId', $request->employeeId);
 
-    //             $data = $query->execute()->fetch() ?: $data;
+                $data = $query->execute()->fetch() ?: $data;
 
-    //             break;
-    //         case !empty($request->documentNumber):
-    //             $query->where('employee.DocumentTypeId = :documentTypeId');
-    //             $query->setParameter(':documentTypeId', $request->documentTypeId);
-    //             $query->andWhere('employee.DocumentNumber = :documentNumber');
-    //             $query->setParameter(':documentNumber', $request->documentNumber);
+                break;
+            case !empty($request->documentNumber):
+                $query->where('employee.DocumentTypeId = :documentTypeId');
+                $query->setParameter(':documentTypeId', $request->documentTypeId);
+                $query->andWhere('employee.DocumentNumber = :documentNumber');
+                $query->setParameter(':documentNumber', $request->documentNumber);
 
-    //             $data = $query->execute()->fetch() ?: $data;
+                $data = $query->execute()->fetch() ?: $data;
 
-    //             break;
-    //     }
+                break;
+        }
 
-    //     return $data;
-    // }
+        return $data;
+    }
 
     // public function filterAgreements(FindPaysheetAgreementRequest $request, int $page, int $limit): array
     // {

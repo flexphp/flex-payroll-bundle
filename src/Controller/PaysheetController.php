@@ -18,10 +18,10 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreatePaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreatePrepaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\DeletePaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetAlternativeProductRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetCustomerRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetEmployeeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetHistoryServiceRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetPayrollStatusRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetVehicleRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetAgreementRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetWorkerRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\GetLastPaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\IndexPaysheetRequest;
@@ -32,10 +32,10 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\CreatePaysheetUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\CreatePrepaysheetUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\DeletePaysheetUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\FindPaysheetAlternativeProductUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\FindPaysheetCustomerUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\FindPaysheetEmployeeUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\FindPaysheetHistoryServiceUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\FindPaysheetPayrollStatusUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\FindPaysheetVehicleUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\FindPaysheetAgreementUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\FindPaysheetWorkerUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\GetLastPaysheetUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\IndexPaysheetUseCase;
@@ -165,56 +165,56 @@ final class PaysheetController extends AbstractController
         return $this->redirectToRoute('flexphp.payroll.paysheets.read', ['id' => $response->paysheet->id()]);
     }
 
-//     /**
-//      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_DELETE')", statusCode=401)
-//      */
-//     public function delete(DeletePaysheetUseCase $useCase, TranslatorInterface $trans, int $id): Response
-//     {
-//         $request = new DeletePaysheetRequest($id);
+    /**
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_DELETE')", statusCode=401)
+     */
+    public function delete(DeletePaysheetUseCase $useCase, TranslatorInterface $trans, int $id): Response
+    {
+        $request = new DeletePaysheetRequest($id);
 
-//         $useCase->execute($request);
+        $useCase->execute($request);
 
-//         $this->addFlash('success', $trans->trans('message.deleted', [], 'paysheet'));
+        $this->addFlash('success', $trans->trans('message.deleted', [], 'paysheet'));
 
-//         return $this->redirectToRoute('paysheets.index');
-//     }
+        return $this->redirectToRoute('flexphp.payroll.paysheets.index');
+    }
+
+    /**
+     * @Cache(smaxage="3600")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_EMPLOYEE_INDEX')", statusCode=401)
+     */
+    public function findEmployee(Request $request, FindPaysheetEmployeeUseCase $useCase): Response
+    {
+        if (!$request->isXmlHttpRequest()) {
+            return new JsonResponse([], Response::HTTP_BAD_REQUEST);
+        }
+
+        $request = new FindPaysheetEmployeeRequest($request->request->all());
+
+        $response = $useCase->execute($request);
+
+        return new JsonResponse([
+            'results' => $response->employees ?? [],
+            'pagination' => ['more' => false],
+        ]);
+    }
 
 //     /**
 //      * @Cache(smaxage="3600")
-//      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_CUSTOMER_INDEX')", statusCode=401)
+//      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_AGREEMENT_INDEX')", statusCode=401)
 //      */
-//     public function findCustomer(Request $request, FindPaysheetCustomerUseCase $useCase): Response
+//     public function findAgreement(Request $request, FindPaysheetAgreementUseCase $useCase): Response
 //     {
 //         if (!$request->isXmlHttpRequest()) {
 //             return new JsonResponse([], Response::HTTP_BAD_REQUEST);
 //         }
 
-//         $request = new FindPaysheetCustomerRequest($request->request->all());
+//         $request = new FindPaysheetAgreementRequest($request->request->all());
 
 //         $response = $useCase->execute($request);
 
 //         return new JsonResponse([
-//             'results' => $response->customers ?? [],
-//             'pagination' => ['more' => false],
-//         ]);
-//     }
-
-//     /**
-//      * @Cache(smaxage="3600")
-//      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_VEHICLE_INDEX')", statusCode=401)
-//      */
-//     public function findVehicle(Request $request, FindPaysheetVehicleUseCase $useCase): Response
-//     {
-//         if (!$request->isXmlHttpRequest()) {
-//             return new JsonResponse([], Response::HTTP_BAD_REQUEST);
-//         }
-
-//         $request = new FindPaysheetVehicleRequest($request->request->all());
-
-//         $response = $useCase->execute($request);
-
-//         return new JsonResponse([
-//             'results' => $response->vehicles,
+//             'results' => $response->agreements,
 //             'pagination' => ['more' => false],
 //         ]);
 //     }
@@ -235,26 +235,6 @@ final class PaysheetController extends AbstractController
 
 //         return new JsonResponse([
 //             'results' => $response->paysheetStatus,
-//             'pagination' => ['more' => false],
-//         ]);
-//     }
-
-//     /**
-//      * @Cache(smaxage="3600")
-//      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_WORKER_INDEX')", statusCode=401)
-//      */
-//     public function findWorker(Request $request, FindPaysheetWorkerUseCase $useCase): Response
-//     {
-//         if (!$request->isXmlHttpRequest()) {
-//             return new JsonResponse([], Response::HTTP_BAD_REQUEST);
-//         }
-
-//         $request = new FindPaysheetWorkerRequest($request->request->all());
-
-//         $response = $useCase->execute($request);
-
-//         return new JsonResponse([
-//             'results' => $response->workers,
 //             'pagination' => ['more' => false],
 //         ]);
 //     }
@@ -319,25 +299,25 @@ final class PaysheetController extends AbstractController
 //         ]);
 //     }
 
-//     /**
-//      * @Cache(smaxage="3600")
-//      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_READ')", statusCode=401)
-//      */
-//     public function prepaysheet(CreatePrepaysheetUseCase $useCase, int $id): Response
-//     {
-//         $request = new CreatePrepaysheetRequest($id, $this->getUser()->timezone());
+    /**
+     * @Cache(smaxage="3600")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEET_READ')", statusCode=401)
+     */
+    public function prepaysheet(CreatePrepaysheetUseCase $useCase, int $id): Response
+    {
+        $request = new CreatePrepaysheetRequest($id, $this->getUser()->timezone());
 
-//         $prepaysheet = $useCase->execute($request);
+        $prepaysheet = $useCase->execute($request);
 
-//         $response = new Response($prepaysheet->content);
-//         $response->headers->set('Content-Type', 'application/pdf');
-//         $response->headers->set('Content-Disposition', HeaderUtils::makeDisposition(
-//             HeaderUtils::DISPOSITION_INLINE,
-//             $prepaysheet->filename
-//         ));
+        $response = new Response($prepaysheet->content);
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_INLINE,
+            $prepaysheet->filename
+        ));
 
-//         return $response;
-//     }
+        return $response;
+    }
 
 //     /**
 //      * @Cache(smaxage="3600")

@@ -11,7 +11,7 @@ namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request;
 
 use FlexPHP\Messages\RequestInterface;
 
-final class FindPaysheetCustomerRequest implements RequestInterface
+final class FindPaysheetEmployeeRequest implements RequestInterface
 {
     public $term;
 
@@ -23,7 +23,7 @@ final class FindPaysheetCustomerRequest implements RequestInterface
 
     public $documentNumber;
 
-    public $customerId;
+    public $employeeId;
 
     public function __construct(array $data)
     {
@@ -32,6 +32,6 @@ final class FindPaysheetCustomerRequest implements RequestInterface
         $this->_limit = $data['limit'] ?? 20;
         $this->documentTypeId = $data['documentTypeId'] ?? '';
         $this->documentNumber = $data['documentNumber'] ?? '';
-        $this->customerId = $data['customerId'] ?? 0;
+        $this->employeeId = $data['employeeId'] ?? 0;
     }
 }

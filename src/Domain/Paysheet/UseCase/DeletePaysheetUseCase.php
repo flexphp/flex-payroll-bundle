@@ -26,79 +26,79 @@ use Exception;
 
 final class DeletePaysheetUseCase
 {
-    private PaysheetRepository $orderRepository;
+    private PaysheetRepository $paysheetRepository;
 
-    private PaysheetDetailRepository $orderDetailRepository;
+    private PaysheetDetailRepository $paysheetDetailRepository;
 
     private PaymentRepository $paymentRepository;
 
     public function __construct(
-        PaysheetRepository $orderRepository,
-        PaysheetDetailRepository $orderDetailRepository,
-        PaymentRepository $paymentRepository
+        PaysheetRepository $paysheetRepository
+        // PaysheetDetailRepository $paysheetDetailRepository,
+        // PaymentRepository $paymentRepository
     ) {
-        $this->orderRepository = $orderRepository;
-        $this->orderDetailRepository = $orderDetailRepository;
-        $this->paymentRepository = $paymentRepository;
+        $this->paysheetRepository = $paysheetRepository;
+        // $this->paysheetDetailRepository = $paysheetDetailRepository;
+        // $this->paymentRepository = $paymentRepository;
     }
 
     public function execute(DeletePaysheetRequest $request)
     {
         if (!empty($request->id)) {
-            $order = $this->orderRepository->getById(new ReadPaysheetRequest($request->id));
+            $paysheet = $this->paysheetRepository->getById(new ReadPaysheetRequest($request->id));
         }
 
-        if (empty($order) || !$order->id()) {
+        if (empty($paysheet) || !$paysheet->id()) {
             throw new Exception(\sprintf('Paysheet not exist [%d]', $request->id ?? 0), 404);
         }
 
-        if ($order->isPayed()) {
+        if ($paysheet->isPayed()) {
             throw new Exception('Paysheet is payed', 404);
         }
 
-        $orderDetails = $this->getPaysheetDetails($order);
+//         $paysheetDetails = $this->getPaysheetDetails($paysheet);
 
-        if (\count($orderDetails) > 0 && !$order->isDraft()) {
-            throw new Exception('Paysheet has details, remove it first', 404);
-        }
+//         if (\count($paysheetDetails) > 0 && !$paysheet->isDraft()) {
+//             throw new Exception('Paysheet has details, remove it first', 404);
+//         }
 
-        $payments = $this->getPayments($order);
+//         $payments = $this->getPayments($paysheet);
 
-        if (\count($payments) > 0) {
-            throw new Exception('Paysheet has payments, remove it first', 404);
-        }
+//         if (\count($payments) > 0) {
+//             throw new Exception('Paysheet has payments, remove it first', 404);
+//         }
 
-        if (\count($orderDetails) > 0 && $order->isDraft()) {
-            $this->deleteDrafPaysheetDetails($order, $orderDetails);
-        }
+//         if (\count($paysheetDetails) > 0 && $paysheet->isDraft()) {
+//             $this->deleteDrafPaysheetDetails($paysheet, $paysheetDetails);
+//         }
 
-        return new DeletePaysheetResponse($this->orderRepository->remove($request));
+        return new DeletePaysheetResponse($this->paysheetRepository->remove($request));
     }
 
-    private function getPaysheetDetails(Paysheet $order): array
+    private function getPaysheetDetails(Paysheet $paysheet): array
     {
-        $indexPaysheetDetail = new IndexPaysheetDetailUseCase($this->orderDetailRepository);
+        $indexPaysheetDetail = new IndexPaysheetDetailUseCase($this->paysheetDetailRepository);
 
         return $indexPaysheetDetail->execute(
-            new IndexPaysheetDetailRequest(['orderId' => $order->id()], 1)
-        )->orderDetails;
+            new IndexPaysheetDetailRequest(['paysheetId' => $paysheet->id()], 1)
+        )->paysheetDetails;
     }
 
-    private function getPayments(Paysheet $order): array
+    private function getPayments(Paysheet $paysheet): array
     {
         $indexPayment = new IndexPaymentUseCase($this->paymentRepository);
 
         return $indexPayment->execute(
-            new IndexPaymentRequest(['orderId' => $order->id()], 1)
+            new IndexPaymentRequest(['paysheetId' => $paysheet->id()], 1)
         )->payments;
     }
 
-    private function deleteDrafPaysheetDetails(Paysheet $order, array $orderDetails): void
+    private function deleteDrafPaysheetDetails(Paysheet $paysheet, array $paysheetDetails): void
     {
-        $useCase = new DeletePaysheetDetailUseCase($this->orderDetailRepository);
+        $useCase = new DeletePaysheetDetailUseCase($this->paysheetDetailRepository);
 
-        foreach ($orderDetails as $orderDetail) {
-            $useCase->execute(new DeletePaysheetDetailRequest($orderDetail->id()));
+        foreach ($paysheetDetails as $paysheetDetail) {
+            $useCase->execute(new DeletePaysheetDetailRequest($paysheetDetail->id()));
         }
     }
 }

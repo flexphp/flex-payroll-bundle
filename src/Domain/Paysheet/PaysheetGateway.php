@@ -12,11 +12,11 @@ namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreateEPayrollRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreatePrepaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetAlternativeProductRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetCustomerRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetEmployeeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetHistoryServiceRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetPayrollStatusRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetPayrollTypeRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetVehicleRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetAgreementRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetWorkerRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\GetLastPaysheetRequest;
 
@@ -34,13 +34,11 @@ interface PaysheetGateway
 
     // public function filterPayrollTypes(FindPaysheetPayrollTypeRequest $request, int $page, int $limit): array;
 
-    // public function filterCustomers(FindPaysheetCustomerRequest $request, int $page, int $limit): array;
+    // public function filterEmployees(FindPaysheetEmployeeRequest $request, int $page, int $limit): array;
 
-    // public function filterVehicles(FindPaysheetVehicleRequest $request, int $page, int $limit): array;
+    // public function filterAgreements(FindPaysheetAgreementRequest $request, int $page, int $limit): array;
 
     // public function filterPayrollStatus(FindPaysheetPayrollStatusRequest $request, int $page, int $limit): array;
-
-    // public function filterWorkers(FindPaysheetWorkerRequest $request, int $page, int $limit): array;
 
     // public function filterHistoryServices(FindPaysheetHistoryServiceRequest $request, int $limit): array;
 
