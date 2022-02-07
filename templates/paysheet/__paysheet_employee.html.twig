@@ -50,22 +50,25 @@
 
         <div class="form-group col-md-6">
             <label for="employee[type]" class="col-form-label">{% trans from 'employee' %}label.type{% endtrans %}</label>
-            <input name="employee[type]" class="form-control" type="text" required />
+            <select name="employee[type]" class="form-control custom-select" required >
+            </select>
         </div>
 
         <div class="form-group col-md-6">
             <label for="employee[subType]" class="col-form-label">{% trans from 'employee' %}label.subType{% endtrans %}</label>
-            <input name="employee[subType]" class="form-control"  required />
+            <select name="employee[subType]" class="form-control custom-select" required >
+            </select>
         </div>
 
         <div class="form-group col-md-6">
             <label for="employee[paymentMethod]" class="col-form-label">{% trans from 'employee' %}label.paymentMethod{% endtrans %}</label>
-            <select name="employee[paymentMethod]" class="form-control custom-select find-payment-methods"></select>
+            <select name="employee[paymentMethod]" class="form-control custom-select"></select>
         </div>
 
         <div class="form-group col-md-6">
             <label for="employee[accountType]" class="col-form-label">{% trans from 'employee' %}label.accountType{% endtrans %}</label>
-            <input name="employee[accountType]" class="form-control uppercase" type="text" />
+            <select name="employee[accountType]" class="form-control custom-select" required >
+            </select>
         </div>
 
         <div class="form-group col-md-6">

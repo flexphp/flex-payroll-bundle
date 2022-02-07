@@ -1,50 +1,65 @@
 jQuery(document).ready(function ($) {
     'use strict';
 
-//     $('.find-employee').on('change', function () {
-//         const $container = $(this).parent().parent();
-//         const $documentTypeId = $container.find('[name$="[documentTypeId]"]');
-//         const $documentNumber = $container.find('[name$="[documentNumber]"]');
-//         const employeeId = $container.find('[name$="[id]"]').val() || 0;
+    $('.find-employee').on('change', function () {
+        const $container = $(this).parent().parent();
+        const $documentTypeId = $container.find('[name$="[documentTypeId]"]');
+        const $documentNumber = $container.find('[name$="[documentNumber]"]');
+        const employeeId = $container.find('[name$="[id]"]').val() || 0;
 
-//         $.ajax({
-//             url: window.flex.baseUrl + '/orders/find-employees',
-//             method: 'POST',
-//             data: {
-//                 documentTypeId: $documentTypeId.val(),
-//                 documentNumber: $documentNumber.val(),
-//                 employeeId: employeeId,
-//             },
-//             headers: {
-//                 'X-XSRF-Token': getCookie('XSRF-Token')
-//             },
-//             beforeSend: function () {
-//                 $('.overlay').show();
-//             }
-//         }).always(function () {
-//             $('.overlay').hide();
-//         }).done(function (response) {
-//             const data = response.results;
-//             let employeeId = data.id || '';
+        $.ajax({
+            url: window.flex.baseUrl + '/paysheets/find-employees',
+            method: 'POST',
+            data: {
+                documentTypeId: $documentTypeId.val(),
+                documentNumber: $documentNumber.val(),
+                employeeId: employeeId,
+            },
+            headers: {
+                'X-XSRF-Token': getCookie('XSRF-Token')
+            },
+            beforeSend: function () {
+                $('.overlay').show();
+            }
+        }).always(function () {
+            $('.overlay').hide();
+        }).done(function (response) {
+            const data = response.results;
+            let employeeId = data.id || '';
 
-//             if (!employeeId && $documentNumber.val() !== '') {
-//                 employeeId = $container.find('[name$="[id]"]').val();
-//             }
+            if (!employeeId && $documentNumber.val() !== '') {
+                employeeId = $container.find('[name$="[id]"]').val();
+            }
 
-//             $container.find('[name$="[id]"]').val(employeeId);
-//             $container.find('[name$="[documentTypeId]"]').val(data.documentTypeId || $documentTypeId.val());
-//             $container.find('[name$="[documentNumber]"]').val(data.documentNumber || $documentNumber.val());
-//             $container.find('[name$="[name]"]').val(data.name || '');
-//             $container.find('[name$="[email]"]').val(data.email || '');
-//             $container.find('[name$="[phoneNumber]"]').val(data.phoneNumber || '');
-//             $container.find('[name$="[address]"]').val(data.address || '');
-//             const $city = $container.find('[name$="[cityId]"]').empty();
+            $container.find('[name$="[id]"]').val(employeeId);
+            $container.find('[name$="[documentTypeId]"]').val(data.documentTypeId || $documentTypeId.val());
+            $container.find('[name$="[documentNumber]"]').val(data.documentNumber || $documentNumber.val());
+            $container.find('[name$="[firstName]"]').val(data.firstName || '');
+            $container.find('[name$="[secondName]"]').val(data.secondName || '');
+            $container.find('[name$="[firstSurname]"]').val(data.firstName || '');
+            $container.find('[name$="[secondSurname]"]').val(data.secondName || '');
+            $container.find('[name$="[accountType]"]').val(data.accountType || '');
+            $container.find('[name$="[accountNumber]"]').val(data.accountNumber || '');
 
-//             if (data.cityId) {
-//                 $city.append(new Option(data.cityName, data.cityId, true, false));
-//             }
-//         });
-//     });
+            const $type = $container.find('[name$="[typeId]"]').empty();
+
+            if (data.typeId) {
+                $type.append(new Option(data.typeName, data.typeId, true, false));
+            }
+
+            const $subType = $container.find('[name$="[subTypeId]"]').empty();
+
+            if (data.subTypeId) {
+                $subType.append(new Option(data.subTypeName, data.subTypeId, true, false));
+            }
+
+            const $paymentMethod = $container.find('[name$="[paymentMethodId]"]').empty();
+
+            if (data.paymentMethodId) {
+                $paymentMethod.append(new Option(data.paymentMethodName, data.paymentMethodId, true, false));
+            }
+        });
+    });
 
 //     $('[name="agreement[id]"]').select2({
 //         theme: 'bootstrap4',
@@ -52,7 +67,7 @@ jQuery(document).ready(function ($) {
 //         minimumInputLength: 0,
 //         allowClear: true,
 //         ajax: {
-//             url: window.flex.baseUrl + '/orders/find-agreements',
+//             url: window.flex.baseUrl + '/paysheets/find-agreements',
 //             method: 'POST',
 //             dataType: 'json',
 //             delay: 500,
@@ -72,7 +87,7 @@ jQuery(document).ready(function ($) {
 
 //         $('[name="agreement[placa]"]').val(data.placa || '');
 
-//         if ($('[name="order[type]"]').val() !== 'V') {
+//         if ($('[name="paysheet[type]"]').val() !== 'V') {
 //             getHistoryServices(data.id);
 
 //             return undefined;
@@ -100,7 +115,7 @@ jQuery(document).ready(function ($) {
 
 //     function getHistoryServices(agreementId) {
 //         $.ajax({
-//             url: window.flex.baseUrl + '/orders/find-history-services',
+//             url: window.flex.baseUrl + '/paysheets/find-history-services',
 //             method: 'POST',
 //             data: {
 //                 agreementId: agreementId
@@ -114,14 +129,14 @@ jQuery(document).ready(function ($) {
 //         }).always(function () {
 //             $('.overlay').hide();
 //         }).done(function (response) {
-//             const order = response.results.order;
+//             const paysheet = response.results.paysheet;
 //             const history = response.results.history;
-//             const kilometers = parseInt(order.kilometers || 0);
-//             const kilometersToChange = parseInt(order.kilometersToChange || 0);
+//             const kilometers = parseInt(paysheet.kilometers || 0);
+//             const kilometersToChange = parseInt(paysheet.kilometersToChange || 0);
 
-//             $('[name="order[createdAt]"]').html(getDateTimeFormat(order.createdAt || ''));
-//             $('[name="order[kilometers]"]').val(kilometers);
-//             $('[name="order[kilometersToChange]"]').val(kilometersToChange).change();
+//             $('[name="paysheet[createdAt]"]').html(getDateTimeFormat(paysheet.createdAt || ''));
+//             $('[name="paysheet[kilometers]"]').val(kilometers);
+//             $('[name="paysheet[kilometersToChange]"]').val(kilometersToChange).change();
 
 //             for (var i = 0, l = history.length; i < l; i++) {
 //                 let type = history[i].type || '';
@@ -150,16 +165,16 @@ jQuery(document).ready(function ($) {
 //             $('[name="agreement[serie]"]').change();
 
 //             if (!$('[name="employee[id]"]').val()) {
-//                 $('[name="employee[id]"]').val(order.employeeId || null);
-//                 $('[name="employee[documentTypeId]"]').val(order.documentTypeId || null);
-//                 $('[name="employee[documentNumber]"]').val(order.documentNumber || null);
+//                 $('[name="employee[id]"]').val(paysheet.employeeId || null);
+//                 $('[name="employee[documentTypeId]"]').val(paysheet.documentTypeId || null);
+//                 $('[name="employee[documentNumber]"]').val(paysheet.documentNumber || null);
 
 //                 if ($('[name="employee[id]"]').val()) {
 //                     $('[name="employee[id]"]').change();
 //                 }
 //             }
 
-//             if (order.createdAt) {
+//             if (paysheet.createdAt) {
 //                 $('#lastServiceInfo').collapse('show');
 //                 $('#buttonLastServiceInfo').show();
 //             } else {
@@ -192,54 +207,98 @@ jQuery(document).ready(function ($) {
 //         },
 //     });
 
-//     $('[name="agreement[brand]"]').select2({
-//         theme: 'bootstrap4',
-//         placeholder: '',
-//         minimumInputLength: 0,
-//         allowClear: true,
-//         ajax: {
-//             url: window.flex.baseUrl + '/agreements/find-agreement-brands',
-//             method: 'POST',
-//             dataType: 'json',
-//             delay: 500,
-//             cache: true,
-//             headers: {
-//                 'X-XSRF-Token': getCookie('XSRF-Token')
-//             },
-//             data: function (params) {
-//                 return {
-//                     term: params.term,
-//                     page: params.page
-//                 };
-//             }
-//         },
-//     }).on('select2:clear select2:select', function () {
-//         $('[name="agreement[serie]"]').empty().change();
-//     });
+    $('[name="employee[type]"]').select2({
+        theme: 'bootstrap4',
+        placeholder: '',
+        minimumInputLength: 0,
+        allowClear: true,
+        ajax: {
+            url: window.flex.baseUrl + '/employees/find-employee-types',
+            method: 'POST',
+            dataType: 'json',
+            delay: 500,
+            cache: true,
+            headers: {
+                'X-XSRF-Token': getCookie('XSRF-Token')
+            },
+            data: function (params) {
+                return {
+                    term: params.term,
+                    page: params.page
+                };
+            },
+        },
+    });
 
-//     $('[name="agreement[serie]"]').select2({
-//         theme: 'bootstrap4',
-//         placeholder: '',
-//         minimumInputLength: 0,
-//         allowClear: true,
-//         ajax: {
-//             url: window.flex.baseUrl + '/agreements/find-agreement-seriess',
-//             method: 'POST',
-//             dataType: 'json',
-//             delay: 500,
-//             cache: true,
-//             headers: {
-//                 'X-XSRF-Token': getCookie('XSRF-Token')
-//             },
-//             data: function (params) {
-//                 return {
-//                     term: params.term,
-//                     brandId: $('[name="agreement[brand]"]').val(),
-//                     page: params.page
-//                 };
-//             }
-//         },
-//     }).on('change', findAlternativeItems);
+    $('[name="employee[subType]"]').select2({
+        theme: 'bootstrap4',
+        placeholder: '',
+        minimumInputLength: 0,
+        allowClear: true,
+        ajax: {
+            url: window.flex.baseUrl + '/employees/find-employee-sub-types',
+            method: 'POST',
+            dataType: 'json',
+            delay: 500,
+            cache: true,
+            headers: {
+                'X-XSRF-Token': getCookie('XSRF-Token')
+            },
+            data: function (params) {
+                return {
+                    term: params.term,
+                    page: params.page
+                };
+            },
+        },
+    });
+
+    $('[name="employee[paymentMethod]"]').select2({
+        theme: 'bootstrap4',
+        placeholder: '',
+        minimumInputLength: 0,
+        allowClear: true,
+        ajax: {
+            url: window.flex.baseUrl + '/employees/find-payment-methods',
+            method: 'POST',
+            dataType: 'json',
+            delay: 500,
+            cache: true,
+            headers: {
+                'X-XSRF-Token': getCookie('XSRF-Token')
+            },
+            data: function (params) {
+                return {
+                    term: params.term,
+                    page: params.page
+                };
+            },
+        },
+    });
+
+    $('[name="employee[accountType]"]').select2({
+        theme: 'bootstrap4',
+        placeholder: '',
+        minimumInputLength: 0,
+        allowClear: true,
+        ajax: {
+            url: window.flex.baseUrl + '/employees/find-account-types',
+            method: 'POST',
+            dataType: 'json',
+            delay: 500,
+            cache: true,
+            headers: {
+                'X-XSRF-Token': getCookie('XSRF-Token')
+            },
+            data: function (params) {
+                return {
+                    term: params.term,
+                    page: params.page
+                };
+            },
+        },
+    });
+
 
 //     function findAlternativeItems() {
 //         const $agreementBrand = $('[name="agreement[brand]"]');
@@ -251,7 +310,7 @@ jQuery(document).ready(function ($) {
 
 //         if ($agreementBrand.val() !== null && $agreementSerie.val() !== null) {
 //             $.ajax({
-//                 url: window.flex.baseUrl + '/orders/find-alternative-items',
+//                 url: window.flex.baseUrl + '/paysheets/find-alternative-items',
 //                 method: 'POST',
 //                 data: {
 //                     brandId: $agreementBrand.val(),
@@ -316,18 +375,18 @@ jQuery(document).ready(function ($) {
 //     });
 
 //     function preloadItem(id, quantity, itemId, itemName, price, taxes) {
-//         $('.add-row-order-detail').click();
+//         $('.add-row-paysheet-detail').click();
 
 //         const $row = $('#detailPaysheet > tbody > tr:last');
 
-//         $row.find('[name^="order_detail[id]"]').val(id || '');
-//         $row.find('[name^="order_detail[quantity]"]').val(quantity);
-//         $row.find('[name^="order_detail[itemId]"]')
+//         $row.find('[name^="paysheet_detail[id]"]').val(id || '');
+//         $row.find('[name^="paysheet_detail[quantity]"]').val(quantity);
+//         $row.find('[name^="paysheet_detail[itemId]"]')
 //             .empty()
 //             .append(new Option(itemName, itemId, true, false))
 //             .change();
-//         $row.find('[name^="order_detail[price]"]').val(price || 0);
-//         $row.find('[name^="order_detail[tax]"]').val(taxes || 0);
+//         $row.find('[name^="paysheet_detail[price]"]').val(price || 0);
+//         $row.find('[name^="paysheet_detail[tax]"]').val(taxes || 0);
 
 //         setTotal($row);
 //     }
@@ -335,18 +394,18 @@ jQuery(document).ready(function ($) {
 //     $('[name="employee[id]"], [name="agreement[id]"]').on('change', function () {
 //         const $employeeId = $('[name="employee[id]"]');
 //         const $agreementId = $('[name="agreement[id]"]');
-//         const $orderType = $('[name="order[type]"]');
-//         const $orderId = $('[name="order[id]"]');
+//         const $paysheetType = $('[name="paysheet[type]"]');
+//         const $paysheetId = $('[name="paysheet[id]"]');
 
 //         if ($employeeId.val() > 0 && $agreementId.val() > 0) {
 //             $.ajax({
-//                 url: window.flex.baseUrl + '/orders/get-last',
+//                 url: window.flex.baseUrl + '/paysheets/get-last',
 //                 method: 'POST',
 //                 data: {
 //                     agreementId: $agreementId.val(),
 //                     employeeId: $employeeId.val(),
-//                     orderType: $orderType.val(),
-//                     orderId: $orderId.val(),
+//                     paysheetType: $paysheetType.val(),
+//                     paysheetId: $paysheetId.val(),
 //                 },
 //                 headers: {
 //                     'X-XSRF-Token': getCookie('XSRF-Token')
@@ -357,13 +416,13 @@ jQuery(document).ready(function ($) {
 //             }).always(function () {
 //                 $('.overlay').hide();
 //             }).done(function (response) {
-//                 const order = response.results.order;
+//                 const paysheet = response.results.paysheet;
 //                 const details = response.results.details;
 
-//                 $('[name="last_order[subTotal]"]').html(getMoneyFormat(order.subTotal || 0));
-//                 $('[name="last_order[taxes]"]').html(getMoneyFormat(order.taxes || 0));
-//                 $('[name="last_order[total]"]').html(getMoneyFormat(order.total || 0));
-//                 $('[name="last_order[notes]"]').html(order.notes || '');
+//                 $('[name="last_paysheet[subTotal]"]').html(getMoneyFormat(paysheet.subTotal || 0));
+//                 $('[name="last_paysheet[taxes]"]').html(getMoneyFormat(paysheet.taxes || 0));
+//                 $('[name="last_paysheet[total]"]').html(getMoneyFormat(paysheet.total || 0));
+//                 $('[name="last_paysheet[notes]"]').html(paysheet.notes || '');
 
 //                 var html = '';
 //                 var template = $('#lastPaysheet > tbody > tr:first').html();
@@ -405,8 +464,8 @@ jQuery(document).ready(function ($) {
 //         }
 //     });
 
-//     $('.add-row-order-detail').on('click', function () {
-//         const template = $('#template-row-order-detail').html().replace(/\[0\]/g, '[' + ((new Date()).getTime()) + ']');
+//     $('.add-row-paysheet-detail').on('click', function () {
+//         const template = $('#template-row-paysheet-detail').html().replace(/\[0\]/g, '[' + ((new Date()).getTime()) + ']');
 
 //         $('#detailPaysheet > tbody').append('<tr>' + template + '</tr>');
 
@@ -418,7 +477,7 @@ jQuery(document).ready(function ($) {
 //                 minimumInputLength: 0,
 //                 allowClear: true,
 //                 ajax: {
-//                     url: window.flex.baseUrl + '/order-details/find-items',
+//                     url: window.flex.baseUrl + '/paysheet-details/find-items',
 //                     method: 'POST',
 //                     dataType: 'json',
 //                     delay: 500,
@@ -438,8 +497,8 @@ jQuery(document).ready(function ($) {
 //                 const data = e.params.data;
 //                 const $row = $(this).closest('tr');
 
-//                 $row.find('[name^="order_detail[price]"]').val(data.price || 0);
-//                 $row.find('[name^="order_detail[tax]"]').val(data.taxes || 0);
+//                 $row.find('[name^="paysheet_detail[price]"]').val(data.price || 0);
+//                 $row.find('[name^="paysheet_detail[tax]"]').val(data.taxes || 0);
 
 //                 setTotal($row);
 //             });
@@ -447,7 +506,7 @@ jQuery(document).ready(function ($) {
 //         $('#messagePaysheetDetails').hide();
 //     });
 
-//     $('#detailPaysheet').on('click', '.remove-row-order-detail', function () {
+//     $('#detailPaysheet').on('click', '.remove-row-paysheet-detail', function () {
 //         $(this).closest('tr').remove();
 
 //         setSubTotal();
@@ -460,14 +519,14 @@ jQuery(document).ready(function ($) {
 //     });
 
 //     function setTotal(row) {
-//         const price = row.find('[name^="order_detail[price]"]').val();
-//         const quantity = row.find('[name^="order_detail[quantity]"]').val();
-//         const tax = row.find('[name^="order_detail[tax]"]').val();
+//         const price = row.find('[name^="paysheet_detail[price]"]').val();
+//         const quantity = row.find('[name^="paysheet_detail[quantity]"]').val();
+//         const tax = row.find('[name^="paysheet_detail[tax]"]').val();
 //         const taxes = quantity * getTaxes(price, tax) || 0;
 //         const total = quantity * price || 0;
 
-//         row.find('[name^="order_detail[taxes]"]').html(taxes).change();
-//         row.find('[name^="order_detail[total]"]').html(total + taxes).change();
+//         row.find('[name^="paysheet_detail[taxes]"]').html(taxes).change();
+//         row.find('[name^="paysheet_detail[total]"]').html(total + taxes).change();
 
 //         setSubTotal();
 //         setTotalTaxes();
@@ -481,11 +540,11 @@ jQuery(document).ready(function ($) {
 //         const numberItems = $row.length;
 
 //         for (let i = 0; i < numberItems; i++) {
-//             taxes += $row.eq(i).find('[name^="order_detail[taxes]"]').data('mf-amount') * 1;
+//             taxes += $row.eq(i).find('[name^="paysheet_detail[taxes]"]').data('mf-amount') * 1;
 //         }
 
 //         for (let i = 0; i < numberItems; i++) {
-//             subTotal += $row.eq(i).find('[name^="order_detail[total]"]').data('mf-amount') * 1;
+//             subTotal += $row.eq(i).find('[name^="paysheet_detail[total]"]').data('mf-amount') * 1;
 //         }
 
 //         $('[name="subTotal"]').html(subTotal - taxes).change();
@@ -497,7 +556,7 @@ jQuery(document).ready(function ($) {
 //         const numberItems = $row.length;
 
 //         for (let i = 0; i < numberItems; i++) {
-//             totalTaxes += $row.eq(i).find('[name^="order_detail[taxes]"]').data('mf-amount') * 1;
+//             totalTaxes += $row.eq(i).find('[name^="paysheet_detail[taxes]"]').data('mf-amount') * 1;
 //         }
 
 //         $('[name="totalTaxes"]').html(totalTaxes).change();
@@ -521,25 +580,25 @@ jQuery(document).ready(function ($) {
 //     }
 
 //     $('#buttonPayment').on('click', function () {
-//         let $orderBill = $('#__orderBill');
-//         let $orderPayment = $('#__orderPayment');
+//         let $paysheetBill = $('#__paysheetBill');
+//         let $paysheetPayment = $('#__paysheetPayment');
 
 //         if (!validPaysheetDetails()) {
-//             $orderBill.hide();
-//             $orderPayment.hide();
+//             $paysheetBill.hide();
+//             $paysheetPayment.hide();
 
 //             return undefined;
 //         }
 
-//         $orderBill.show();
-//         $orderPayment.show();
+//         $paysheetBill.show();
+//         $paysheetPayment.show();
 
 //         $(this).closest('.card-footer').hide();
 
 //         return undefined;
 //     });
 
-//     $('#__order').on('submit', function () {
+//     $('#__paysheet').on('submit', function () {
 //         if (!validPaysheetDetails) {
 //             return false;
 //         }
@@ -633,13 +692,13 @@ jQuery(document).ready(function ($) {
 //         setTotalPayed();
 //     });
 
-//     $('[name="order[discount]').on('change keyup', function () {
+//     $('[name="paysheet[discount]').on('change keyup', function () {
 //         setTotalToPay()
 //     });
 
 //     function setTotalToPay() {
 //         let totalNeto = $('[name="totalNeto"]').data('mf-amount') * 1;
-//         let discount = ($('[name="order[discount]').val() || 0) * 1;
+//         let discount = ($('[name="paysheet[discount]').val() || 0) * 1;
 //         let ten = totalNeto - Math.floor(totalNeto / 50) * 50;
 //         ten = (totalNeto - ten) < 50 ? ten : 0;
 //         let totalToPay = totalNeto - (discount + ten);
@@ -684,11 +743,11 @@ jQuery(document).ready(function ($) {
 //             .change();
 //     }
 
-//     if ($('[name="order[id]"]').val()) {
-//         let orderId = $('[name="order[id]"]').val();
+//     if ($('[name="paysheet[id]"]').val()) {
+//         let paysheetId = $('[name="paysheet[id]"]').val();
 
 //         $.ajax({
-//             url: window.flex.baseUrl + '/api/v1/orders/' + orderId + '/worker',
+//             url: window.flex.baseUrl + '/api/v1/paysheets/' + paysheetId + '/worker',
 //             method: 'GET',
 //             dataType: 'json',
 //             headers: {
@@ -706,7 +765,7 @@ jQuery(document).ready(function ($) {
 //                 return undefined;
 //             }
 
-//             $('[name="order[worker]"]')
+//             $('[name="paysheet[worker]"]')
 //                 .empty()
 //                 .append(new Option(worker.name, worker.id, true, false))
 //                 .trigger({
@@ -718,7 +777,7 @@ jQuery(document).ready(function ($) {
 //         });
 
 //         $.ajax({
-//             url: window.flex.baseUrl + '/api/v1/orders/' + orderId + '/agreement',
+//             url: window.flex.baseUrl + '/api/v1/paysheets/' + paysheetId + '/agreement',
 //             method: 'GET',
 //             dataType: 'json',
 //             headers: {
@@ -748,7 +807,7 @@ jQuery(document).ready(function ($) {
 //         });
 
 //         $.ajax({
-//             url: window.flex.baseUrl + '/api/v1/orders/' + orderId + '/order-details',
+//             url: window.flex.baseUrl + '/api/v1/paysheets/' + paysheetId + '/paysheet-details',
 //             method: 'GET',
 //             dataType: 'json',
 //             headers: {
@@ -760,21 +819,21 @@ jQuery(document).ready(function ($) {
 //         }).always(function () {
 //             $('.overlay').hide();
 //         }).done(function (response) {
-//             let orderDetails = response.data;
+//             let paysheetDetails = response.data;
 
-//             if (!orderDetails.length) {
+//             if (!paysheetDetails.length) {
 //                 return undefined;
 //             }
 
-//             for (let i = 0, j = orderDetails.length; i < j; i++) {
-//                 let orderDetail = orderDetails[i];
+//             for (let i = 0, j = paysheetDetails.length; i < j; i++) {
+//                 let paysheetDetail = paysheetDetails[i];
 
-//                 preloadItem(orderDetail.id, orderDetail.quantity, orderDetail.itemId, orderDetail.name, orderDetail.price, orderDetail.tax);
+//                 preloadItem(paysheetDetail.id, paysheetDetail.quantity, paysheetDetail.itemId, paysheetDetail.name, paysheetDetail.price, paysheetDetail.tax);
 //             }
 //         });
 
 //         $.ajax({
-//             url: window.flex.baseUrl + '/api/v1/orders/' + orderId + '/payments',
+//             url: window.flex.baseUrl + '/api/v1/paysheets/' + paysheetId + '/payments',
 //             method: 'GET',
 //             dataType: 'json',
 //             headers: {
