@@ -61,7 +61,7 @@ class MySQLPaysheetGateway implements PaysheetGateway
             'type.id as `type.id`',
             'type.name as `type.name`',
             'employeeId.Id as `employeeId.id`',
-            "CONCAT(employeeId.FirstName, ' ', employeeId.SecondName) as `employeeId.name`",
+            "CONCAT(employeeId.FirstName, ' ', employeeId.FirstSurname) as `employeeId.name`",
             'employeeId.DocumentTypeId as `employeeId.documentTypeId`',
             'employeeId.DocumentNumber as `employeeId.documentNumber`',
             'agreementId.id as `agreementId.id`',
@@ -71,9 +71,9 @@ class MySQLPaysheetGateway implements PaysheetGateway
         ]);
         $query->from('`Paysheets`', '`paysheet`');
         $query->join('`paysheet`', '`PayrollTypes`', '`type`', 'paysheet.Type = type.id');
-        $query->leftJoin('`paysheet`', '`Employees`', '`employeeId`', 'paysheet.EmployeeId = employeeId.id');
-        $query->leftJoin('`paysheet`', '`Agreements`', '`agreementId`', 'paysheet.AgreementId = agreementId.id');
-        $query->leftJoin('`paysheet`', '`PaysheetStatus`', '`statusId`', 'paysheet.StatusId = statusId.id');
+        $query->join('`paysheet`', '`Employees`', '`employeeId`', 'paysheet.EmployeeId = employeeId.id');
+        $query->join('`paysheet`', '`Agreements`', '`agreementId`', 'paysheet.AgreementId = agreementId.id');
+        $query->join('`paysheet`', '`PaysheetStatus`', '`statusId`', 'paysheet.StatusId = statusId.id');
 
         $query->orderBy('paysheet.UpdatedAt', 'DESC');
 
@@ -154,7 +154,7 @@ class MySQLPaysheetGateway implements PaysheetGateway
             'type.id as `type.id`',
             'type.name as `type.name`',
             'employeeId.id as `employeeId.id`',
-            "CONCAT(employeeId.FirstName, ' ', employeeId.SecondName) as `employeeId.name`",
+            "CONCAT(employeeId.FirstName, ' ', employeeId.FirstSurname) as `employeeId.name`",
             'employeeId.documentTypeId as `employeeId.documentTypeId`',
             'employeeId.documentNumber as `employeeId.documentNumber`',
             'agreementId.id as `agreementId.id`',

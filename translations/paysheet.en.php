@@ -10,7 +10,7 @@ return [
     ],
     'label' => [
         'id' => 'Id',
-        // 'type' => 'Type',
+        'type' => 'Type',
         'employeeId' => 'Employee Id',
         'agreementId' => 'Agreement Id',
         // 'subtotal' => 'Subtotal',
@@ -24,7 +24,7 @@ return [
         // 'expiratedAt' => 'Expirated At',
         'createdAt' => 'Created At',
         // 'updatedAt' => 'Updated At',
-        // 'createdBy' => 'Created By',
+        'createdBy' => 'Created By',
         // 'updatedBy' => 'Updated By',
     ],
     'message' => [
@@ -38,6 +38,7 @@ return [
         'createdAtEnd' => 'Date End',
     ],
     '__paysheet' => [
+        'totalDue' => 'Total Due',
         'buttonCreate' => 'Create Paysheet',
         'buttonUpdate' => 'Update Paysheet',
         'buttonPartial' => 'Save Paysheet',

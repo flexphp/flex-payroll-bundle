@@ -125,6 +125,10 @@ final class EmployeeFactory
             $employee->setUpdatedByInstance((new UserFactory())->make($this->getFkEntity('updatedBy.', $data)));
         }
 
+        if (isset($data['name'])) {
+            $employee->setName($data['name']);
+        }
+
         return $employee;
     }
 }

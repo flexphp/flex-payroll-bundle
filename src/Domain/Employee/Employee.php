@@ -9,12 +9,12 @@
  */
 namespace FlexPHP\Bundle\PayrollBundle\Domain\Employee;
 
-use FlexPHP\Bundle\PayrollBundle\Domain\AccountType\AccountType;
+use FlexPHP\Bundle\HelperBundle\Domain\Helper\ToArrayTrait;
 use FlexPHP\Bundle\LocationBundle\Domain\DocumentType\DocumentType;
+use FlexPHP\Bundle\LocationBundle\Domain\PaymentMethod\PaymentMethod;
+use FlexPHP\Bundle\PayrollBundle\Domain\AccountType\AccountType;
 use FlexPHP\Bundle\PayrollBundle\Domain\EmployeeSubType\EmployeeSubType;
 use FlexPHP\Bundle\PayrollBundle\Domain\EmployeeType\EmployeeType;
-use FlexPHP\Bundle\HelperBundle\Domain\Helper\ToArrayTrait;
-use FlexPHP\Bundle\LocationBundle\Domain\PaymentMethod\PaymentMethod;
 use FlexPHP\Bundle\UserBundle\Domain\User\User;
 
 final class Employee
@@ -68,6 +68,8 @@ final class Employee
     private $createdByInstance;
 
     private $updatedByInstance;
+
+    private $name;
 
     public function id(): ?int
     {
@@ -307,5 +309,15 @@ final class Employee
     public function setUpdatedByInstance(?User $user): void
     {
         $this->updatedByInstance = $user;
+    }
+
+    public function name(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
     }
 }

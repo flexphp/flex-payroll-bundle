@@ -30,26 +30,24 @@
             <div class="form-row">
                 <div class="col">
                     <label>{% trans %}label.employeeId{% endtrans %}</label><div class="form-control-plaintext">
-                        {% if paysheet.employeeIdInstance %}
-                        <td>
-                            <a href="{{ path('flexphp.payroll.employees.read', {id: paysheet.employeeIdInstance.id}) }}" class="btn-link">
-                                {% if paysheet.employeeIdInstance.name|default(null) %}
-                                {{ paysheet.employeeIdInstance.name }}
-                                {% elseif paysheet.employeeIdInstance.documentTypeId or paysheet.employeeIdInstance.documentNumber %}
-                                {{ paysheet.employeeIdInstance.documentTypeId }} {{ paysheet.employeeIdInstance.documentNumber }}
-                                {% else %}
-                                {{ paysheet.employeeIdInstance.id }}
-                                {% endif %}
-                            </a>
-                        </td>
-                        {% else %}
-                        -
-                        {% endif %}
+                        <a href="{{ path('flexphp.payroll.employees.read', {id: paysheet.employeeIdInstance.id}) }}" class="btn-link">
+                            {% if paysheet.employeeIdInstance.name|default(null) %}
+                            {{ paysheet.employeeIdInstance.name }}
+                            {% elseif paysheet.employeeIdInstance.documentTypeId or paysheet.employeeIdInstance.documentNumber %}
+                            {{ paysheet.employeeIdInstance.documentTypeId }} {{ paysheet.employeeIdInstance.documentNumber }}
+                            {% else %}
+                            {{ paysheet.employeeIdInstance.id }}
+                            {% endif %}
+                        </a>
                     </div>
                 </div>
 
                 <div class="col">
-                    <label>{% trans %}label.agreementId{% endtrans %}</label><div class="form-control-plaintext">{{ paysheet.agreementIdInstance.name|default('-') }}</div>
+                    <label>{% trans %}label.agreementId{% endtrans %}</label><div class="form-control-plaintext">
+                        <a href="{{ path('flexphp.payroll.agreements.read', {id: paysheet.agreementIdInstance.id}) }}" class="btn-link">
+                            {{ paysheet.agreementIdInstance.name|default('-') }}
+                        </a>
+                    </div>
                 </div>
 
                 <div class="col">
@@ -66,20 +64,20 @@
                 </div>
             </div>
 
-            <div class="form-row">
-                <div class="col">
-                    <label>{% trans %}label.notes{% endtrans %}</label>
-                    <div class="form-control-plaintext">{{ paysheet.notes|default('-')|nl2br }}</div>
-                </div>
-            </div>
+{#             <div class="form-row"> #}
+{#                 <div class="col"> #}
+{#                     <label>{% trans %}label.notes{% endtrans %}</label> #}
+{#                     <div class="form-control-plaintext">{{ paysheet.notes|default('-')|nl2br }}</div> #}
+{#                 </div> #}
+{#             </div> #}
 
-            <hr />
+{#             <hr /> #}
 
-            <div class="form-row">
-                <div class="h5">
-                    {% trans from 'payroll' %}entity{% endtrans %}
-                </div>
-            </div>
+{#             <div class="form-row"> #}
+{#                 <div class="h5"> #}
+{#                     {% trans from 'payroll' %}entity{% endtrans %} #}
+{#                 </div> #}
+{#             </div> #}
 
             <hr />
 
@@ -94,12 +92,12 @@
             </div>
             {% endif %}
 
-            <div class="form-row">
-                <div class="col">
-                    <label>{% trans %}label.paysheetNotes{% endtrans %}</label>
-                    <div class="form-control-plaintext">{{ paysheet.paysheetNotes|default('-')|nl2br }}</div>
-                </div>
-            </div>
+{#             <div class="form-row"> #}
+{#                 <div class="col"> #}
+{#                     <label>{% trans %}label.paysheetNotes{% endtrans %}</label> #}
+{#                     <div class="form-control-plaintext">{{ paysheet.paysheetNotes|default('-')|nl2br }}</div> #}
+{#                 </div> #}
+{#             </div> #}
 
             {# {% if payments|length > 0 %} #}
                 {# <hr /> #}
@@ -144,42 +142,42 @@
                 {# {% endfor %} #}
             {# {% endif %} #}
 
-            <hr />
+{#             <hr /> #}
 
-            <div class="form-row">
-                <div class="col"></div>
-                <div class="col">
-                    <label>{% trans %}__paysheet.total{% endtrans %}</label>
-                </div>
-                <div class="col">
-                    <div class="form-control-plaintext money-format">{{ paysheet.total  }}</div>
-                </div>
-            </div>
+            {# <div class="form-row"> #}
+            {#     <div class="col"></div> #}
+            {#     <div class="col"> #}
+            {#         <label>{% trans %}__paysheet.total{% endtrans %}</label> #}
+            {#     </div> #}
+            {#     <div class="col"> #}
+            {#         <div class="form-control-plaintext money-format">{{ paysheet.total  }}</div> #}
+            {#     </div> #}
+            {# </div> #}
             {% if not paysheet.isDraft %}
-            <div class="form-row">
-                <div class="col"></div>
-                <div class="col">
-                    <label>{% trans %}label.totalPaid{% endtrans %}</label>
-                </div>
-                <div class="col">
-                    <div class="form-control-plaintext money-format">{{ paysheet.totalPaid }}</div>
-                </div>
-            </div>
-            {% if (paysheet.total - paysheet.totalPaid) > 0 %}
-            <div class="form-row">
-                <div class="col"></div>
-                <div class="col">
-                    <label>{% trans %}__paysheet.totalDue{% endtrans %}</label>
-                </div>
-                <div class="col">
-                    <div class="form-control-plaintext money-format">{{ paysheet.total - paysheet.totalPaid }}</div>
-                </div>
-            </div>
+            {# <div class="form-row"> #}
+            {#     <div class="col"></div> #}
+            {#     <div class="col"> #}
+            {#         <label>{% trans %}label.totalPaid{% endtrans %}</label> #}
+            {#     </div> #}
+            {#     <div class="col"> #}
+            {#         <div class="form-control-plaintext money-format">{{ paysheet.totalPaid }}</div> #}
+            {#     </div> #}
+            {# </div> #}
+            {# {% if (paysheet.total - paysheet.totalPaid) > 0 %} #}
+            {# <div class="form-row"> #}
+            {#     <div class="col"></div> #}
+            {#     <div class="col"> #}
+            {#         <label>{% trans %}__paysheet.totalDue{% endtrans %}</label> #}
+            {#     </div> #}
+            {#     <div class="col"> #}
+            {#         <div class="form-control-plaintext money-format">{{ paysheet.total - paysheet.totalPaid }}</div> #}
+            {#     </div> #}
+            {# </div> #}
+            {# {% endif %} #}
             {% endif %}
-            {% endif %}
-            {% if paysheet.paidAt %}
-                <div class="form-group"><label>{% trans %}label.paidAt{% endtrans %}</label><div class="form-control-plaintext"><span class="datetime-format">{{ paysheet.paidAt|date('Y-m-d H:i:s') }}</span></div></div>
-            {% endif %}
+            {# {% if paysheet.paidAt %} #}
+            {#     <div class="form-group"><label>{% trans %}label.paidAt{% endtrans %}</label><div class="form-control-plaintext"><span class="datetime-format">{{ paysheet.paidAt|date('Y-m-d H:i:s') }}</span></div></div> #}
+            {# {% endif %} #}
             {% if paysheet.createdBy %}
                 <div class="form-group"><label>{% trans %}label.createdBy{% endtrans %}</label><div class="form-control-plaintext">{{ paysheet.createdByInstance.name }} (<span class="datetime-format">{{ paysheet.createdAt ? paysheet.createdAt|date('Y-m-d H:i:s') : '-' }}</span>)</div></div>
             {% endif %}
