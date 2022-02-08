@@ -23,6 +23,7 @@ final class CreatePaysheetUseCase extends AbstractPaysheetUseCase
     {
         if (!empty($request->employee)) {
             $request->employeeId = $this->getEmployeeId($request);
+            $request->agreement['employee'] = $request->employeeId;
         }
 
         if (!empty($request->agreement)) {

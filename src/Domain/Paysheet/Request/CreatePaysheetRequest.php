@@ -53,6 +53,8 @@ class CreatePaysheetRequest implements RequestInterface
 
     public $createdBy;
 
+    public $createdAt;
+
     public function __construct(array $data, int $createdBy, ?string $timezone = null)
     {
         $this->employee = $data['employee'] ?? [];

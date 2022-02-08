@@ -110,7 +110,7 @@ abstract class AbstractPaysheetUseCase
             $agreement = $this->getAgreementById($_agreement);
             $agreement = $this->updateAgreement($agreement->id(), $request);
         } else {
-            return null;
+            $agreement = $this->createAgreement($request);
         }
 
         return $agreement->id();
@@ -129,27 +129,8 @@ abstract class AbstractPaysheetUseCase
         return $agreement;
     }
 
-    protected function getAgreementByPlaca(Agreement $_agreement, CreatePaysheetRequest $request): Agreement
-    {
-        $useCase = new IndexAgreementUseCase($this->agreementRepository);
-
-        $agreements = ($useCase->execute(new IndexAgreementRequest([
-            'placa' => $_agreement->placa(),
-        ], 1, 1)))->agreements;
-
-        if (\count($agreements) > 0) {
-            $agreement = \end($agreements);
-
-            return $this->updateAgreement($agreement->id(), $request);
-        }
-
-        return $this->createAgreement($request);
-    }
-
     protected function createAgreement(CreatePaysheetRequest $request): Agreement
     {
-        $request->agreement['isActive'] = true;
-
         $useCase = new CreateAgreementUseCase($this->agreementRepository);
 
         $agreement = ($useCase->execute(new CreateAgreementRequest($request->agreement, $request->createdBy)))->agreement;
