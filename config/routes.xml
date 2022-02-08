@@ -121,6 +121,8 @@
     <route id="flexphp.payroll.paysheets.prepaysheet" controller="flexphp.payroll.bundle.paysheet_controller::prepaysheet" path="/paysheets/{id}/prepaysheet" methods="GET" />
     <route id="flexphp.payroll.paysheets.epayroll" controller="flexphp.payroll.bundle.paysheet_controller::epayroll" path="/paysheets/epayroll" methods="GET" />
 
+    <route id="flexphp.payroll.api.v1.paysheets.employee" controller="flexphp.payroll.bundle.api_v1_paysheet_controller::employee" path="/api/v1/paysheets/{id}/employee" methods="GET" />
+
     <route id="flexphp.payroll.payrolls.index" controller="flexphp.payroll.bundle.payroll_controller::index" path="/payrolls" methods="GET" />
     <route id="flexphp.payroll.payrolls.new" controller="flexphp.payroll.bundle.payroll_controller::new" path="/payrolls/new" methods="GET" />
     <route id="flexphp.payroll.payrolls.create" controller="flexphp.payroll.bundle.payroll_controller::create" path="/payrolls/create" methods="POST" />
