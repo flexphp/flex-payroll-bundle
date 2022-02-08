@@ -18,13 +18,13 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\ReadPaysheetRequest;
 
 final class GetPaysheetPayrollsUseCase
 {
-    private PaysheetRepository $orderRepository;
+    private PaysheetRepository $paysheetRepository;
 
     private PayrollRepository $payrollRepository;
 
-    public function __construct(PaysheetRepository $orderRepository, PayrollRepository $payrollRepository)
+    public function __construct(PaysheetRepository $paysheetRepository, PayrollRepository $payrollRepository)
     {
-        $this->orderRepository = $orderRepository;
+        $this->paysheetRepository = $paysheetRepository;
         $this->payrollRepository = $payrollRepository;
     }
 
@@ -33,17 +33,17 @@ final class GetPaysheetPayrollsUseCase
      */
     public function execute(ReadPaysheetRequest $request): array
     {
-        $useCasePaysheet = new ReadPaysheetUseCase($this->orderRepository);
+        $useCasePaysheet = new ReadPaysheetUseCase($this->paysheetRepository);
 
         $responsePaysheet = $useCasePaysheet->execute(new ReadPaysheetRequest($request->id));
 
-        $order = $responsePaysheet->order;
+        $paysheet = $responsePaysheet->paysheet;
 
         $payrolls = [];
 
-        if ($order->id()) {
+        if ($paysheet->id()) {
             $requestPayroll = new IndexPayrollRequest([
-                'orderId' => $order->id(),
+                'paysheetId' => $paysheet->id(),
             ], 1);
 
             $useCasePayroll = new IndexPayrollUseCase($this->payrollRepository);

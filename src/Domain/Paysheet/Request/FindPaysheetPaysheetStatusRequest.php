@@ -11,7 +11,7 @@ namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request;
 
 use FlexPHP\Messages\RequestInterface;
 
-final class FindPaysheetPayrollStatusRequest implements RequestInterface
+final class FindPaysheetPaysheetStatusRequest implements RequestInterface
 {
     public $term;
 

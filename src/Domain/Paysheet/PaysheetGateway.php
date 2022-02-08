@@ -11,13 +11,12 @@ namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet;
 
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreateEPayrollRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreatePrepaysheetRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetAgreementRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetAlternativeProductRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetEmployeeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetHistoryServiceRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetPayrollStatusRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetPayrollTypeRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetAgreementRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetWorkerRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetPaysheetStatusRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\GetLastPaysheetRequest;
 
 interface PaysheetGateway
@@ -32,13 +31,13 @@ interface PaysheetGateway
 
     public function pop(Paysheet $paysheet): void;
 
-    // public function filterPayrollTypes(FindPaysheetPayrollTypeRequest $request, int $page, int $limit): array;
+    public function filterPayrollTypes(FindPaysheetPayrollTypeRequest $request, int $page, int $limit): array;
 
     public function filterEmployees(FindPaysheetEmployeeRequest $request, int $page, int $limit): array;
 
     public function filterAgreements(FindPaysheetAgreementRequest $request, int $page, int $limit): array;
 
-    // public function filterPayrollStatus(FindPaysheetPayrollStatusRequest $request, int $page, int $limit): array;
+    public function filterPaysheetStatus(FindPaysheetPaysheetStatusRequest $request, int $page, int $limit): array;
 
     // public function filterHistoryServices(FindPaysheetHistoryServiceRequest $request, int $limit): array;
 

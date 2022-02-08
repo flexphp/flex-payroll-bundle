@@ -20,7 +20,7 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\DeletePaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetAlternativeProductRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetEmployeeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetHistoryServiceRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetPayrollStatusRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetPaysheetStatusRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetAgreementRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetWorkerRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\GetLastPaysheetRequest;
@@ -34,7 +34,7 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\DeletePaysheetUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\FindPaysheetAlternativeProductUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\FindPaysheetEmployeeUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\FindPaysheetHistoryServiceUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\FindPaysheetPayrollStatusUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\FindPaysheetPaysheetStatusUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\FindPaysheetAgreementUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\FindPaysheetWorkerUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase\GetLastPaysheetUseCase;
@@ -219,25 +219,25 @@ final class PaysheetController extends AbstractController
         ]);
     }
 
-//     /**
-//      * @Cache(smaxage="3600")
-//      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_ORDERSTATUS_INDEX')", statusCode=401)
-//      */
-//     public function findPayrollStatus(Request $request, FindPaysheetPayrollStatusUseCase $useCase): Response
-//     {
-//         if (!$request->isXmlHttpRequest()) {
-//             return new JsonResponse([], Response::HTTP_BAD_REQUEST);
-//         }
+    /**
+     * @Cache(smaxage="3600")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_PAYSHEETSTATUS_INDEX')", statusCode=401)
+     */
+    public function findPaysheetStatus(Request $request, FindPaysheetPaysheetStatusUseCase $useCase): Response
+    {
+        if (!$request->isXmlHttpRequest()) {
+            return new JsonResponse([], Response::HTTP_BAD_REQUEST);
+        }
 
-//         $request = new FindPaysheetPayrollStatusRequest($request->request->all());
+        $request = new FindPaysheetPaysheetStatusRequest($request->request->all());
 
-//         $response = $useCase->execute($request);
+        $response = $useCase->execute($request);
 
-//         return new JsonResponse([
-//             'results' => $response->paysheetStatus,
-//             'pagination' => ['more' => false],
-//         ]);
-//     }
+        return new JsonResponse([
+            'results' => $response->paysheetStatus,
+            'pagination' => ['more' => false],
+        ]);
+    }
 
 //     /**
 //      * @Cache(smaxage="3600")

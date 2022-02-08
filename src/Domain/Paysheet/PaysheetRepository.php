@@ -9,22 +9,21 @@
  */
 namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet;
 
+use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\PayrollGateway;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreateEPayrollRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreatePaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreatePrepaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\DeletePaysheetRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetAgreementRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetAlternativeProductRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetEmployeeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetHistoryServiceRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetPayrollStatusRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetPayrollTypeRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetAgreementRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetWorkerRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\FindPaysheetPaysheetStatusRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\GetLastPaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\IndexPaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\ReadPaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\UpdatePaysheetRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\PayrollGateway;
 
 final class PaysheetRepository
 {
@@ -107,9 +106,9 @@ final class PaysheetRepository
         return $this->gateway->filterAgreements($request, $request->_page, $request->_limit);
     }
 
-    public function findPayrollStatusBy(FindPaysheetPayrollStatusRequest $request): array
+    public function findPaysheetStatusBy(FindPaysheetPaysheetStatusRequest $request): array
     {
-        return $this->gateway->filterPayrollStatus($request, $request->_page, $request->_limit);
+        return $this->gateway->filterPaysheetStatus($request, $request->_page, $request->_limit);
     }
 
 //     public function findHistoryServiceBy(FindPaysheetHistoryServiceRequest $request): array

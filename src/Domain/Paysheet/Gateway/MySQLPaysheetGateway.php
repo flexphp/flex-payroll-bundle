@@ -231,24 +231,24 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->execute();
     }
 
-    // public function filterPayrollTypes(FindPaysheetPayrollTypeRequest $request, int $page, int $limit): array
-    // {
-    //     $query = $this->conn->createQueryBuilder();
+    public function filterPayrollTypes(FindPaysheetPayrollTypeRequest $request, int $page, int $limit): array
+    {
+        $query = $this->conn->createQueryBuilder();
 
-    //     $query->select([
-    //         'paysheetType.id as id',
-    //         'paysheetType.name as text',
-    //     ]);
-    //     $query->from('`PayrollTypes`', '`paysheetType`');
+        $query->select([
+            'payrollType.id as id',
+            'payrollType.name as text',
+        ]);
+        $query->from('`PayrollTypes`', '`payrollType`');
 
-    //     $query->where('paysheetType.name like :paysheetType_name');
-    //     $query->setParameter(':paysheetType_name', "%{$request->term}%");
+        $query->where('payrollType.name like :payrollType_name');
+        $query->setParameter(':payrollType_name', "%{$request->term}%");
 
-    //     $query->setFirstResult($page ? ($page - 1) * $limit : 0);
-    //     $query->setMaxResults($limit);
+        $query->setFirstResult($page ? ($page - 1) * $limit : 0);
+        $query->setMaxResults($limit);
 
-    //     return $query->execute()->fetchAll();
-    // }
+        return $query->execute()->fetchAll();
+    }
 
     public function filterEmployees(FindPaysheetEmployeeRequest $request, int $page, int $limit): array
     {
@@ -354,24 +354,24 @@ class MySQLPaysheetGateway implements PaysheetGateway
         return $query->execute()->fetchAll();
     }
 
-    // public function filterPaysheetStatus(FindPaysheetPaysheetStatusRequest $request, int $page, int $limit): array
-    // {
-    //     $query = $this->conn->createQueryBuilder();
+    public function filterPaysheetStatus(FindPaysheetPaysheetStatusRequest $request, int $page, int $limit): array
+    {
+        $query = $this->conn->createQueryBuilder();
 
-    //     $query->select([
-    //         'paysheetStatus.id as id',
-    //         'paysheetStatus.name as text',
-    //     ]);
-    //     $query->from('`PaysheetStatus`', '`paysheetStatus`');
+        $query->select([
+            'paysheetStatus.id as id',
+            'paysheetStatus.name as text',
+        ]);
+        $query->from('`PaysheetStatus`', '`paysheetStatus`');
 
-    //     $query->where('paysheetStatus.name like :paysheetStatus_name');
-    //     $query->setParameter(':paysheetStatus_name', "%{$request->term}%");
+        $query->where('paysheetStatus.name like :paysheetStatus_name');
+        $query->setParameter(':paysheetStatus_name', "%{$request->term}%");
 
-    //     $query->setFirstResult($page ? ($page - 1) * $limit : 0);
-    //     $query->setMaxResults($limit);
+        $query->setFirstResult($page ? ($page - 1) * $limit : 0);
+        $query->setMaxResults($limit);
 
-    //     return $query->execute()->fetchAll();
-    // }
+        return $query->execute()->fetchAll();
+    }
 
     // // Custom methods
 

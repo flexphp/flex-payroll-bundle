@@ -54,7 +54,7 @@ final class PaysheetFilterFormType extends AbstractType
             'label' => 'label.statusId',
             'required' => false,
             'attr' => [
-                'data-autocomplete-url' => $this->router->generate('flexphp.payroll.paysheets.find.payroll-status'),
+                'data-autocomplete-url' => $this->router->generate('flexphp.payroll.paysheets.find.paysheet-status'),
                 'maxlength' => 2,
             ],
         ]);

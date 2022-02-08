@@ -15,16 +15,16 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Response\IndexPaysheetResponse;
 
 final class IndexPaysheetUseCase
 {
-    private PaysheetRepository $orderRepository;
+    private PaysheetRepository $paysheetRepository;
 
-    public function __construct(PaysheetRepository $orderRepository)
+    public function __construct(PaysheetRepository $paysheetRepository)
     {
-        $this->orderRepository = $orderRepository;
+        $this->paysheetRepository = $paysheetRepository;
     }
 
     public function execute(IndexPaysheetRequest $request): IndexPaysheetResponse
     {
-        $paysheets = $this->orderRepository->findBy($request);
+        $paysheets = $this->paysheetRepository->findBy($request);
 
         return new IndexPaysheetResponse($paysheets);
     }

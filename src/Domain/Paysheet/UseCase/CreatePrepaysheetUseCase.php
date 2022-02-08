@@ -19,24 +19,24 @@ use NumberFormatter;
 
 final class CreatePrepaysheetUseCase
 {
-    private PaysheetRepository $orderRepository;
+    private PaysheetRepository $paysheetRepository;
 
-    public function __construct(PaysheetRepository $orderRepository)
+    public function __construct(PaysheetRepository $paysheetRepository)
     {
-        $this->orderRepository = $orderRepository;
+        $this->paysheetRepository = $paysheetRepository;
     }
 
     public function execute(CreatePrepaysheetRequest $request): CreatePrepaysheetResponse
     {
-        if (!empty($request->orderId)) {
-            $order = $this->orderRepository->getById(new ReadPaysheetRequest($request->orderId));
+        if (!empty($request->paysheetId)) {
+            $paysheet = $this->paysheetRepository->getById(new ReadPaysheetRequest($request->paysheetId));
         }
 
-        if (empty($order) || !$order->id()) {
+        if (empty($paysheet) || !$paysheet->id()) {
             throw new Exception(\sprintf('Paysheet not exist [%d]', $request->id ?? 0), 404);
         }
 
-        $data = $this->orderRepository->getPrepaysheetData($request);
+        $data = $this->paysheetRepository->getPrepaysheetData($request);
 
         if (empty($data)) {
             throw new Exception(\sprintf('Paysheet data not found [%d]', $request->id ?? 0), 404);
@@ -46,13 +46,13 @@ final class CreatePrepaysheetUseCase
         $pdftkStyle = $_ENV['PDFTK_STYLE'] ?? 'normal';
         $pdftkTemplate = $_ENV['PDFTK_TEMPLATE'] ?? '';
 
-        $order = $data['order'];
+        $paysheet = $data['paysheet'];
         $details = $data['details'];
         $payments = $data['payments'];
 
         $file = \rtrim(\sys_get_temp_dir(), \DIRECTORY_SEPARATOR) . '/' . \date('U') . '.fpdf';
         $output = \rtrim(\sys_get_temp_dir(), \DIRECTORY_SEPARATOR) . '/' . \date('U') . '.pdf';
-        $filename = ($order['orderId'] ?? \date('U')) . '.pdf';
+        $filename = ($paysheet['paysheetId'] ?? \date('U')) . '.pdf';
         $template = \realpath(__DIR__ . '/../Asset/Template.pdf');
 
         if (!empty($pdftkTemplate)) {
@@ -64,9 +64,9 @@ final class CreatePrepaysheetUseCase
         }
 
         if ($pdftkStyle === 'normal') {
-            $this->createFPDFNormal($file, $order, $details, $payments);
+            $this->createFPDFNormal($file, $paysheet, $details, $payments);
         } elseif ($pdftkStyle === 'short') {
-            $this->createFPDFShort($file, $order, $details);
+            $this->createFPDFShort($file, $paysheet, $details);
         } else {
             throw new Exception('Pdf [Style] not supported', 500);
         }
@@ -107,7 +107,7 @@ final class CreatePrepaysheetUseCase
         return \numfmt_format_currency($fmt, $number, $currency);
     }
 
-    private function createFPDFNormal(string $file, array $order, array $details, array $payments): void
+    private function createFPDFNormal(string $file, array $paysheet, array $details, array $payments): void
     {
         $pdf = new CreatePDFUseCase('P', 'pt', 'letter');
         $pdf->AddPage();
@@ -115,38 +115,38 @@ final class CreatePrepaysheetUseCase
         // $pdf->AddGrid(10, 10, 594, 770, 10);
         $pdf->SetFont('Arial', '', 8);
 
-        $pdf->Text(90, 74, $order['payerName'] ?? '');
-        $pdf->Text(345, 73, $order['orderId'] ?? '');
-        $pdf->Text(475, 73, \strtoupper($order['orderStatusName'] ?? ''));
+        $pdf->Text(90, 74, $paysheet['payerName'] ?? '');
+        $pdf->Text(345, 73, $paysheet['paysheetId'] ?? '');
+        $pdf->Text(475, 73, \strtoupper($paysheet['paysheetStatusName'] ?? ''));
 
-        if (!empty($order['payerDocumentNumber'])) {
-            $pdf->Text(90, 88, $order['payerDocumentType'] ?? '');
-            $pdf->Text(103, 88, $order['payerDocumentNumber'] ?? '');
+        if (!empty($paysheet['payerDocumentNumber'])) {
+            $pdf->Text(90, 88, $paysheet['payerDocumentType'] ?? '');
+            $pdf->Text(103, 88, $paysheet['payerDocumentNumber'] ?? '');
         }
-        $pdf->Text(345, 85, \substr($order['billCreatedAt'] ?? '', 0, 10));
-        $pdf->Text(475, 85, \substr($order['billDueAt'] ?? '', 0, 10));
+        $pdf->Text(345, 85, \substr($paysheet['billCreatedAt'] ?? '', 0, 10));
+        $pdf->Text(475, 85, \substr($paysheet['billDueAt'] ?? '', 0, 10));
 
-        $pdf->Text(90, 101, $order['payerEmail'] ?? '');
-        $pdf->Text(330, 102, ($order['vehicleBrand'] ?? '') . ' ' . ($order['vehicleSerie'] ?? ''));
+        $pdf->Text(90, 101, $paysheet['payerEmail'] ?? '');
+        $pdf->Text(330, 102, ($paysheet['vehicleBrand'] ?? '') . ' ' . ($paysheet['vehicleSerie'] ?? ''));
 
         $pdf->SetY(95);
         $pdf->SetX(526);
-        $pdf->Cell(38, 10, $order['kilometers'] ?? 0, 0, 0, 'R');
+        $pdf->Cell(38, 10, $paysheet['kilometers'] ?? 0, 0, 0, 'R');
 
-        $pdf->Text(330, 116, $order['vehiclePlaca'] ?? '');
+        $pdf->Text(330, 116, $paysheet['vehiclePlaca'] ?? '');
 
         $pdf->SetY(107);
         $pdf->SetX(455);
-        $pdf->Cell(15, 10, ($order['vehicleOilQuantity'] ?? ''), 0, 0, 'R');
+        $pdf->Cell(15, 10, ($paysheet['vehicleOilQuantity'] ?? ''), 0, 0, 'R');
 
         $pdf->SetY(108);
         $pdf->SetX(526);
-        $pdf->Cell(38, 10, ($order['kilometers'] ?? 0) + ($order['kilometersToChange'] ?? 0), 0, 0, 'R');
+        $pdf->Cell(38, 10, ($paysheet['kilometers'] ?? 0) + ($paysheet['kilometersToChange'] ?? 0), 0, 0, 'R');
 
-        $pdf->Text(42, 130, $order['payerAddress'] ?? '');
-        $pdf->Text(187, 130, $order['payerCity'] ?? '');
-        $pdf->Text(238, 130, $order['payerPhoneNumber'] ?? '');
-        $pdf->Text(330, 130, $order['workerName'] ?? '');
+        $pdf->Text(42, 130, $paysheet['payerAddress'] ?? '');
+        $pdf->Text(187, 130, $paysheet['payerCity'] ?? '');
+        $pdf->Text(238, 130, $paysheet['payerPhoneNumber'] ?? '');
+        $pdf->Text(330, 130, $paysheet['workerName'] ?? '');
 
         $paymentMethods = [];
 
@@ -158,7 +158,7 @@ final class CreatePrepaysheetUseCase
         $pdf->SetFont('Arial', '', 9);
 
         $currency = 'COP';
-        $totalPending = ($order['orderTotal'] ?? 0) - ($order['orderTotalPaid'] ?? 0);
+        $totalPending = ($paysheet['paysheetTotal'] ?? 0) - ($paysheet['paysheetTotalPaid'] ?? 0);
 
         $pdf->SetY(278);
         $pdf->SetX(325);
@@ -171,20 +171,20 @@ final class CreatePrepaysheetUseCase
         $pdf->Cell(95, 10, $this->currencyFormat($currency, (float)$totalPending), 0, 0, 'R');
         $pdf->SetY(320);
         $pdf->SetX(325);
-        $pdf->Cell(95, 10, $this->currencyFormat($currency, (float)$order['orderTotalPaid'] ?? 0), 0, 0, 'R');
+        $pdf->Cell(95, 10, $this->currencyFormat($currency, (float)$paysheet['paysheetTotalPaid'] ?? 0), 0, 0, 'R');
 
         $pdf->SetY(278);
         $pdf->SetX(473);
-        $pdf->Cell(92, 10, $this->currencyFormat($currency, (float)($order['orderSubtotal'] ?? 0)), 0, 0, 'R');
+        $pdf->Cell(92, 10, $this->currencyFormat($currency, (float)($paysheet['paysheetSubtotal'] ?? 0)), 0, 0, 'R');
         $pdf->SetY(292);
         $pdf->SetX(473);
-        $pdf->Cell(92, 10, $this->currencyFormat($currency, (float)($order['orderTaxes'] ?? 0)), 0, 0, 'R');
+        $pdf->Cell(92, 10, $this->currencyFormat($currency, (float)($paysheet['paysheetTaxes'] ?? 0)), 0, 0, 'R');
         $pdf->SetY(306);
         $pdf->SetX(473);
-        $pdf->Cell(92, 10, $this->currencyFormat($currency, (float)(-$order['orderDiscount'] ?? 0)), 0, 0, 'R');
+        $pdf->Cell(92, 10, $this->currencyFormat($currency, (float)(-$paysheet['paysheetDiscount'] ?? 0)), 0, 0, 'R');
         $pdf->SetY(320);
         $pdf->SetX(473);
-        $pdf->Cell(92, 10, $this->currencyFormat($currency, (float)($order['orderTotal'] ?? 0)), 0, 0, 'R');
+        $pdf->Cell(92, 10, $this->currencyFormat($currency, (float)($paysheet['paysheetTotal'] ?? 0)), 0, 0, 'R');
 
         $pdf->SetFont('Arial', '', 8);
 
@@ -235,7 +235,7 @@ final class CreatePrepaysheetUseCase
         }
     }
 
-    private function createFPDFShort(string $file, array $order, array $details): void
+    private function createFPDFShort(string $file, array $paysheet, array $details): void
     {
         $pdf = new CreatePDFUseCase('P', 'mm', [85, 135]);
 
@@ -244,28 +244,28 @@ final class CreatePrepaysheetUseCase
         // $pdf->AddGrid(5, 5, 75, 135, 5);
         $pdf->SetFont('Arial', '', 8);
 
-        $payerName = $order['payerName'] ?? '';
+        $payerName = $paysheet['payerName'] ?? '';
         $payerName = \substr($payerName, 0, 24);
 
-        $pdf->Text(25, 33, \substr($order['billCreatedAt'] ?? '', 0, 10));
-        $pdf->Text(25, 38, $order['orderId'] ?? '');
+        $pdf->Text(25, 33, \substr($paysheet['billCreatedAt'] ?? '', 0, 10));
+        $pdf->Text(25, 38, $paysheet['paysheetId'] ?? '');
         $pdf->Text(25, 43, $payerName);
-        $pdf->Text(25, 48, $order['vehiclePlaca'] ?? '');
+        $pdf->Text(25, 48, $paysheet['vehiclePlaca'] ?? '');
 
         $pdf->SetY(50);
         $pdf->SetX(15);
-        $pdf->Cell(15, 5, $order['kilometers'] ?? 0, 0, 0, 'R');
+        $pdf->Cell(15, 5, $paysheet['kilometers'] ?? 0, 0, 0, 'R');
 
         $pdf->SetY(50);
         $pdf->SetX(55);
-        $pdf->Cell(15, 5, ($order['kilometers'] ?? 0) + ($order['kilometersToChange'] ?? 0), 0, 0, 'R');
+        $pdf->Cell(15, 5, ($paysheet['kilometers'] ?? 0) + ($paysheet['kilometersToChange'] ?? 0), 0, 0, 'R');
 
         $pdf->SetFont('Arial', '', 11);
         $currency = 'COP';
 
         $pdf->SetY(117);
         $pdf->SetX(25);
-        $pdf->Cell(40, 5, $this->currencyFormatShort($currency, (float)($order['orderTotal'] ?? 0)), 0, 0, 'R');
+        $pdf->Cell(40, 5, $this->currencyFormatShort($currency, (float)($paysheet['paysheetTotal'] ?? 0)), 0, 0, 'R');
 
         $counter = 1;
         $initRow = 72;
