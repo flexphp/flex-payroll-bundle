@@ -263,14 +263,21 @@ class MySQLPaysheetGateway implements PaysheetGateway
             'employee.SecondName as secondName',
             'employee.FirstSurname as firstSurname',
             'employee.SecondSurname as secondSurname',
-            // 'employee.PhoneNumber as phoneNumber',
-            // 'employee.Email as email',
-            // 'employee.Address as address',
-            // 'city.Id as cityId',
-            // 'city.Name as cityName',
+            'employee.AccountNumber as accountNumber',
+            'employeeType.Id as typeId',
+            'employeeType.Name as typeName',
+            'employeeSubType.Id as subTypeId',
+            'employeeSubType.Name as subTypeName',
+            'paymentMethod.Id as paymentMethodId',
+            'paymentMethod.Name as paymentMethodName',
+            'accountType.Id as accountTypeId',
+            'accountType.Name as accountTypeName',
         ]);
         $query->from('`Employees`', '`employee`');
-        // $query->leftJoin('`employee`', '`Cities`', '`city`', 'city.Id = employee.CityId');
+        $query->join('`employee`', '`EmployeeTypes`', '`employeeType`', 'employeeType.Id = employee.Type');
+        $query->join('`employee`', '`EmployeeSubTypes`', '`employeeSubType`', 'employeeSubType.Id = employee.SubType');
+        $query->join('`employee`', '`PaymentMethods`', '`paymentMethod`', 'paymentMethod.Id = employee.PaymentMethod');
+        $query->join('`employee`', '`AccountTypes`', '`accountType`', 'accountType.Id = employee.AccountType');
 
         $data = [];
 
@@ -313,9 +320,6 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->select([
             'agreement.id as id',
             'agreement.name as text',
-            'agreement.Status as status',
-            'agreement.Period as period',
-            'agreement.Currency as currency',
             'agreement.Salary as salary',
             'agreement.HealthPercentage as healthPercentage',
             'agreement.PensionPercentage as pensionPercentage',
@@ -325,9 +329,18 @@ class MySQLPaysheetGateway implements PaysheetGateway
             'agreement.HighRisk as highRisk',
             'agreementType.Id as typeId',
             'agreementType.Name as typeName',
+            'agreementStatus.Id as statusId',
+            'agreementStatus.Name as statusName',
+            'agreementPeriod.Id as periodId',
+            'agreementPeriod.Name as periodName',
+            'currency.Id as currencyId',
+            'currency.Name as currencyName',
         ]);
         $query->from('`Agreements`', '`agreement`');
         $query->join('`agreement`', '`AgreementTypes`', '`agreementType`', 'agreement.Type = agreementType.Id');
+        $query->join('`agreement`', '`AgreementStatus`', '`agreementStatus`', 'agreement.Status = agreementStatus.Id');
+        $query->join('`agreement`', '`AgreementPeriods`', '`agreementPeriod`', 'agreement.Period = agreementPeriod.Id');
+        $query->join('`agreement`', '`Currencies`', '`currency`', 'agreement.Currency = currency.Id');
 
         $query->andWhere('agreement.Name like :agreement_name');
         $query->setParameter(':agreement_name', "{$request->term}%");

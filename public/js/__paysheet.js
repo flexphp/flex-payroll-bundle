@@ -36,82 +36,87 @@ jQuery(document).ready(function ($) {
             $container.find('[name$="[documentNumber]"]').val(data.documentNumber || $documentNumber.val());
             $container.find('[name$="[firstName]"]').val(data.firstName || '');
             $container.find('[name$="[secondName]"]').val(data.secondName || '');
-            $container.find('[name$="[firstSurname]"]').val(data.firstName || '');
-            $container.find('[name$="[secondSurname]"]').val(data.secondName || '');
-            $container.find('[name$="[accountType]"]').val(data.accountType || '');
+            $container.find('[name$="[firstSurname]"]').val(data.firstSurname || '');
+            $container.find('[name$="[secondSurname]"]').val(data.secondSurname || '');
             $container.find('[name$="[accountNumber]"]').val(data.accountNumber || '');
 
-            const $type = $container.find('[name$="[typeId]"]').empty();
+            const $type = $container.find('[name$="[type]"]').empty();
 
             if (data.typeId) {
                 $type.append(new Option(data.typeName, data.typeId, true, false));
             }
 
-            const $subType = $container.find('[name$="[subTypeId]"]').empty();
+            const $subType = $container.find('[name$="[subType]"]').empty();
 
             if (data.subTypeId) {
                 $subType.append(new Option(data.subTypeName, data.subTypeId, true, false));
             }
 
-            const $paymentMethod = $container.find('[name$="[paymentMethodId]"]').empty();
+            const $paymentMethod = $container.find('[name$="[paymentMethod]"]').empty();
 
             if (data.paymentMethodId) {
                 $paymentMethod.append(new Option(data.paymentMethodName, data.paymentMethodId, true, false));
             }
+
+            const $accountType = $container.find('[name$="[accountType]"]').empty();
+
+            if (data.accountTypeId) {
+                $accountType.append(new Option(data.accountTypeName, data.accountTypeId, true, false));
+            }
         });
     });
 
-//     $('[name="agreement[id]"]').select2({
-//         theme: 'bootstrap4',
-//         placeholder: '',
-//         minimumInputLength: 0,
-//         allowClear: true,
-//         ajax: {
-//             url: window.flex.baseUrl + '/paysheets/find-agreements',
-//             method: 'POST',
-//             dataType: 'json',
-//             delay: 500,
-//             cache: true,
-//             headers: {
-//                 'X-XSRF-Token': getCookie('XSRF-Token')
-//             },
-//             data: function (params) {
-//                 return {
-//                     term: params.term,
-//                     page: params.page
-//                 };
-//             }
-//         },
-//     }).on('select2:select', function (e) {
-//         const data = e.params.data;
+    $('[name="agreement[id]"]').select2({
+        theme: 'bootstrap4',
+        placeholder: '',
+        minimumInputLength: 0,
+        allowClear: true,
+        ajax: {
+            url: window.flex.baseUrl + '/paysheets/find-agreements',
+            method: 'POST',
+            dataType: 'json',
+            delay: 500,
+            cache: true,
+            headers: {
+                'X-XSRF-Token': getCookie('XSRF-Token')
+            },
+            data: function (params) {
+                return {
+                    term: params.term,
+                    page: params.page
+                };
+            }
+        },
+    }).on('select2:select', function (e) {
+        const data = e.params.data;
 
-//         $('[name="agreement[placa]"]').val(data.placa || '');
+        if (data.typeId) {
+            $('[name="agreement[type]"]').empty().append(new Option(data.typeName, data.typeId, true, false));
+        }
 
-//         if ($('[name="paysheet[type]"]').val() !== 'V') {
-//             getHistoryServices(data.id);
+        if (data.statusId) {
+            $('[name="agreement[status]"]').empty().append(new Option(data.statusName, data.statusId, true, false));
+        }
 
-//             return undefined;
-//         }
+        if (data.periodId) {
+            $('[name="agreement[period]"]').empty().append(new Option(data.periodName, data.periodId, true, false));
+        }
 
-//         if (data.typeId) {
-//             $('[name="agreement[type]"]').empty().append(new Option(data.typeName, data.typeId, true, false));
-//         }
+        if (data.currencyId) {
+            $('[name="agreement[currency]"]').empty().append(new Option(data.currencyName, data.currencyId, true, false));
+        }
 
-//         if (data.brandId) {
-//             $('[name="agreement[brand]"]').empty().append(new Option(data.brandName, data.brandId, true, false));
-//         }
+        $('[name="agreement[name]"]').val(data.name || '');
+        $('[name="agreement[salary]"]').val(data.salary || '');
+        $('[name="agreement[healthPercentage]"]').val(data.healthPercentage || 0);
+        $('[name="agreement[pensionPercentage]"]').val(data.pensionPercentage || 0);
+        $('[name="agreement[initAt]"]').val(data.initAt || '');
+        $('[name="agreement[finishAt]"]').val(data.finishAt || '');
+        $('[name="agreement[integralSalary]"]').attr('checked', data.integralSalary || 0);
+        $('[name="agreement[highRisk]"]').attr('checked', data.highRisk || 0);
 
-//         if (data.serieId) {
-//             $('[name="agreement[serie]"]').empty().append(new Option(data.serieName, data.serieId, true, false));
-//         }
-
-//         $('[name="agreement[model]"]').val(data.model || '');
-//         $('[name="agreement[oilQuantity]"]').val(data.oilQuantity);
-//         $('[name="agreement[liters]"]').val(data.liters || '');
-//         $('[name="agreement[fuel]"]').val(data.fuel || 'F');
-
-//         getHistoryServices(data.id);
-//     });
+        // getHistoryServices(data.id);
+    });
 
 //     function getHistoryServices(agreementId) {
 //         $.ajax({
@@ -299,6 +304,251 @@ jQuery(document).ready(function ($) {
         },
     });
 
+    $('[name="agreement[type]"]').select2({
+        theme: 'bootstrap4',
+        placeholder: '',
+        minimumInputLength: 0,
+        allowClear: true,
+        ajax: {
+            url: window.flex.baseUrl + '/agreements/find-agreement-types',
+            method: 'POST',
+            dataType: 'json',
+            delay: 500,
+            cache: true,
+            headers: {
+                'X-XSRF-Token': getCookie('XSRF-Token')
+            },
+            data: function (params) {
+                return {
+                    term: params.term,
+                    page: params.page
+                };
+            },
+        },
+    });
+
+    $('[name="agreement[status]"]').select2({
+        theme: 'bootstrap4',
+        placeholder: '',
+        minimumInputLength: 0,
+        allowClear: true,
+        ajax: {
+            url: window.flex.baseUrl + '/agreements/find-agreement-status',
+            method: 'POST',
+            dataType: 'json',
+            delay: 500,
+            cache: true,
+            headers: {
+                'X-XSRF-Token': getCookie('XSRF-Token')
+            },
+            data: function (params) {
+                return {
+                    term: params.term,
+                    page: params.page
+                };
+            },
+        },
+    });
+
+    $('[name="agreement[period]"]').select2({
+        theme: 'bootstrap4',
+        placeholder: '',
+        minimumInputLength: 0,
+        allowClear: true,
+        ajax: {
+            url: window.flex.baseUrl + '/agreements/find-agreement-periods',
+            method: 'POST',
+            dataType: 'json',
+            delay: 500,
+            cache: true,
+            headers: {
+                'X-XSRF-Token': getCookie('XSRF-Token')
+            },
+            data: function (params) {
+                return {
+                    term: params.term,
+                    page: params.page
+                };
+            },
+        },
+    });
+
+    $('[name="agreement[currency]"]').select2({
+        theme: 'bootstrap4',
+        placeholder: '',
+        minimumInputLength: 0,
+        allowClear: true,
+        ajax: {
+            url: window.flex.baseUrl + '/agreements/find-currencies',
+            method: 'POST',
+            dataType: 'json',
+            delay: 500,
+            cache: true,
+            headers: {
+                'X-XSRF-Token': getCookie('XSRF-Token')
+            },
+            data: function (params) {
+                return {
+                    term: params.term,
+                    page: params.page
+                };
+            },
+        },
+    });
+
+//     function findAlternativeItems() {
+//         const $agreementBrand = $('[name="agreement[brand]"]');
+//         const $agreementSerie = $('[name="agreement[serie]"]');
+//         const oilId = $('[name="history_service[oil]"]').data('item-id');
+//         const oilFilterId = $('[name="history_service[oilFilter]"]').data('item-id');
+//         const airFilterId = $('[name="history_service[airFilter]"]').data('item-id');
+//         const gasFilterId = $('[name="history_service[gasFilter]"]').data('item-id');
+
+//         if ($agreementBrand.val() !== null && $agreementSerie.val() !== null) {
+//             $.ajax({
+//                 url: window.flex.baseUrl + '/paysheets/find-alternative-items',
+//                 method: 'POST',
+//                 data: {
+//                     brandId: $agreementBrand.val(),
+//                     serieId: $agreementSerie.val(),
+//                     oilId: oilId,
+//                     oilFilterId: oilFilterId,
+//                     airFilterId: airFilterId,
+//                     gasFilterId: gasFilterId,
+//                 },
+//                 headers: {
+//                     'X-XSRF-Token': getCookie('XSRF-Token')
+//                 },
+//                 beforeSend: function () {
+//                     $('.overlay').show();
+//                 }
+//             }).always(function () {
+//                 $('.overlay').hide();
+//             }).done(function (response) {
+//                 const data = response.results;
+
+//                 for (var i = 0, l = data.length; i < l; i++) {
+//                     let alternative = data[i].alternative || '';
+//                     let id = data[i].id || '';
+//                     let name = data[i].name || '';
+//                     let $container = $('[name="history_service[' + alternative + 'Alternative]"]');
+
+//                     if ($container.length > 0 && alternative !== '' && id !== '' && name !== '') {
+//                         $container.html(name);
+//                         $container.append(' <i class="fas fa-plus-circle"></i>');
+//                         $container.data('quantity', data[i].quantity || 1);
+//                         $container.data('item-id', id);
+//                         $container.data('name', name);
+//                         $container.data('price', data[i].price || 0);
+//                         $container.data('taxes', data[i].taxes || 0);
+//                         $container.css('display', 'inline-block');
+//                     }
+//                 }
+
+//                 if (data.length > 0) {
+//                     $('#lastServiceInfo').collapse('show');
+//                 }
+//             });
+//         }
+//     }
+
+//     $('body').on('click', '.preload-item', function () {
+//         const $item = $(this);
+//         const quantity = $item.data('quantity');
+//         const itemId = $item.data('item-id');
+//         const itemName = $item.data('name');
+//         const price = $item.data('price');
+//         const taxes = $item.data('taxes');
+
+//         $item.attr('title', 'Agregado')
+//             .removeClass('badge-info badge-success')
+//             .addClass('preloaded-item badge-light')
+//             .find('i')
+//             .removeClass('fa-plus-circle')
+//             .addClass('fa-check');
+
+//         preloadItem('', quantity, itemId, itemName, price, taxes);
+//     });
+
+//     function preloadItem(id, quantity, itemId, itemName, price, taxes) {
+//         $('.add-row-paysheet-detail').click();
+
+//         const $row = $('#detailPaysheet > tbody > tr:last');
+
+//         $row.find('[name^="paysheet_detail[id]"]').val(id || '');
+//         $row.find('[name^="paysheet_detail[quantity]"]').val(quantity);
+//         $row.find('[name^="paysheet_detail[itemId]"]')
+//             .empty()
+//             .append(new Option(itemName, itemId, true, false))
+//             .change();
+//         $row.find('[name^="paysheet_detail[price]"]').val(price || 0);
+//         $row.find('[name^="paysheet_detail[tax]"]').val(taxes || 0);
+
+//         setTotal($row);
+//     }
+
+//     $('[name="employee[id]"], [name="agreement[id]"]').on('change', function () {
+//         const $employeeId = $('[name="employee[id]"]');
+//         const $agreementId = $('[name="agreement[id]"]');
+//         const $paysheetType = $('[name="paysheet[type]"]');
+//         const $paysheetId = $('[name="paysheet[id]"]');
+
+//         if ($employeeId.val() > 0 && $agreementId.val() > 0) {
+//             $.ajax({
+//                 url: window.flex.baseUrl + '/paysheets/get-last',
+//                 method: 'POST',
+//                 data: {
+//                     agreementId: $agreementId.val(),
+//                     employeeId: $employeeId.val(),
+//                     paysheetType: $paysheetType.val(),
+//                     paysheetId: $paysheetId.val(),
+//                 },
+//                 headers: {
+//                     'X-XSRF-Token': getCookie('XSRF-Token')
+//                 },
+//                 beforeSend: function () {
+//                     $('.overlay').show();
+//                 }
+//             }).always(function () {
+//                 $('.overlay').hide();
+//             }).done(function (response) {
+//                 const paysheet = response.results.paysheet;
+//                 const details = response.results.details;
+
+//                 $('[name="last_paysheet[subTotal]"]').html(getMoneyFormat(paysheet.subTotal || 0));
+//                 $('[name="last_paysheet[taxes]"]').html(getMoneyFormat(paysheet.taxes || 0));
+//                 $('[name="last_paysheet[total]"]').html(getMoneyFormat(paysheet.total || 0));
+//                 $('[name="last_paysheet[notes]"]').html(paysheet.notes || '');
+
+//                 var html = '';
+//                 var template = $('#lastPaysheet > tbody > tr:first').html();
+
+//                 for (var i = 0, l = details.length; i < l; i++) {
+//                     const detail = details[i];
+
+//                     let preloadOption = ''
+//                         + '<div class="badge badge-info preload-item d-inline-block"'
+//                         + ' data-quantity="' + detail.quantity + '" '
+//                         + ' data-item-id="' + detail.itemId + '" '
+//                         + ' data-name="' + detail.name + '" '
+//                         + ' data-price="' + detail.itemPrice + '" '
+//                         + ' data-taxes="' + detail.itemTaxes + '" '
+//                         +'>'
+//                         + detail.name
+//                         + ' <i class="fas fa-plus-circle"></i>'
+//                         + '</div>';
+
+//                     let tr = template
+//                         .replace('#quantity#', detail.quantity)
+//                         .replace('#itemName#', preloadOption)
+//                         .replace('#price#', getMoneyFormat(detail.price))
+//                         .replace('#tax#', getMoneyFormat(detail.tax))
+//                         .replace('#total#', getMoneyFormat(detail.price * detail.quantity));
+
+//                     html += '<tr>' + tr + '</tr>';
+//                 }
+
+//                 $('#lastPaysheet > tbody').find("tr:gt(0)").remove();
 
 //     function findAlternativeItems() {
 //         const $agreementBrand = $('[name="agreement[brand]"]');
