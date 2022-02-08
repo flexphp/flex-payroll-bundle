@@ -33,9 +33,6 @@ final class CreatePaysheetUseCase extends AbstractPaysheetUseCase
         $paysheetDetails = $this->getPaysheetDetails($request);
         $request->subtotal = $this->getSubTotal($paysheetDetails);
         $request->taxes = $this->getTotalTaxes($paysheetDetails);
-        // $request->kilometers = $this->getKilometers($request);
-        // $request->kilometersToChange = $this->getKilometersToChange($request);
-        // $request->discount = $this->getDiscount($request);
         $request->total = $this->getTotal($request);
 
         $payments = $this->getPayments($request);

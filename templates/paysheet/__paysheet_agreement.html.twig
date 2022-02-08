@@ -17,6 +17,8 @@
             <label for="agreement[id]" class="col-form-label">{% trans from 'agreement' %}entity{% endtrans %}</label>
             <select name="agreement[id]" class="form-control custom-select" autofocus>
             </select>
+            <input type="hidden" name="agreement[integralSalary]" value="0">
+            <input type="hidden" name="agreement[highRisk]" value="0">
         </div>
 
         <div class="form-group col-12 col-md-6">
@@ -81,7 +83,7 @@
 
         <div class="form-group col-md-4">
             <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="checkIntegralSalary">
+                <input type="checkbox" class="custom-control-input" id="checkIntegralSalary" />
 
                 <label class="custom-control-label" for="checkIntegralSalary">
                     {% trans from 'agreement' %}label.integralSalary{% endtrans %}
@@ -89,7 +91,7 @@
             </div>
 
             <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="checkHighRisk">
+                <input type="checkbox" class="custom-control-input" id="checkHighRisk" />
 
                 <label class="custom-control-label" for="checkHighRisk">
                     {% trans from 'agreement' %}label.highRisk{% endtrans %}

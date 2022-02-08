@@ -1,6 +1,27 @@
 jQuery(document).ready(function ($) {
     'use strict';
 
+    updateHighRisk();
+
+    $('#checkHighRisk').on('click', updateHighRisk);
+
+    function updateHighRisk() {
+        const highRisk = $('#checkHighRisk').is(':checked') ? 1 : 0;
+
+        $('[name="agreement[highRisk]"]').val(highRisk);
+    }
+
+    updateIntegralSalary();
+
+    $('#checkIntegralSalary').on('click', updateIntegralSalary);
+
+    function updateIntegralSalary() {
+        const integralSalary = $('#checkIntegralSalary').is(':checked') ? 1 : 0;
+
+        $('[name="agreement[integralSalary]"]').val(integralSalary);
+    }
+
+
     $('.find-employee').on('change', function () {
         const $container = $(this).parent().parent();
         const $documentTypeId = $container.find('[name$="[documentTypeId]"]');
@@ -112,8 +133,8 @@ jQuery(document).ready(function ($) {
         $('[name="agreement[pensionPercentage]"]').val(data.pensionPercentage || 0);
         $('[name="agreement[initAt]"]').val(data.initAt || '');
         $('[name="agreement[finishAt]"]').val(data.finishAt || '');
-        $('[name="agreement[integralSalary]"]').attr('checked', data.integralSalary || 0);
-        $('[name="agreement[highRisk]"]').attr('checked', data.highRisk || 0);
+        $('[name="agreement[integralSalary]"]').prop('checked', data.integralSalary || false);
+        $('[name="agreement[highRisk]"]').prop('checked', data.highRisk || false);
 
         // getHistoryServices(data.id);
     });

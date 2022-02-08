@@ -65,7 +65,7 @@ class CreatePaysheetRequest implements RequestInterface
         $this->type = $data['paysheet']['type'] ?? PayrollType::NOVEL;
         $this->isDraft = $data['paysheet']['isDraft'] ?? false;
         $this->notes = $data['paysheet']['notes'] ?? null;
-        $this->billNotes = $data['paysheet']['billNotes'] ?? null;
+        $this->paysheetNotes = $data['paysheet']['paysheetNotes'] ?? null;
         $this->expiratedAt = !empty($data['paysheet']['expiratedAt'])
             ? $this->dateTimeToUTC($data['paysheet']['expiratedAt'], $this->getOffset($this->getTimezone($timezone)))
             : null;
