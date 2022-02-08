@@ -46,6 +46,7 @@ final class ApiPaysheetController extends AbstractController
                 'secondName' => $employee->secondName(),
                 'firstSurname' => $employee->firstSurname(),
                 'secondSurname' => $employee->secondSurname(),
+                'accountNumber' => $employee->accountNumber(),
                 'typeId' => $employee->typeInstance()->id(),
                 'typeName' => $employee->typeInstance()->name(),
                 'subTypeId' => $employee->subTypeInstance()->id(),
@@ -54,38 +55,42 @@ final class ApiPaysheetController extends AbstractController
                 'paymentMethodName' => $employee->paymentMethodInstance()->name(),
                 'accountTypeId' => $employee->accountTypeInstance()->id(),
                 'accountTypeName' => $employee->accountTypeInstance()->name(),
-                'accountNumber' => $employee->accountNumber(),
             ],
         ]);
     }
 
-//     /**
-//      * @Cache(smaxage="3600")
-//      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_AGREEMENT_READ')", statusCode=401)
-//      */
-//     public function agreement(GetPaysheetAgreementUseCase $useCase, int $id): Response
-//     {
-//         $request = new ReadPaysheetRequest($id);
+    /**
+     * @Cache(smaxage="3600")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_AGREEMENT_READ')", statusCode=401)
+     */
+    public function agreement(GetPaysheetAgreementUseCase $useCase, int $id): Response
+    {
+        $request = new ReadPaysheetRequest($id);
 
-//         $agreement = $useCase->execute($request);
+        $agreement = $useCase->execute($request);
 
-//         return new JsonResponse([
-//             'data' => [
-//                 'id' => $agreement->id(),
-//                 'placa' => $agreement->placa(),
-//                 'typeId' => $agreement->type(),
-//                 'typeName' => $agreement->typeInstance() ? $agreement->typeInstance()->name() : null,
-//                 'brandId' => $agreement->brand(),
-//                 'brandName' => $agreement->brandInstance() ? $agreement->brandInstance()->name() : null,
-//                 'serieId' => $agreement->serie(),
-//                 'serieName' => $agreement->serieInstance() ? $agreement->serieInstance()->name() : null,
-//                 'model' => $agreement->model(),
-//                 'oilQuantity' => $agreement->oilQuantity(),
-//                 'liters' => $agreement->liters(),
-//                 'fuel' => $agreement->fuel(),
-//             ],
-//         ]);
-//     }
+        return new JsonResponse([
+            'data' => [
+                'id' => $agreement->id(),
+                'name' => $agreement->name(),
+                'salary' => $agreement->salary(),
+                'healthPercentage' => $agreement->healthPercentage(),
+                'pensionPercentage' => $agreement->pensionPercentage(),
+                'initAt' => $agreement->initAt() ? $agreement->initAt()->format('Y-m-d') : null,
+                'finishAt' => $agreement->finishAt() ? $agreement->finishAt()->format('Y-m-d') : null,
+                'integralSalary' => (int)$agreement->integralSalary(),
+                'highRisk' => (int)$agreement->highRisk(),
+                'typeId' => $agreement->type(),
+                'typeName' => $agreement->typeInstance()->name(),
+                'statusId' => $agreement->status(),
+                'statusName' => $agreement->statusInstance()->name(),
+                'periodId' => $agreement->period(),
+                'periodName' => $agreement->periodInstance()->name(),
+                'currencyId' => $agreement->currency(),
+                'currencyName' => $agreement->currencyInstance()->name(),
+            ],
+        ]);
+    }
 
 //     /**
 //      * @Cache(smaxage="3600")

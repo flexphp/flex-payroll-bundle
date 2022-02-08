@@ -122,6 +122,7 @@
     <route id="flexphp.payroll.paysheets.epayroll" controller="flexphp.payroll.bundle.paysheet_controller::epayroll" path="/paysheets/epayroll" methods="GET" />
 
     <route id="flexphp.payroll.api.v1.paysheets.employee" controller="flexphp.payroll.bundle.api_v1_paysheet_controller::employee" path="/api/v1/paysheets/{id}/employee" methods="GET" />
+    <route id="flexphp.payroll.api.v1.paysheets.agreement" controller="flexphp.payroll.bundle.api_v1_paysheet_controller::agreement" path="/api/v1/paysheets/{id}/agreement" methods="GET" />
 
     <route id="flexphp.payroll.payrolls.index" controller="flexphp.payroll.bundle.payroll_controller::index" path="/payrolls" methods="GET" />
     <route id="flexphp.payroll.payrolls.new" controller="flexphp.payroll.bundle.payroll_controller::new" path="/payrolls/new" methods="GET" />
