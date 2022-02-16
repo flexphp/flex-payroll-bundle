@@ -1,0 +1,39 @@
+{% trans_default_domain 'paysheet' %}
+<div class="card-header d-flex">
+    <h4 class="card-header-title">
+        <i class="fas fa-info"></i> Información General
+    </h4>
+    <div class="toolbar ml-auto">
+        <button class="btn btn-sm btn-link" type="button" data-toggle="collapse" data-target="#generalData" aria-expanded="true" aria-controls="generalData">
+            {% trans from 'messages' %}action.toggle{% endtrans %}
+        </button>
+    </div>
+</div>
+
+<div id="generalData" class="collapse show card-body">
+    <div class="form-row">
+        <div class="form-group col-4">
+            <label for="general[datetime]">Fecha de Emisión</label>
+            <input name="general[datetime]" data-zdp_show_icon="false" class="form-control date-picker" required type="text" value="{{ paysheet.issuedAt ? paysheet.issuedAt|date('Y-m-d', app.user.timezone) : '' }}" />
+            <input name="general[currency]" type="hidden" value="COP" />
+            <input name="general[trm]" type="hidden" value="1" />
+        </div>
+
+        <div class="form-group col-4">
+            <label for="paysheet[initAt]">Inicio de Periodo</label>
+            <input name="paysheet[initAt]" data-zdp_show_icon="false" class="form-control date-picker" required type="text" value="{{ paysheet.initAt ? paysheet.initAt|date('Y-m-d', app.user.timezone) : '' }}" />
+        </div>
+
+        <div class="form-group col-4">
+            <label for="paysheet[finishAt]">Fin de Periodo</label>
+            <input name="paysheet[finishAt]" data-zdp_show_icon="false" class="form-control date-picker" required type="text" value="{{ paysheet.finishAt ? paysheet.finishAt|date('Y-m-d', app.user.timezone) : '' }}" />
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-12">
+            <label for="paysheet[paysheetNotes]">Notas</label>
+            <textarea name="paysheet[paysheetNotes]" class="form-control">{{ paysheet.paysheetNotes }}</textarea>
+        </div>
+    </div>
+</div>

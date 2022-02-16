@@ -1,0 +1,45 @@
+{% trans_default_domain 'paysheet' %}
+<div class="card-header d-flex">
+    <h4 class="card-header-title">
+        <i class="fas fa-user"></i> Devengados: Transporte
+    </h4>
+    <div class="toolbar ml-auto">
+        <button class="btn btn-sm btn-link" type="button" data-toggle="collapse" data-target="#accruedTransportData" aria-expanded="true" aria-controls="accruedTransportData">
+            {% trans from 'messages' %}action.toggle{% endtrans %}
+        </button>
+    </div>
+</div>
+
+<div id="accruedTransportData" class="collapse show card-body">
+    <div class="form-row">
+        <div class="form-group col-4">
+            <label for="accrued[transport][0][amount]">Auxilio de Transporte</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">$</span>
+                </div>
+                <input name="accrued[transport][0][amount]" class="form-control" type="text" required />
+            </div>
+        </div>
+
+        <div class="form-group col-4">
+            <label for="accrued[transport][0][viaticSalary]">Viatico salarial</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">$</span>
+                </div>
+                <input name="accrued[transport][0][viaticSalary]" class="form-control" type="text" />
+            </div>
+        </div>
+
+        <div class="form-group col-4">
+            <label for="accrued[transport][0][viaticNoSalary]">Viatico NO salarial</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">$</span>
+                </div>
+                <input name="accrued[transport][0][viaticNoSalary]" class="form-control" type="text" />
+            </div>
+        </div>
+    </div>
+</div>

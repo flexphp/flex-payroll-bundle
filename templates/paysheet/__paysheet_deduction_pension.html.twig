@@ -1,0 +1,25 @@
+{% trans_default_domain 'paysheet' %}
+<div class="card-header d-flex">
+    <h4 class="card-header-title">
+        <i class="fas fa-user"></i> Deducciones: Pensión
+    </h4>
+    <div class="toolbar ml-auto">
+        <button class="btn btn-sm btn-link" type="button" data-toggle="collapse" data-target="#deductionPensionData" aria-expanded="true" aria-controls="deductionPensionData">
+            {% trans from 'messages' %}action.toggle{% endtrans %}
+        </button>
+    </div>
+</div>
+
+<div id="deductionPensionData" class="collapse show card-body">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="deduction[pension][percentage]" class="col-form-label">Porcentaje</label>
+            <input name="deduction[pension][percentage]" class="form-control" type="text" required />
+        </div>
+
+        <div class="form-group col-6">
+            <label for="deduction[pension][amount]">Monto</label>
+            <input name="deduction[pension][amount]" class="form-control" type="text" required />
+        </div>
+    </div>
+</div>

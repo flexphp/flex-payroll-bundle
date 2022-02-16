@@ -57,11 +57,51 @@
             <input type="hidden" name="paysheet[isDraft]" value="{{ paysheet.isDraft ? '1' : '0' }}">
 
             <div class="card">
+                {{ include('@FlexPHPPayroll/paysheet/__paysheet_general.html.twig', {paysheet: paysheet}) }}
+            </div>
+
+            <div class="card">
                 {{ include('@FlexPHPPayroll/paysheet/__paysheet_employee.html.twig', {paysheet: paysheet}) }}
             </div>
 
             <div class="card">
                 {{ include('@FlexPHPPayroll/paysheet/__paysheet_agreement.html.twig', {paysheet: paysheet}) }}
+            </div>
+
+            <div class="card">
+                {{ include('@FlexPHPPayroll/paysheet/__paysheet_accrued_basic.html.twig', {paysheet: paysheet}) }}
+            </div>
+
+            <div class="card">
+                {{ include('@FlexPHPPayroll/paysheet/__paysheet_accrued_transport.html.twig', {paysheet: paysheet}) }}
+            </div>
+
+            <div class="card">
+                {{ include('@FlexPHPPayroll/paysheet/__paysheet_accrued_vacation.html.twig', {paysheet: paysheet}) }}
+            </div>
+
+            <div class="card">
+                {{ include('@FlexPHPPayroll/paysheet/__paysheet_accrued_bonus.html.twig', {paysheet: paysheet}) }}
+            </div>
+
+            <div class="card">
+                {{ include('@FlexPHPPayroll/paysheet/__paysheet_accrued_cessation.html.twig', {paysheet: paysheet}) }}
+            </div>
+
+            <div class="card">
+                {{ include('@FlexPHPPayroll/paysheet/__paysheet_accrued_support.html.twig', {paysheet: paysheet}) }}
+            </div>
+
+            <div class="card">
+                {{ include('@FlexPHPPayroll/paysheet/__paysheet_accrued_endowment.html.twig', {paysheet: paysheet}) }}
+            </div>
+
+            <div class="card">
+                {{ include('@FlexPHPPayroll/paysheet/__paysheet_deduction_health.html.twig', {paysheet: paysheet}) }}
+            </div>
+
+            <div class="card">
+                {# {{ include('@FlexPHPPayroll/paysheet/__paysheet_deduction_pension.html.twig', {paysheet: paysheet}) }} #}
             </div>
 
             <div class="card" style="display: none;">
