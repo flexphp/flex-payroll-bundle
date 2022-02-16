@@ -13,13 +13,13 @@
                     <i class="fa fa-eye text-dark" aria-hidden="true"></i>
                 </a>
 
-{#                 <a href="{{ path('paysheets.edit', {id: _paysheet.id}) }}" class="btn btn-sm btn-outline-light" title="{% trans from 'messages' %}action.edit{% endtrans %}"> #}
-{#                     <i class="fa fa-edit text-info" aria-hidden="true"></i> #}
-{#                 </a> #}
+                <a href="{{ path('flexphp.payroll.paysheets.edit', {id: _paysheet.id}) }}" class="btn btn-sm btn-outline-light" title="{% trans from 'messages' %}action.edit{% endtrans %}">
+                    <i class="fa fa-edit text-info" aria-hidden="true"></i>
+                </a>
 
-                {# {{ include('paysheet/_get_prepaysheet_button.html.twig', {paysheet: _paysheet, style: 'btn-sm'}, with_context = false) }} #}
+                {# {{ include('@FlexPHPPayroll/paysheet/_get_prepaysheet_button.html.twig', {paysheet: _paysheet, style: 'btn-sm'}, with_context = false) }} #}
 
-                {# {{ include('paysheet/_get_bill_button.html.twig', {paysheet: _paysheet, style: 'btn-sm'}, with_context = false) }} #}
+                {{ include('@FlexPHPPayroll/paysheet/_get_payroll_button.html.twig', {paysheet: _paysheet, style: 'btn-sm'}, with_context = false) }}
             </div>
         </td>
     </tr>

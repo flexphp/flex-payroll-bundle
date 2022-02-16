@@ -47,7 +47,11 @@ final class Paysheet
 
     private $paysheetNotes;
 
-    private $expiratedAt;
+    private $issuedAt;
+
+    private $initAt;
+
+    private $finishAt;
 
     private $createdAt;
 
@@ -131,9 +135,19 @@ final class Paysheet
         return $this->paysheetNotes;
     }
 
-    public function expiratedAt(): ?\DateTime
+    public function issuedAt(): ?\DateTime
     {
-        return $this->expiratedAt;
+        return $this->issuedAt;
+    }
+
+    public function initAt(): ?\DateTime
+    {
+        return $this->initAt;
+    }
+
+    public function finishAt(): ?\DateTime
+    {
+        return $this->finishAt;
     }
 
     public function createdAt(): ?\DateTime
@@ -246,9 +260,19 @@ final class Paysheet
         $this->paysheetNotes = $paysheetNotes;
     }
 
-    public function setExpiratedAt(?\DateTime $expiratedAt): void
+    public function setIssuedAt(?\DateTime $issuedAt): void
     {
-        $this->expiratedAt = $expiratedAt;
+        $this->issuedAt = $issuedAt;
+    }
+
+    public function setInitAt(?\DateTime $initAt): void
+    {
+        $this->initAt = $initAt;
+    }
+
+    public function setFinishAt(?\DateTime $finishAt): void
+    {
+        $this->finishAt = $finishAt;
     }
 
     public function setCreatedAt(?\DateTime $createdAt): void
