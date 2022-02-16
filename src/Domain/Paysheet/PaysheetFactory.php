@@ -77,8 +77,16 @@ final class PaysheetFactory
             $paysheet->setPaysheetNotes((string)$data['paysheetNotes']);
         }
 
-        if (isset($data['expiratedAt'])) {
-            $paysheet->setExpiratedAt(\is_string($data['expiratedAt']) ? new \DateTime($data['expiratedAt']) : $data['expiratedAt']);
+        if (isset($data['issuedAt'])) {
+            $paysheet->setIssuedAt(\is_string($data['issuedAt']) ? new \DateTime($data['issuedAt']) : $data['issuedAt']);
+        }
+
+        if (isset($data['initAt'])) {
+            $paysheet->setInitAt(\is_string($data['initAt']) ? new \DateTime($data['initAt']) : $data['initAt']);
+        }
+
+        if (isset($data['finishAt'])) {
+            $paysheet->setFinishAt(\is_string($data['finishAt']) ? new \DateTime($data['finishAt']) : $data['finishAt']);
         }
 
         if (isset($data['createdAt'])) {

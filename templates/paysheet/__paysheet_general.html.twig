@@ -13,10 +13,10 @@
 <div id="generalData" class="collapse show card-body">
     <div class="form-row">
         <div class="form-group col-4">
-            <label for="general[datetime]">Fecha de Emisión</label>
-            <input name="general[datetime]" data-zdp_show_icon="false" class="form-control date-picker" required type="text" value="{{ paysheet.issuedAt ? paysheet.issuedAt|date('Y-m-d', app.user.timezone) : '' }}" />
-            <input name="general[currency]" type="hidden" value="COP" />
-            <input name="general[trm]" type="hidden" value="1" />
+            <label for="paysheet[issuedAt]">Fecha de Emisión</label>
+            <input name="paysheet[issuedAt]" data-zdp_show_icon="false" class="form-control date-picker" required type="text" value="{{ paysheet.issuedAt ? paysheet.issuedAt|date('Y-m-d', app.user.timezone) : '' }}" />
+            <input name="paysheet[currency]" type="hidden" value="COP" />
+            <input name="paysheet[trm]" type="hidden" value="1" />
         </div>
 
         <div class="form-group col-4">

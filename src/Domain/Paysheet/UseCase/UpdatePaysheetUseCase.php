@@ -31,16 +31,17 @@ final class UpdatePaysheetUseCase extends AbstractPaysheetUseCase
             throw new Exception(\sprintf('Paysheet not exist [%d]', $request->id ?? 0), 404);
         }
 
-        if ($request->isDraft && !$paysheet->isDraft()) {
-            throw new Exception('Paysheet with payments cannot change to draft');
+//         if ($request->isDraft && !$paysheet->isDraft()) {
+//             throw new Exception('Paysheet with payments cannot change to draft');
+//         }
+
+        if (!empty($request->employee)) {
+            $request->employeeId = $this->getEmployeeId($request);
+            $request->agreement['employee'] = $request->employeeId;
         }
 
         if (!empty($request->agreement)) {
             $request->agreementId = $this->getAgreementId($request);
-        }
-
-        if (!empty($request->employee)) {
-            $request->employeeId = $this->getEmployeeId($request);
         }
 
         $paysheetDetails = $this->getPaysheetDetails($request);

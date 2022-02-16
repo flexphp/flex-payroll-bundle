@@ -11,6 +11,13 @@ namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase;
 
 use DateTime;
 use DateTimeInterface;
+use DateTimeZone;
+use Exception;
+use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\Bill;
+use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\BillRepository;
+use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\Request\UpdateBillRequest;
+use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\UseCase\UpdateBillUseCase;
+use FlexPHP\Bundle\InvoiceBundle\Domain\BillStatus\BillStatus;
 use FlexPHP\Bundle\LocationBundle\Domain\City\City;
 use FlexPHP\Bundle\LocationBundle\Domain\City\CityRepository;
 use FlexPHP\Bundle\LocationBundle\Domain\City\Request\ReadCityRequest;
@@ -19,33 +26,10 @@ use FlexPHP\Bundle\LocationBundle\Domain\Country\Country;
 use FlexPHP\Bundle\LocationBundle\Domain\Country\CountryRepository;
 use FlexPHP\Bundle\LocationBundle\Domain\Country\Request\ReadCountryRequest;
 use FlexPHP\Bundle\LocationBundle\Domain\Country\UseCase\ReadCountryUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Customer\Customer;
-use FlexPHP\Bundle\PayrollBundle\Domain\Customer\CustomerRepository;
-use FlexPHP\Bundle\PayrollBundle\Domain\Customer\Request\ReadCustomerRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Customer\UseCase\ReadCustomerUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Paysheet;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\PaysheetRepository;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Response\CreateEPayrollResponse;
-use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetDetail\PaysheetDetailRepository;
-use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetDetail\Request\IndexPaysheetDetailRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetDetail\UseCase\IndexPaysheetDetailUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Payment;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payment\PaymentRepository;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Request\IndexPaymentRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payment\UseCase\IndexPaymentUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Product\ProductRepository;
-use FlexPHP\Bundle\PayrollBundle\Domain\Product\Request\ReadProductRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Product\UseCase\ReadProductUseCase;
 use FlexPHP\Bundle\LocationBundle\Domain\State\Request\ReadStateRequest;
 use FlexPHP\Bundle\LocationBundle\Domain\State\State;
 use FlexPHP\Bundle\LocationBundle\Domain\State\StateRepository;
 use FlexPHP\Bundle\LocationBundle\Domain\State\UseCase\ReadStateUseCase;
-use Exception;
-use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\Bill;
-use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\BillRepository;
-use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\Request\UpdateBillRequest;
-use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\UseCase\UpdateBillUseCase;
-use FlexPHP\Bundle\InvoiceBundle\Domain\BillStatus\BillStatus;
 use FlexPHP\Bundle\NumerationBundle\Domain\Numeration\Numeration as Setting;
 use FlexPHP\Bundle\NumerationBundle\Domain\Numeration\NumerationRepository;
 use FlexPHP\Bundle\NumerationBundle\Domain\Numeration\Request\IndexNumerationRequest;
@@ -54,102 +38,142 @@ use FlexPHP\Bundle\NumerationBundle\Domain\Provider\Provider;
 use FlexPHP\Bundle\NumerationBundle\Domain\Provider\ProviderRepository;
 use FlexPHP\Bundle\NumerationBundle\Domain\Provider\Request\IndexProviderRequest;
 use FlexPHP\Bundle\NumerationBundle\Domain\Provider\UseCase\IndexProviderUseCase;
-use FlexPHP\eInvoice\Constant\AnexType;
-use FlexPHP\eInvoice\Constant\BillSubType as EBillSubType;
-use FlexPHP\eInvoice\Constant\BillType as EBillType;
-use FlexPHP\eInvoice\Constant\ContactType;
-use FlexPHP\eInvoice\Constant\CurrencyCode;
-use FlexPHP\eInvoice\Constant\ItemType;
-use FlexPHP\eInvoice\Constant\PaymentMeanCode;
-use FlexPHP\eInvoice\Constant\Status;
-use FlexPHP\eInvoice\Constant\TaxType;
-use FlexPHP\eInvoice\Contract\BillAnexContract;
-use FlexPHP\eInvoice\Contract\BillContract as InvoiceContract;
-use FlexPHP\eInvoice\Contract\ContactContract;
-use FlexPHP\eInvoice\Contract\CurrencyExchangeContract;
-use FlexPHP\eInvoice\Contract\ItemContract;
-use FlexPHP\eInvoice\Contract\LocationContract;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Agreement;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\AgreementRepository;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Employee;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\EmployeeRepository;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Payment;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payment\PaymentRepository;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Request\IndexPaymentRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payment\UseCase\IndexPaymentUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Paysheet;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\PaysheetRepository;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Response\CreateEPayrollResponse;
+use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetDetail\PaysheetDetailRepository;
+use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetDetail\Request\IndexPaysheetDetailRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetDetail\UseCase\IndexPaysheetDetailUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Product\ProductRepository;
+use FlexPHP\Bundle\PayrollBundle\Domain\Product\Request\ReadProductRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Product\UseCase\ReadProductUseCase;
 use FlexPHP\eInvoice\Contract\MerchantContract;
-use FlexPHP\eInvoice\Contract\NumerationContract;
-use FlexPHP\eInvoice\Contract\PaymentContract;
-use FlexPHP\eInvoice\Contract\TaxExchangeContract;
-use FlexPHP\eInvoice\Invoice as EPayroll;
-use FlexPHP\eInvoice\Provider\Response\DownloadResponse;
-use FlexPHP\eInvoice\Provider\Response\StatusResponse;
-use FlexPHP\eInvoice\Provider\Response\UploadResponse;
-use FlexPHP\eInvoice\Struct\Bill as Invoice;
-use FlexPHP\eInvoice\Struct\BillAnex;
-use FlexPHP\eInvoice\Struct\Contact;
-use FlexPHP\eInvoice\Struct\Item;
-use FlexPHP\eInvoice\Struct\Location;
-use FlexPHP\eInvoice\Struct\Merchant;
-use FlexPHP\eInvoice\Struct\Numeration;
-use FlexPHP\eInvoice\Struct\Payment as Deposit;
-use FlexPHP\eInvoice\Struct\TaxExchange;
+use FlexPHP\ePayroll\Constant\PaymentMeanCode;
+use FlexPHP\ePayroll\Constant\RecurrenceCode;
+use FlexPHP\ePayroll\Constant\Status;
+use FlexPHP\ePayroll\Constant\TaxType;
+use FlexPHP\ePayroll\Contract\AccruedContract;
+use FlexPHP\ePayroll\Contract\AgreementContract;
+use FlexPHP\ePayroll\Contract\AnexContract;
+use FlexPHP\ePayroll\Contract\BasicContract;
+use FlexPHP\ePayroll\Contract\BillContract as InvoiceContract;
+use FlexPHP\ePayroll\Contract\DeductionContract;
+use FlexPHP\ePayroll\Contract\EmployeeContract;
+use FlexPHP\ePayroll\Contract\EmployerContract;
+use FlexPHP\ePayroll\Contract\EntityContract;
+use FlexPHP\ePayroll\Contract\GeneralContract;
+use FlexPHP\ePayroll\Contract\HealthContract;
+use FlexPHP\ePayroll\Contract\HourContract;
+use FlexPHP\ePayroll\Contract\LocationContract;
+use FlexPHP\ePayroll\Contract\NumerationContract;
+use FlexPHP\ePayroll\Contract\PaymentContract;
+use FlexPHP\ePayroll\Contract\PensionContract;
+use FlexPHP\ePayroll\Contract\PeriodContract;
+use FlexPHP\ePayroll\Contract\TransportContract;
+use FlexPHP\ePayroll\Payroll as EPayroll;
+use FlexPHP\ePayroll\Provider\Response\DownloadResponse;
+use FlexPHP\ePayroll\Provider\Response\StatusResponse;
+use FlexPHP\ePayroll\Provider\Response\UploadResponse;
+use FlexPHP\ePayroll\Struct\Accrued;
+use FlexPHP\ePayroll\Struct\Agreement as Contract;
+use FlexPHP\ePayroll\Struct\Anex;
+use FlexPHP\ePayroll\Struct\Basic;
+use FlexPHP\ePayroll\Struct\Deduction;
+use FlexPHP\ePayroll\Struct\Employee as Clerk;
+use FlexPHP\ePayroll\Struct\Employer;
+use FlexPHP\ePayroll\Struct\Entity;
+use FlexPHP\ePayroll\Struct\Entity as Company;
+use FlexPHP\ePayroll\Struct\General;
+use FlexPHP\ePayroll\Struct\Health;
+use FlexPHP\ePayroll\Struct\Hour;
+use FlexPHP\ePayroll\Struct\Location;
+use FlexPHP\ePayroll\Struct\Numeration;
+use FlexPHP\ePayroll\Struct\Payment as Payout;
+use FlexPHP\ePayroll\Struct\Pension;
+use FlexPHP\ePayroll\Struct\Period;
+use FlexPHP\ePayroll\Struct\Transport;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractEPayrollUseCase
 {
-    protected const CONTACT_TYPE_MAP = [
-        1 => ContactType::PERSON,
-        2 => ContactType::OFFICE,
-        3 => ContactType::ACCOUNT,
-        4 => ContactType::SALES,
+    protected const RECURRENCE_CODE = [
+        1 => RecurrenceCode::SEVEN,
+        2 => RecurrenceCode::TEN,
+        3 => RecurrenceCode::FOURTEEN,
+        4 => RecurrenceCode::FIFTEEN,
+        5 => RecurrenceCode::THIRTY,
     ];
 
-    protected PaysheetRepository $orderRepository;
+    protected PaysheetRepository $paysheetRepository;
 
     protected ProviderRepository $providerRepository;
 
     protected NumerationRepository $numerationRepository;
 
-    protected CustomerRepository $customerRepository;
+    protected EmployeeRepository $employeeRepository;
 
-    protected CityRepository $cityRepository;
+    protected AgreementRepository $agreementRepository;
 
-    protected StateRepository $stateRepository;
+    //     protected CityRepository $cityRepository;
 
-    protected CountryRepository $countryRepository;
+    //     protected StateRepository $stateRepository;
 
-    protected BillRepository $billRepository;
+    //     protected CountryRepository $countryRepository;
 
-    protected PaysheetDetailRepository $orderDetailRepository;
+    //     protected BillRepository $billRepository;
 
-    protected ProductRepository $productRepository;
+    //     protected PaysheetDetailRepository $paysheetDetailRepository;
 
-    protected PaymentRepository $paymentRepository;
+    //     protected ProductRepository $productRepository;
+
+    //     protected PaymentRepository $paymentRepository;
 
     protected LoggerInterface $logger;
 
     protected bool $testingMode = false;
 
     public function __construct(
-        PaysheetRepository $orderRepository,
+        PaysheetRepository $paysheetRepository,
         ProviderRepository $providerRepository,
         NumerationRepository $numerationRepository,
-        CustomerRepository $customerRepository,
-        CityRepository $cityRepository,
-        StateRepository $stateRepository,
-        CountryRepository $countryRepository,
-        BillRepository $billRepository,
-        PaysheetDetailRepository $orderDetailRepository,
-        ProductRepository $productRepository,
-        PaymentRepository $paymentRepository,
+        EmployeeRepository $employeeRepository,
+        AgreementRepository $agreementRepository,
+        // CityRepository $cityRepository,
+        // StateRepository $stateRepository,
+        // CountryRepository $countryRepository,
+        // BillRepository $billRepository,
+        // PaysheetDetailRepository $paysheetDetailRepository,
+        // ProductRepository $productRepository,
+        // PaymentRepository $paymentRepository,
         LoggerInterface $logger
     ) {
-        $this->orderRepository = $orderRepository;
+        $this->paysheetRepository = $paysheetRepository;
         $this->providerRepository = $providerRepository;
         $this->numerationRepository = $numerationRepository;
-        $this->customerRepository = $customerRepository;
-        $this->cityRepository = $cityRepository;
-        $this->stateRepository = $stateRepository;
-        $this->countryRepository = $countryRepository;
-        $this->billRepository = $billRepository;
-        $this->orderDetailRepository = $orderDetailRepository;
-        $this->productRepository = $productRepository;
-        $this->paymentRepository = $paymentRepository;
+        $this->employeeRepository = $employeeRepository;
+        $this->agreementRepository = $agreementRepository;
+        // $this->cityRepository = $cityRepository;
+        // $this->stateRepository = $stateRepository;
+        // $this->countryRepository = $countryRepository;
+        // $this->billRepository = $billRepository;
+        // $this->paysheetDetailRepository = $paysheetDetailRepository;
+        // $this->productRepository = $productRepository;
+        // $this->paymentRepository = $paymentRepository;
         $this->logger = $logger;
+    }
+
+    public function getRecurrenceCode(string $period): string
+    {
+        return self::RECURRENCE_CODE[$period];
     }
 
     protected function processEPayroll(
@@ -161,9 +185,9 @@ abstract class AbstractEPayrollUseCase
     ): CreateEPayrollResponse {
         $invoice->numeration()->setCurrentNumber($bill->number());
 
-        $eInvoice = $this->getEPayroll($bill, $provider);
+        $ePayroll = $this->getEPayroll($bill, $provider);
 
-        if (!$eInvoice) {
+        if (!$ePayroll) {
             return new CreateEPayrollResponse($bill->status(), $bill->message());
         }
 
@@ -171,7 +195,7 @@ abstract class AbstractEPayrollUseCase
 
         if (\in_array($bill->status(), [BillStatus::PENDING, BillStatus::PROCESSING, BillStatus::REJECTED])) {
             $sleep = true;
-            $bill = $this->upload($eInvoice, $bill, $sender, $receiver, $invoice);
+            $bill = $this->upload($ePayroll, $bill, $sender, $receiver, $invoice);
         }
 
         if (!$bill->traceId()) {
@@ -179,7 +203,7 @@ abstract class AbstractEPayrollUseCase
         }
 
         if ($bill->status() !== BillStatus::AVAILABLE) {
-            $bill = $this->status($eInvoice, $bill);
+            $bill = $this->status($ePayroll, $bill);
         }
 
         if ($bill->status() !== BillStatus::AVAILABLE) {
@@ -191,7 +215,7 @@ abstract class AbstractEPayrollUseCase
         }
 
         if (!$bill->pdfPath()) {
-            $bill = $this->pdf($eInvoice, $bill, $bill->prefix(), (string)$bill->number());
+            $bill = $this->pdf($ePayroll, $bill, $bill->prefix(), (string)$bill->number());
         }
 
         if (!$bill->pdfPath()) {
@@ -199,7 +223,7 @@ abstract class AbstractEPayrollUseCase
         }
 
         if (!$bill->xmlPath()) {
-            $bill = $this->xml($eInvoice, $bill, $bill->prefix(), (string)$bill->number());
+            $bill = $this->xml($ePayroll, $bill, $bill->prefix(), (string)$bill->number());
         }
 
         if (!$bill->xmlPath()) {
@@ -228,252 +252,205 @@ abstract class AbstractEPayrollUseCase
         return new CreateEPayrollResponse($bill->status(), $bill->message(), $bill->getNumeration(), $content);
     }
 
-    protected function getTaxExchange(
-        string $taxpayerType
-    ): TaxExchangeContract {
-        $taxExchange = new TaxExchange();
-        $taxExchange->setTaxpayerType($taxpayerType);
+    protected function getPeriod(
+        string $datePay,
+        string $dateIn,
+        string $dateStart,
+        string $dateEnd,
+        ?string $dateOut = null
+    ): PeriodContract {
+        return new Period(
+            new DateTime($datePay),
+            new DateTime($dateIn),
+            new DateTime($dateStart),
+            new DateTime($dateEnd),
+            ($dateOut ? new DateTime($dateOut) : null),
+        );
+    }
 
-        return $taxExchange;
+    protected function getNumeration(
+        string $prefix,
+        int $consecutive,
+        ?string $identifier = null
+    ): NumerationContract {
+        return new Numeration($prefix, $consecutive, $identifier);
     }
 
     protected function getLocation(
-        string $address,
+        string $countryCode,
         string $stateCode,
         string $cityCode,
-        string $countryCode,
-        string $zipCode
+        string $language,
+        ?string $address = null
     ): LocationContract {
-        $location = new Location($countryCode);
-        $location->setAddress($address);
-        $location->setStateCode($stateCode);
-        $location->setCityCode($cityCode);
-        $location->setZipCode($zipCode);
+        $location = new Location($countryCode, $stateCode, $cityCode, $language);
+
+        if ($address) {
+            $location->setAddress($address);
+        }
 
         return $location;
     }
 
-    protected function getContact(
-        string $type,
-        string $name,
-        string $telephone,
-        string $email
-    ): ContactContract {
-        $contact = new Contact();
-        $contact->setType($type);
-        $contact->setName($name);
-        $contact->setTelephone($telephone);
-        $contact->setEmail($email);
-
-        return $contact;
-    }
-
-    protected function getDeposit(
-        string $paymentMethodCode,
-        string $paymentMeanCode
-    ): PaymentContract {
-        $deposit = new Deposit($paymentMeanCode);
-        $deposit->setMethodCode($paymentMethodCode);
-
-        return $deposit;
-    }
-
-    protected function getItem(
-        string $code,
-        float $quantity,
-        string $unitCode,
-        float $unitValue,
+    protected function getGeneral(
+        string $datetime,
+        string $recurrenceCode,
         string $currencyCode,
-        string $name,
-        string $description,
-        array $taxes = [],
-        string $type = ItemType::NORMAL,
-        string $lote = '',
-        array $discounts = [],
-        array $chargers = []
-    ): ItemContract {
-        $item = new Item();
-        $item->setCode($code);
-        $item->setQuantity($quantity);
-        $item->setUnitCode($unitCode);
-        $item->setUnitValue($unitValue);
-        $item->setCurrencyCode($currencyCode);
-        $item->setName($name);
-        $item->setDescription($description);
-        $item->setType($type);
-        $item->setLote($lote);
-        $item->addTaxes($taxes);
-        $item->addDiscounts($discounts);
-        $item->addChargers($chargers);
-
-        return $item;
+        float $trm = 1.0
+    ): GeneralContract {
+        return new General(new DateTime($datetime, new DateTimeZone('America/Bogota')), $recurrenceCode, $currencyCode, $trm);
     }
 
-    protected function getMerchant(
-        string $type,
+    protected function getEntity(
         string $document,
         string $documentType,
         string $brandName,
-        string $legalName,
-        string $registrationNumber,
-        bool $taxResponsable,
-        ?LocationContract $location = null,
-        ?TaxExchangeContract $taxExchange = null,
-        array $contacts = []
-    ): MerchantContract {
-        $merchant = new Merchant();
-        $merchant->setType($type);
-        $merchant->setDocument($document);
-        $merchant->setDocumentType($documentType);
-        $merchant->setBrandName($brandName);
-        $merchant->setLegalName($legalName);
-        $merchant->setRegistrationNumber($registrationNumber);
-        $merchant->setTaxResponsable($taxResponsable);
-
-        if ($location) {
-            $merchant->setLocation($location);
-        }
-
-        if ($taxExchange) {
-            $merchant->setTaxExchange($taxExchange);
-        }
-
-        if ($contacts) {
-            $merchant->addContacts($contacts);
-        }
-
-        return $merchant;
+        string $legalName
+    ): EntityContract {
+        return new Company($document, $documentType, $brandName, $legalName);
     }
 
-    protected function getInvoice(
-        DateTimeInterface $date,
-        NumerationContract $numeration,
-        array $items = [],
-        array $payments = [],
-        ?DateTimeInterface $expirationDate = null,
-        ?string $notes = null,
-        string $currencyCode = CurrencyCode::COP,
-        CurrencyExchangeContract $currencyExchange = null
-    ): InvoiceContract {
-        $invoice = new Invoice();
-        $invoice->setDate($date);
-        $invoice->setNumeration($numeration);
-        $invoice->addPayments($payments);
-        $invoice->setCurrencyCode($currencyCode);
-
-        if ($currencyExchange) {
-            $invoice->setCurrencyExchange($currencyExchange);
-        }
-
-        if ($expirationDate) {
-            $invoice->setExpirationDate($expirationDate);
-        }
-
-        if ($notes) {
-            $invoice->setNotes($notes);
-        }
-
-        $invoice->addItems($items);
-
-        return $invoice;
+    protected function getEmployer(
+        EntityContract $entity,
+        LocationContract $location
+    ): EmployerContract {
+        return new Employer($entity, $location);
     }
 
-    protected function getInvoiceND(
-        Bill $bill,
-        DateTimeInterface $date,
-        NumerationContract $numeration,
-        array $items = [],
-        array $payments = [],
-        ?DateTimeInterface $expirationDate = null,
-        ?string $notes = null,
-        string $currencyCode = CurrencyCode::COP,
-        CurrencyExchangeContract $currencyExchange = null
-    ): InvoiceContract {
-        $invoice = $this->getInvoice(
-            $date,
-            $numeration,
-            $items,
-            $payments,
-            $expirationDate,
-            $notes,
-            $currencyCode,
-            $currencyExchange
-        );
-
-        $invoice->setType(EBillType::DEBIT);
-        $invoice->setSubType(EBillSubType::DREFINVOICE);
-
-        $invoice->setBillAnex(
-            $this->getBillAnex(
-                AnexType::_IV_,
-                $bill->getNumeration(),
-                $bill->downloadedAt(),
-                $bill->hash(),
-                $bill->hashType()
-            )
-        );
-
-        return $invoice;
+    protected function getAgreement(
+        string $typeCode,
+        string $subTypeCode,
+        string $contractCode,
+        float $salary,
+        bool $integralSalary,
+        bool $highRisk
+    ): AgreementContract {
+        return new Contract($typeCode, $subTypeCode, $contractCode, $salary, $integralSalary, $highRisk);
     }
 
-    protected function getNumeration(
+    protected function getEmployee(
         string $identifier,
-        int $min,
-        int $current,
-        int $max,
-        DateTimeInterface $start,
-        DateTimeInterface $end,
-        string $prefix
-    ): NumerationContract {
-        $numeration = new Numeration();
-        $numeration->setIdentifier($identifier);
-        $numeration->setMinNumber($min);
-        $numeration->setCurrentNumber($current);
-        $numeration->setMaxNumber($max);
-        $numeration->setDateStart($start);
-        $numeration->setDateEnd($end);
-        $numeration->setPrefix($prefix);
-
-        return $numeration;
+        string $document,
+        string $documentType,
+        string $firstName,
+        string $secondName,
+        string $firstSurname,
+        string $secondSurname,
+        PaymentContract $payment,
+        AgreementContract $agreement,
+        LocationContract $location
+    ): EmployeeContract {
+        return new Clerk(
+            $identifier,
+            $document,
+            $documentType,
+            $firstName,
+            $secondName,
+            $firstSurname,
+            $secondSurname,
+            $payment,
+            $agreement,
+            $location
+        );
     }
 
-    protected function getSender(): MerchantContract
-    {
-        $this->validateSender();
-        $this->validateContactSender();
+    protected function getPayment(
+        string $meanCode,
+        string $methodCode,
+        string $bankName,
+        string $accountType,
+        string $accountNumber,
+        string $date
+    ): PaymentContract {
+        return new Payout(
+            $meanCode,
+            $methodCode,
+            $bankName,
+            $accountType,
+            $accountNumber,
+            new DateTime($date, new DateTimeZone('America/Bogota'))
+        );
+    }
 
-        try {
-            return $this->getMerchant(
-                (string)$_ENV['ORGANIZATION_TYPE'],
-                $_ENV['ORGANIZATION_DOCUMENT'],
-                $_ENV['ORGANIZATION_DOCUMENT_TYPE'],
-                $_ENV['ORGANIZATION_BRAND_NAME'],
-                $_ENV['ORGANIZATION_LEGAL_NAME'],
-                $_ENV['ORGANIZATION_REGISTRATION'],
-                (bool)$_ENV['ORGANIZATION_RESPONSABLE'],
-                $this->getLocation(
-                    $_ENV['ORGANIZATION_ADDRESS'],
-                    $_ENV['ORGANIZATION_STATE'],
-                    $_ENV['ORGANIZATION_CITY'],
-                    $_ENV['ORGANIZATION_COUNTRY'],
-                    $_ENV['ORGANIZATION_ZIPCODE']
-                ),
-                $this->getTaxExchange($_ENV['ORGANIZATION_TAXPAYER']),
-                [
-                    $this->getContact(
-                        self::CONTACT_TYPE_MAP[$_ENV['CONTACT_TYPE']],
-                        $_ENV['CONTACT_NAME'],
-                        $_ENV['CONTACT_PHONE'],
-                        $_ENV['CONTACT_EMAIL']
-                    ),
-                ]
-            );
-        } catch (Exception $e) {
-            throw new Exception('Sender miss-configuration: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+    protected function getHour(
+        string $type,
+        float $quantity,
+        float $percentage,
+        float $amount,
+        ?string $start,
+        ?string $end
+    ): HourContract {
+        $hour = new Hour($type, $quantity, $percentage, $amount);
+
+        if ($start) {
+            $hour->setStart(new DateTime($start));
         }
+
+        if ($end) {
+            $hour->setEnd(new DateTime($end));
+        }
+
+        return $hour;
     }
 
-    protected function validateSender(): void
+    protected function getAccrued(
+        BasicContract $basic,
+        ?TransportContract $transport = null
+    ): AccruedContract {
+        $accrued = new Accrued($basic);
+
+        if ($transport) {
+            $accrued->setTransport($transport);
+        }
+
+        return $accrued;
+    }
+
+    protected function getBasic(
+        int $days,
+        float $amount
+    ): BasicContract {
+        return new Basic($days, $amount);
+    }
+
+    protected function getTransport(
+        float $subsidy,
+        float $viaticSalary,
+        float $viaticNoSalary
+    ): TransportContract {
+        return new Transport($subsidy, $viaticSalary, $viaticNoSalary);
+    }
+
+    protected function getDeduction(
+        HealthContract $health,
+        PensionContract $pension
+    ): DeductionContract {
+        return new Deduction($health, $pension);
+    }
+
+    protected function getHealth(
+        float $percentage,
+        float $amount
+    ): HealthContract {
+        return new Health($percentage, $amount);
+    }
+
+    protected function getPension(
+        float $percentage,
+        float $amount
+    ): PensionContract {
+        return new Pension($percentage, $amount);
+    }
+
+    protected function getAnex(
+        string $hash,
+        ?string $number = null,
+        ?DateTimeInterface $date = null
+    ): AnexContract {
+        return new Anex($hash, $number, $date);
+    }
+
+    protected function validateEnvs(): void
     {
         $required = [
             'ORGANIZATION_TYPE',
@@ -496,37 +473,11 @@ abstract class AbstractEPayrollUseCase
         if (\count($missing) > 0) {
             throw new Exception(
                 \sprintf(
-                    'Sender miss-configuration: %s is required',
+                    'Envs miss-configuration: %s is required',
                     \implode(',', $missing)
                 ),
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
-        }
-    }
-
-    protected function validateContactSender(): void
-    {
-        $required = [
-            'CONTACT_TYPE',
-            'CONTACT_NAME',
-            'CONTACT_PHONE',
-            'CONTACT_EMAIL',
-        ];
-
-        $missing = $this->getMissingKeys($required, $_ENV);
-
-        if (\count($missing) > 0) {
-            throw new Exception(
-                \sprintf(
-                    'Contact sender miss-configuration: %s is required',
-                    \implode(',', $missing)
-                ),
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
-        }
-
-        if (!\array_key_exists($_ENV['CONTACT_TYPE'], self::CONTACT_TYPE_MAP)) {
-            throw new Exception('Contact sender type miss-configuration', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -539,11 +490,11 @@ abstract class AbstractEPayrollUseCase
         ], 1));
 
         if (\count($response->providers) === 0) {
-            throw new Exception('eInvoice provider miss-configuration: None defined', Response::HTTP_INTERNAL_SERVER_ERROR);
+            throw new Exception('ePayroll provider miss-configuration: None defined', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         if (\count($response->providers) > 1) {
-            throw new Exception('eInvoice provider miss-configuration: Many actives', Response::HTTP_INTERNAL_SERVER_ERROR);
+            throw new Exception('ePayroll provider miss-configuration: Many actives', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return \end($response->providers);
@@ -559,77 +510,94 @@ abstract class AbstractEPayrollUseCase
         ], 1));
 
         if (\count($response->numerations) === 0) {
-            throw new Exception('eInvoice numeration miss-configuration: None defined', Response::HTTP_INTERNAL_SERVER_ERROR);
+            throw new Exception('ePayroll numeration miss-configuration: None defined', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         if (\count($response->numerations) > 1) {
-            throw new Exception('eInvoice numeration miss-configuration: Many actives', Response::HTTP_INTERNAL_SERVER_ERROR);
+            throw new Exception('ePayroll numeration miss-configuration: Many actives', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $numeration = \end($response->numerations);
 
         if ($numeration->currentNumber() >= $numeration->toNumber()) {
-            throw new Exception('eInvoice numeration miss-configuration: Numeration exceeds', Response::HTTP_INTERNAL_SERVER_ERROR);
+            throw new Exception('ePayroll numeration miss-configuration: Numeration exceeds', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $numeration;
     }
 
-    protected function getReceiver(int $customerId): Merchant
+    protected function getContract(Employee $employee, Agreement $agreement): Contract
     {
-        $customer = (new ReadCustomerUseCase($this->customerRepository))->execute(
-            new ReadCustomerRequest($customerId)
-        )->customer;
-
-        $this->validateCustomer($customer);
-
-        $city = (new ReadCityUseCase($this->cityRepository))->execute(
-            new ReadCityRequest($customer->cityId())
-        )->city;
-
-        $this->validateCity($city);
-
-        $state = (new ReadStateUseCase($this->stateRepository))->execute(
-            new ReadStateRequest($city->stateId())
-        )->state;
-
-        $this->validateState($state);
-
-        $country = (new ReadCountryUseCase($this->countryRepository))->execute(
-            new ReadCountryRequest($state->countryId())
-        )->country;
-
-        $this->validateCountry($country);
-
         try {
-            return $this->getMerchant(
-                $customer->type(),
-                $customer->documentNumber(),
-                $customer->documentTypeId(),
-                $customer->commercialName(),
-                $customer->name(),
-                $customer->registrationNumber(),
-                $customer->regimeType() == 48,
-                $this->getLocation(
-                    $customer->address(),
-                    $state->code(),
-                    $city->code(),
-                    $country->code(),
-                    $customer->zipCode() ?? '',
-                ),
-                $this->getTaxExchange('N'),
-                [
-                    $this->getContact(
-                        ContactType::PERSON,
-                        $customer->name(),
-                        $customer->phoneNumber(),
-                        $customer->email()
-                    ),
-                ]
-            // $this->getTaxExchange($customer->taxpayerType())
+            return $this->getAgreement(
+                (string)$employee->type(),
+                (string)$employee->subType(),
+                (string)$agreement->type(),
+                (float)$agreement->salary(),
+                (bool)$agreement->integralSalary(),
+                (bool)$agreement->highRisk()
             );
         } catch (Exception $e) {
-            throw new Exception('eInvoice customer miss-configuration: ' . $e->getMessage(), Response::HTTP_BAD_REQUEST);
+            throw new Exception('ePayroll agreement miss-configuration: ' . $e->getMessage(), Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    protected function getClerk(Paysheet $paysheet, Employee $employee, Agreement $agreement): EmployeeContract
+    {
+        $this->validateEmployee($employee);
+
+//         $city = (new ReadCityUseCase($this->cityRepository))->execute(
+//             new ReadCityRequest($employee->cityId())
+//         )->city;
+
+//         $this->validateCity($city);
+
+//         $state = (new ReadStateUseCase($this->stateRepository))->execute(
+//             new ReadStateRequest($city->stateId())
+//         )->state;
+
+//         $this->validateState($state);
+
+//         $country = (new ReadCountryUseCase($this->countryRepository))->execute(
+//             new ReadCountryRequest($state->countryId())
+//         )->country;
+
+//         $this->validateCountry($country);
+
+        try {
+            return $this->getEmployee(
+                \str_pad((string)$employee->id(), 10, '0', \STR_PAD_RIGHT),
+                $employee->documentNumber(),
+                $employee->documentTypeId(),
+                $employee->firstName(),
+                $employee->secondName() ?? '',
+                $employee->firstSurname(),
+                $employee->secondSurname() ?? '',
+                new Payout(
+                    '1',
+                    $employee->paymentMethod(),
+                    '',
+                    $employee->accountType() ?? '',
+                    $employee->accountNumber() ?? '',
+                    $paysheet->paidAt() ?? new DateTime
+                ),
+                $this->getContract($employee, $agreement),
+                // TODO: Add location data to Employee table
+                $this->getLocation(
+                    // $country->code(),
+                    // $state->code(),
+                    // $city->code(),
+                    // 'es',
+                    // $employee->address(),
+                    'CO',
+                    '11',
+                    '11001',
+                    'es',
+                    ''
+                ),
+            );
+        } catch (Exception $e) {
+            throw new Exception('ePayroll employee miss-configuration: ' . $e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -646,65 +614,45 @@ abstract class AbstractEPayrollUseCase
         return $missingKeys;
     }
 
-    protected function validateCustomer(Customer $customer): void
+    protected function validateEmployee(Employee $employee): void
     {
         $errors = [];
 
-        if (!$customer->invoicingAllowed()) {
-            $errors[] = 'not enable';
-        }
-
-        if (!$customer->type()) {
+        if (!$employee->type()) {
             $errors[] = 'type';
         }
 
-        if (!$customer->documentNumber()) {
+        if (!$employee->subType()) {
+            $errors[] = 'subType';
+        }
+
+        if (!$employee->documentNumber()) {
             $errors[] = 'document';
         }
 
-        if (!$customer->documentTypeId()) {
+        if (!$employee->documentTypeId()) {
             $errors[] = 'document type';
         }
 
-        if (!$customer->name()) {
+        if (!$employee->firstName()) {
             $errors[] = 'name';
         }
 
-        if (!$customer->commercialName()) {
-            $errors[] = 'commercial name';
+        if (!$employee->firstSurname()) {
+            $errors[] = 'lastname';
         }
 
-        if (!$customer->registrationNumber()) {
-            $errors[] = 'registration';
-        }
+//         if (!$employee->address()) {
+//             $errors[] = 'address';
+//         }
 
-        if (!$customer->regimeType()) {
-            $errors[] = 'regime type';
-        }
-
-        if (!$customer->phoneNumber()) {
-            $errors[] = 'phone';
-        }
-
-        if (!$customer->email()) {
-            $errors[] = 'email';
-        }
-
-        if (!$customer->address()) {
-            $errors[] = 'address';
-        }
-
-        if (!$customer->cityId()) {
-            $errors[] = 'city';
-        }
-
-        if (!$customer->taxpayerType()) {
-            $errors[] = 'tax payer';
-        }
+//         if (!$employee->cityId()) {
+//             $errors[] = 'city';
+//         }
 
         if (\count($errors)) {
             throw new Exception(
-                \sprintf('eInvoice customer miss-configuration: %s are invalid', \implode(', ', $errors)),
+                \sprintf('ePayroll employee miss-configuration: %s are invalid', \implode(', ', $errors)),
                 Response::HTTP_BAD_REQUEST
             );
         }
@@ -713,31 +661,31 @@ abstract class AbstractEPayrollUseCase
     protected function validateCity(City $city): void
     {
         if (!$city->code()) {
-            throw new Exception('eInvoice customer city miss-configuration: code is required', Response::HTTP_BAD_REQUEST);
+            throw new Exception('ePayroll employee city miss-configuration: code is required', Response::HTTP_BAD_REQUEST);
         }
     }
 
     protected function validateState(State $state): void
     {
         if (!$state->code()) {
-            throw new Exception('eInvoice customer state miss-configuration: code is required', Response::HTTP_BAD_REQUEST);
+            throw new Exception('ePayroll employee state miss-configuration: code is required', Response::HTTP_BAD_REQUEST);
         }
     }
 
     protected function validateCountry(Country $country): void
     {
         if (!$country->code()) {
-            throw new Exception('eInvoice customer country miss-configuration: code is required', Response::HTTP_BAD_REQUEST);
+            throw new Exception('ePayroll employee country miss-configuration: code is required', Response::HTTP_BAD_REQUEST);
         }
     }
 
-    protected function getItems(Paysheet $order): array
+    protected function getItems(Paysheet $paysheet): array
     {
-        $details = (new IndexPaysheetDetailUseCase($this->orderDetailRepository))->execute(
+        $details = (new IndexPaysheetDetailUseCase($this->paysheetDetailRepository))->execute(
             new IndexPaysheetDetailRequest([
-                'orderId' => $order->id(),
+                'paysheetId' => $paysheet->id(),
             ], 1)
-        )->orderDetails;
+        )->paysheetDetails;
 
         $items = [];
 
@@ -769,17 +717,17 @@ abstract class AbstractEPayrollUseCase
         }
 
         if (\count($items) === 0) {
-            throw new Exception('eInvoice without items is not allowed', Response::HTTP_BAD_REQUEST);
+            throw new Exception('ePayroll without items is not allowed', Response::HTTP_BAD_REQUEST);
         }
 
         return $items;
     }
 
-    protected function getDeposits(Paysheet $order): array
+    protected function getDeposits(Paysheet $paysheet): array
     {
         $payments = (new IndexPaymentUseCase($this->paymentRepository))->execute(
             new IndexPaymentRequest([
-                'orderId' => $order->id(),
+                'paysheetId' => $paysheet->id(),
                 'paymentStatusId' => '00',
             ], 1)
         )->payments;
@@ -816,7 +764,7 @@ abstract class AbstractEPayrollUseCase
         return $hash;
     }
 
-    protected function getEPayroll(Bill $bill, Provider $provider): ?\FlexPHP\eInvoice\InvoiceInterface
+    protected function getEPayroll(Bill $bill, Provider $provider): ?\FlexPHP\ePayroll\InvoiceInterface
     {
         try {
             if ($this->testingMode) {
@@ -828,7 +776,7 @@ abstract class AbstractEPayrollUseCase
             return new EPayroll($provider->id(), [
                 'username' => $provider->username(),
                 'password' => $provider->password(),
-                'carrier' => new \FlexPHP\eInvoice\Carrier\SoapCarrier($wsdl, [
+                'carrier' => new \FlexPHP\ePayroll\Carrier\SoapCarrier($wsdl, [
                     'location' => $provider->url(),
                 ]),
             ]);
@@ -842,10 +790,10 @@ abstract class AbstractEPayrollUseCase
         return null;
     }
 
-    protected function upload(EPayroll $eInvoice, Bill $bill, Merchant $sender, Merchant $receiver, InvoiceContract $invoice): Bill
+    protected function upload(EPayroll $ePayroll, Bill $bill, Merchant $sender, Merchant $receiver, InvoiceContract $invoice): Bill
     {
         try {
-            $response = $eInvoice->upload([
+            $response = $ePayroll->upload([
                 'sender' => $sender,
                 'receiver' => $receiver,
                 'bill' => $invoice,
@@ -871,10 +819,10 @@ abstract class AbstractEPayrollUseCase
         return $this->updateBill($bill);
     }
 
-    protected function status(EPayroll $eInvoice, Bill $bill): Bill
+    protected function status(EPayroll $ePayroll, Bill $bill): Bill
     {
         try {
-            $response = $eInvoice->getStatus($bill->traceId());
+            $response = $ePayroll->getStatus($bill->traceId());
         } catch (Exception $e) {
             $response = new StatusResponse(Status::FAILED, $e->getMessage(), null);
 
@@ -892,16 +840,16 @@ abstract class AbstractEPayrollUseCase
         return $this->updateBill($bill);
     }
 
-    protected function pdf(EPayroll $eInvoice, Bill $bill, string $prefix, string $number): Bill
+    protected function pdf(EPayroll $ePayroll, Bill $bill, string $prefix, string $number): Bill
     {
         try {
-            $path = \realpath(__DIR__ . '/../../../invoices/pdf');
+            $path = \realpath(__DIR__ . '/../../../payrolls/pdf');
 
             if (!\is_dir($path)) {
                 throw new Exception('Carpeta PDF no encontrada');
             }
 
-            $response = $eInvoice->getPDF($prefix, $number);
+            $response = $ePayroll->getPDF($prefix, $number);
         } catch (Exception $e) {
             $response = new DownloadResponse(Status::FAILED, $e->getMessage(), null);
 
@@ -923,7 +871,7 @@ abstract class AbstractEPayrollUseCase
         return $this->updateBill($bill);
     }
 
-    protected function xml(EPayroll $eInvoice, Bill $bill, string $prefix, string $number): Bill
+    protected function xml(EPayroll $ePayroll, Bill $bill, string $prefix, string $number): Bill
     {
         try {
             $path = \realpath(__DIR__ . '/../../../invoices/xml');
@@ -932,7 +880,7 @@ abstract class AbstractEPayrollUseCase
                 throw new Exception('Carpeta XML no encontrada');
             }
 
-            $response = $eInvoice->getXML($prefix, $number);
+            $response = $ePayroll->getXML($prefix, $number);
         } catch (Exception $e) {
             $response = new DownloadResponse(Status::FAILED, $e->getMessage(), null);
 
@@ -974,17 +922,5 @@ abstract class AbstractEPayrollUseCase
         }
 
         return $message;
-    }
-
-    private function getBillAnex(string $type, string $number, DateTimeInterface $date, string $hash, string $hashType): BillAnexContract
-    {
-        $billAnex = new BillAnex;
-        $billAnex->setType($type);
-        $billAnex->setNumber($number);
-        $billAnex->setDate($date);
-        $billAnex->setHash($hash);
-        $billAnex->setHashType($hashType);
-
-        return $billAnex;
     }
 }

@@ -49,7 +49,11 @@ class CreatePaysheetRequest implements RequestInterface
 
     public $billNotes;
 
-    public $expiratedAt;
+    public $issuedAt;
+
+    public $initAt;
+
+    public $finishAt;
 
     public $createdBy;
 
@@ -66,8 +70,14 @@ class CreatePaysheetRequest implements RequestInterface
         $this->isDraft = $data['paysheet']['isDraft'] ?? false;
         $this->notes = $data['paysheet']['notes'] ?? null;
         $this->paysheetNotes = $data['paysheet']['paysheetNotes'] ?? null;
-        $this->expiratedAt = !empty($data['paysheet']['expiratedAt'])
-            ? $this->dateTimeToUTC($data['paysheet']['expiratedAt'], $this->getOffset($this->getTimezone($timezone)))
+        $this->issuedAt = !empty($data['paysheet']['issuedAt'])
+            ? $this->dateTimeToUTC($data['paysheet']['issuedAt'], $this->getOffset($this->getTimezone($timezone)))
+            : null;
+        $this->initAt = !empty($data['paysheet']['initAt'])
+            ? $this->dateTimeToUTC($data['paysheet']['initAt'], $this->getOffset($this->getTimezone($timezone)))
+            : null;
+        $this->finishAt = !empty($data['paysheet']['finishAt'])
+            ? $this->dateTimeToUTC($data['paysheet']['finishAt'], $this->getOffset($this->getTimezone($timezone)))
             : null;
 
         $this->createdAt = !empty($data['paysheet']['createdAt'])

@@ -319,36 +319,41 @@ final class PaysheetController extends AbstractController
         return $response;
     }
 
-//     /**
-//      * @Cache(smaxage="3600")
-//      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_BILL_CREATE')", statusCode=401)
-//      */
-//     public function epayroll(Request $request, CreateEPayrollUseCase $useCase, TranslatorInterface $trans, int $id): Response
-//     {
-//         $referer = $request->headers->get('referer');
+    /**
+     * @Cache(smaxage="3600")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_BILL_CREATE')", statusCode=401)
+     */
+    public function epayroll(Request $request, CreateEPayrollUseCase $useCase, TranslatorInterface $trans, int $id): Response
+    {
+        $referer = $request->headers->get('referer');
 
-//         $request = new CreateEPayrollRequest($id, $this->getUser()->timezone());
+        $request = new CreateEPayrollRequest($id, $this->getUser()->timezone());
 
-//         $epayroll = $useCase->execute($request);
+        $epayroll = $useCase->execute($request);
 
-//         if (!$epayroll->content) {
-//             $message = $epayroll->message ? $epayroll->message : $trans->trans('message.payrolld', [], 'paysheet');
-//             $this->addFlash('danger', $message);
+        if (!$epayroll->content) {
+            $message = $epayroll->message ? $epayroll->message : $trans->trans('message.payrolled', [], 'paysheet');
+            $this->addFlash('danger', $message);
 
-//             if ($referer) {
-//                 return $this->redirect($referer);
-//             }
+            if ($referer) {
+                return $this->redirect($referer);
+            }
 
-//             return $this->redirectToRoute('paysheets.index');
-//         }
+            return $this->redirectToRoute('paysheets.index');
+        }
 
-//         $response = new Response($epayroll->content);
-//         $response->headers->set('Content-Type', 'application/pdf');
-//         $response->headers->set('Content-Disposition', HeaderUtils::makeDisposition(
-//             HeaderUtils::DISPOSITION_INLINE,
-//             $epayroll->filename
-//         ));
+        // Demo
+        // $epayroll = new \stdClass;
+        // $epayroll->content = file_get_contents('/var/www/html/atar/certification-factura-tech/payroll/exercises/s1_1_82401.pdf');
+        // $epayroll->filename = '82401.pdf';
 
-//         return $response;
-//     }
+        $response = new Response($epayroll->content);
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_INLINE,
+            $epayroll->filename
+        ));
+
+        return $response;
+    }
 }

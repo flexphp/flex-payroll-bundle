@@ -119,7 +119,7 @@
     <route id="flexphp.payroll.paysheets.find.agreements" controller="flexphp.payroll.bundle.paysheet_controller::findAgreement" path="/paysheets/find-agreements" methods="POST" />
     <route id="flexphp.payroll.paysheets.find.paysheet-status" controller="flexphp.payroll.bundle.paysheet_controller::findPaysheetStatus" path="/paysheets/find-paysheet-status" methods="POST" />
     <route id="flexphp.payroll.paysheets.prepaysheet" controller="flexphp.payroll.bundle.paysheet_controller::prepaysheet" path="/paysheets/{id}/prepaysheet" methods="GET" />
-    <route id="flexphp.payroll.paysheets.epayroll" controller="flexphp.payroll.bundle.paysheet_controller::epayroll" path="/paysheets/epayroll" methods="GET" />
+    <route id="flexphp.payroll.paysheets.epayroll" controller="flexphp.payroll.bundle.paysheet_controller::epayroll" path="/paysheets/{id}/epayroll" methods="GET" />
 
     <route id="flexphp.payroll.api.v1.paysheets.employee" controller="flexphp.payroll.bundle.api_v1_paysheet_controller::employee" path="/api/v1/paysheets/{id}/employee" methods="GET" />
     <route id="flexphp.payroll.api.v1.paysheets.agreement" controller="flexphp.payroll.bundle.api_v1_paysheet_controller::agreement" path="/api/v1/paysheets/{id}/agreement" methods="GET" />

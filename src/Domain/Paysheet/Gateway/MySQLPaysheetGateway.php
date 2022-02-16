@@ -107,6 +107,9 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->setValue('StatusId', ':statusId');
         $query->setValue('PaysheetNotes', ':paysheetNotes');
         $query->setValue('CreatedAt', ':createdAt');
+        $query->setValue('IssuedAt', ':issuedAt');
+        $query->setValue('InitAt', ':initAt');
+        $query->setValue('FinishAt', ':finishAt');
         $query->setValue('UpdatedAt', ':updatedAt');
         $query->setValue('CreatedBy', ':createdBy');
 
@@ -121,6 +124,9 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->setParameter(':paidAt', $paysheet->paidAt(), DB::DATETIME_MUTABLE);
         $query->setParameter(':statusId', $paysheet->statusId(), DB::STRING);
         $query->setParameter(':paysheetNotes', $paysheet->paysheetNotes(), DB::TEXT);
+        $query->setParameter(':issuedAt', $paysheet->issuedAt(), DB::DATETIME_MUTABLE);
+        $query->setParameter(':initAt', $paysheet->initAt(), DB::DATETIME_MUTABLE);
+        $query->setParameter(':finishAt', $paysheet->finishAt(), DB::DATETIME_MUTABLE);
         $query->setParameter(':createdAt', $paysheet->createdAt() ?? new \DateTime(\date('Y-m-d H:i:s')), DB::DATETIME_MUTABLE);
         $query->setParameter(':updatedAt', $paysheet->updatedAt() ?? new \DateTime(\date('Y-m-d H:i:s')), DB::DATETIME_MUTABLE);
         $query->setParameter(':createdBy', $paysheet->createdBy(), DB::INTEGER);
@@ -147,6 +153,9 @@ class MySQLPaysheetGateway implements PaysheetGateway
             'paysheet.PaidAt as paidAt',
             'paysheet.StatusId as statusId',
             'paysheet.PaysheetNotes as paysheetNotes',
+            'paysheet.IssuedAt as issuedAt',
+            'paysheet.InitAt as initAt',
+            'paysheet.FinishAt as finishAt',
             'paysheet.CreatedAt as createdAt',
             'paysheet.UpdatedAt as updatedAt',
             'paysheet.CreatedBy as createdBy',
@@ -196,6 +205,9 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->set('PaidAt', ':paidAt');
         $query->set('StatusId', ':statusId');
         $query->set('PaysheetNotes', ':paysheetNotes');
+        $query->set('CreatedAt', ':createdAt');
+        $query->set('IssuedAt', ':issuedAt');
+        $query->set('InitAt', ':initAt');
         $query->set('UpdatedAt', ':updatedAt');
         $query->set('UpdatedBy', ':updatedBy');
 
@@ -210,6 +222,9 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->setParameter(':paidAt', $paysheet->paidAt(), DB::DATETIME_MUTABLE);
         $query->setParameter(':statusId', $paysheet->statusId(), DB::STRING);
         $query->setParameter(':paysheetNotes', $paysheet->paysheetNotes(), DB::TEXT);
+        $query->setParameter(':issuedAt', $paysheet->issuedAt(), DB::DATETIME_MUTABLE);
+        $query->setParameter(':initAt', $paysheet->initAt(), DB::DATETIME_MUTABLE);
+        $query->setParameter(':finishAt', $paysheet->finishAt(), DB::DATETIME_MUTABLE);
         $query->setParameter(':updatedAt', $paysheet->updatedAt() ?? new \DateTime(\date('Y-m-d H:i:s')), DB::DATETIME_MUTABLE);
         $query->setParameter(':updatedBy', $paysheet->updatedBy(), DB::INTEGER);
 
@@ -719,66 +734,66 @@ class MySQLPaysheetGateway implements PaysheetGateway
     //     return \compact('paysheet', 'details', 'payments');
     // }
 
-    // public function getEPayrollData(CreateEPayrollRequest $request): array
-    // {
-    //     $query = $this->conn->createQueryBuilder();
+    public function getEPayrollData(CreateEPayrollRequest $request): array
+    {
+        $query = $this->conn->createQueryBuilder();
 
-    //     $query->select([
-    //         'o.Id as paysheetId',
-    //         'o.Subtotal as paysheetSubtotal',
-    //         'o.Taxes as paysheetTaxes',
-    //         'o.Total as paysheetTotal',
-    //         'o.Discount as paysheetDiscount',
-    //         'o.TotalPaid as paysheetTotalPaid',
-    //         'c.Name as payerName',
-    //         'c.DocumentTypeId as payerDocumentType',
-    //         'c.DocumentNumber as payerDocumentNumber',
-    //         'c.Email as payerEmail',
-    //         'c.Address as payerAddress',
-    //         'ct.Name as payerCity',
-    //         'c.PhoneNumber as payerPhoneNumber',
-    //         'DATE_ADD(o.CreatedAt, INTERVAL :offset SECOND) as paysheetCreatedAt',
-    //         'u.Name as userName',
-    //     ]);
+        $query->select([
+            'o.Id as paysheetId',
+            'o.Subtotal as paysheetSubtotal',
+            'o.Taxes as paysheetTaxes',
+            'o.Total as paysheetTotal',
+            'o.Discount as paysheetDiscount',
+            'o.TotalPaid as paysheetTotalPaid',
+            'c.Name as payerName',
+            'c.DocumentTypeId as payerDocumentType',
+            'c.DocumentNumber as payerDocumentNumber',
+            'c.Email as payerEmail',
+            'c.Address as payerAddress',
+            'ct.Name as payerCity',
+            'c.PhoneNumber as payerPhoneNumber',
+            'DATE_ADD(o.CreatedAt, INTERVAL :offset SECOND) as paysheetCreatedAt',
+            'u.Name as userName',
+        ]);
 
-    //     $query->from('`Paysheets`', '`o`');
-    //     $query->Join('`o`', '`Users`', '`u`', 'o.CreatedBy  = u.Id');
-    //     $query->leftJoin('`o`', '`Employees`', '`c`', 'o.EmployeeId  = c.Id');
-    //     $query->leftJoin('`c`', '`Cities`', '`ct`', 'c.CityId  = ct.Id');
-    //     $query->leftJoin('`ct`', '`States`', '`s`', 'ct.StateId  = s.Id');
+        $query->from('`Paysheets`', '`o`');
+        $query->Join('`o`', '`Users`', '`u`', 'o.CreatedBy  = u.Id');
+        $query->leftJoin('`o`', '`Employees`', '`c`', 'o.EmployeeId  = c.Id');
+        $query->leftJoin('`c`', '`Cities`', '`ct`', 'c.CityId  = ct.Id');
+        $query->leftJoin('`ct`', '`States`', '`s`', 'ct.StateId  = s.Id');
 
-    //     $query->where('o.Id = :paysheetId');
-    //     $query->setParameter(':paysheetId', $request->paysheetId);
-    //     $query->setParameter(':offset', $request->offset);
+        $query->where('o.Id = :paysheetId');
+        $query->setParameter(':paysheetId', $request->paysheetId);
+        $query->setParameter(':offset', $request->offset);
 
-    //     $paysheet = $query->execute()->fetch() ?: [];
-    //     $details = [];
+        $paysheet = $query->execute()->fetch() ?: [];
+        $details = [];
 
-    //     if ($paysheet && !empty($paysheet['paysheetId'])) {
-    //         $query->resetQueryParts();
+        if ($paysheet && !empty($paysheet['paysheetId'])) {
+            $query->resetQueryParts();
 
-    //         $query->select([
-    //             "CONCAT(IFNULL(p.Name, ''), ' ', IFNULL(p.Reference, '')) productName",
-    //             'pu.Name productUnit',
-    //             'od.Quantity quantity',
-    //             'od.Price price',
-    //             'od.Tax tax',
-    //             'od.Total total',
-    //         ]);
+            $query->select([
+                "CONCAT(IFNULL(p.Name, ''), ' ', IFNULL(p.Reference, '')) productName",
+                'pu.Name productUnit',
+                'od.Quantity quantity',
+                'od.Price price',
+                'od.Tax tax',
+                'od.Total total',
+            ]);
 
-    //         $query->from('`PaysheetDetails`', '`od`');
-    //         $query->join('`od`', '`Products`', '`p`', 'p.Id = od.ProductId');
-    //         $query->join('`p`', '`ProductUnits`', '`pu`', 'p.ProductUnitId = pu.Id');
+            $query->from('`PaysheetDetails`', '`od`');
+            $query->join('`od`', '`Products`', '`p`', 'p.Id = od.ProductId');
+            $query->join('`p`', '`ProductUnits`', '`pu`', 'p.ProductUnitId = pu.Id');
 
-    //         $query->where('od.PaysheetId = :paysheetId');
-    //         $query->setParameter(':paysheetId', $paysheet['paysheetId']);
-    //         $query->orderBy('od.Id', 'ASC');
+            $query->where('od.PaysheetId = :paysheetId');
+            $query->setParameter(':paysheetId', $paysheet['paysheetId']);
+            $query->orderBy('od.Id', 'ASC');
 
-    //         $details = $query->execute()->fetchAll();
+            $details = $query->execute()->fetchAll();
 
-    //         $query->resetQueryParts();
-    //     }
+            $query->resetQueryParts();
+        }
 
-    //     return \compact('paysheet', 'details');
-    // }
+        return \compact('paysheet', 'details');
+    }
 }

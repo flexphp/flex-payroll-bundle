@@ -11,16 +11,20 @@ namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase;
 
 use DateInterval;
 use DateTime;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreateEPayrollRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\ReadPaysheetRequest;
-use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Response\CreateEPayrollResponse;
 use Exception;
+use FlexPHP\Bundle\NumerationBundle\Domain\Numeration\Request\UpdateNumerationRequest;
+use FlexPHP\Bundle\NumerationBundle\Domain\Numeration\UseCase\UpdateNumerationUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request\ReadAgreementRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\UseCase\ReadAgreementUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\ReadEmployeeRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\UseCase\ReadEmployeeUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\CreatePayrollRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\UseCase\CreatePayrollUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\PayrollStatus\PayrollStatus;
 use FlexPHP\Bundle\PayrollBundle\Domain\PayrollType\PayrollType;
-use FlexPHP\Bundle\NumerationBundle\Domain\Numeration\Request\UpdateNumerationRequest;
-use FlexPHP\Bundle\NumerationBundle\Domain\Numeration\UseCase\UpdateNumerationUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreateEPayrollRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\ReadPaysheetRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Response\CreateEPayrollResponse;
 
 final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
 {
@@ -34,8 +38,12 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
             throw new Exception(\sprintf('Paysheet not exist [%d]', $request->paysheetId ?? 0), 404);
         }
 
-        if (!$paysheet->customerId()) {
-            throw new Exception('Paysheet customer not found', 404);
+        if (!$paysheet->employeeId()) {
+            throw new Exception('Paysheet employee not found', 404);
+        }
+
+        if (!$paysheet->agreementId()) {
+            throw new Exception('Paysheet agreement not found', 404);
         }
 
         if ($paysheet->isDraft()) {
@@ -53,41 +61,96 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
             return $this->getResponseOk($payroll);
         }
 
-        $paysheetTimeout = clone $paysheet->createdAt();
-        $timeAllowed = new DateInterval(\sprintf('P%dD', $_ENV['EINVOICE_TIMEOUT'] ?? 10));
+        //         $paysheetTimeout = clone $paysheet->createdAt();
+        //         $timeAllowed = new DateInterval(\sprintf('P%dD', $_ENV['EINVOICE_TIMEOUT'] ?? 10));
 
-        if ($paysheetTimeout->add($timeAllowed) < new DateTime()) {
-            throw new Exception('Paysheet is older', 400);
-        }
+        //         if ($paysheetTimeout->add($timeAllowed) < new DateTime()) {
+        //             throw new Exception('Paysheet is older', 400);
+        //         }
 
-        $sender = $this->getSender();
-        $setting = $this->getSetting(PayrollType::INVOICE);
+        $this->validateEnvs();
+
+        $employee = (new ReadEmployeeUseCase($this->employeeRepository))->execute(
+            new ReadEmployeeRequest($paysheet->employeeId())
+        )->employee;
+
+        $agreement = (new ReadAgreementUseCase($this->agreementRepository))->execute(
+            new ReadAgreementRequest($paysheet->agreementId())
+        )->agreement;
+
+        $clerk = $this->getClerk($paysheet, $employee, $agreement);
+
+        $general = $this->getGeneral(
+            $paysheet->createdAt()->format('Y-m-d H:i:s'),
+            $this->getRecurrenceCode($agreement->period()),
+            $agreement->currency(),
+            1.0
+        );
+
+        $period = $this->getPeriod(
+            $paysheet->paidAt() ?? (new DateTime)->format('Y-m-d H:i:s'),
+            $agreement->initAt()->format('Y-m-d H:i:s'),
+            // TODO: Add period columns in Paysheet table
+            // $paysheet->initAt(),
+            // $paysheet->finishAt(),
+            (new DateTime())->format('Y-m-d H:i:s'),
+            (new DateTime())->format('Y-m-d H:i:s'),
+            $agreement->finishAt()->format('Y-m-d H:i:s')
+        );
+
+        $entity = $this->getEntity(
+            $_ENV['ORGANIZATION_DOCUMENT'],
+            $_ENV['ORGANIZATION_DOCUMENT_TYPE'],
+            $_ENV['ORGANIZATION_BRAND_NAME'],
+            $_ENV['ORGANIZATION_LEGAL_NAME']
+        );
+
+        $location = $this->getLocation(
+            $_ENV['ORGANIZATION_COUNTRY'],
+            $_ENV['ORGANIZATION_STATE'],
+            $_ENV['ORGANIZATION_CITY'],
+            'es',
+            $_ENV['ORGANIZATION_ADDRESS']
+        );
+
+        $employer = $this->getEmployer($entity, $location);
+
+        // TODO: Add PaysheetType in SDK
+        $setting = $this->getSetting('NI');
+
         $numeration = $this->getNumeration(
-            $setting->resolution(),
-            $setting->fromNumber(),
+            $setting->prefix(),
             $setting->currentNumber(),
-            $setting->toNumber(),
-            $setting->startAt(),
-            $setting->finishAt(),
-            $setting->prefix()
+            (string)$employee->id()
         );
 
-        $receiver = $this->getReceiver($paysheet->customerId());
-        $payroll = $this->getPayroll(
-            $paysheet->createdAt(),
-            $numeration,
-            $this->getItems($paysheet),
-            $this->getDeposits($paysheet),
-            $paysheet->expiratedAt(),
-            $paysheet->payrollNotes()
-        );
+        $roll = [
+            'general' => $general,
+            'employer' => $employer,
+            'employee' => $clerk,
+            'period' => $period,
+            'numeration' => $numeration,
+            'accrued' => $this->getAccrued(
+                $this->getBasic($days, $amount),
+                $this->getTransport($subsidy, $viaticSalary, $viaticNoSalary),
+                $this->getVacation($initAt, $finishAt, $days, $amount),
+                $this->getBonus($days, $amount, $amountNoSalary),
+                $this->getCessation($percentage, $amount, $amountInteres),
+                $this->getSupport($amount, $amountNoSalary),
+                $this->getEdowment($amount, $amountNoSalary),
+            ),
+            'deduction' => $this->getDeduction(
+                $this->getHealth($percentage, $amount),
+                $this->getPension($percentage, $amount)
+            ),
+        ];
 
         if (!$payroll) {
-            $data = $this->paysheetRepository->getEPayrollData($request);
+            // $data = $this->paysheetRepository->getEPayrollData($request);
 
-            if (empty($data)) {
-                throw new Exception(\sprintf('Paysheet data not found [%d]', $request->id), 404);
-            }
+            // if (empty($data)) {
+            //     throw new Exception(\sprintf('Paysheet data not found [%d]', $request->id), 404);
+            // }
 
             $useCase = new CreatePayrollUseCase($this->payrollRepository);
 
@@ -97,7 +160,7 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
                 'paysheet' => $paysheet->id(),
                 'provider' => $provider->id(),
                 'status' => PayrollStatus::PENDING,
-                'type' => PayrollType::INVOICE,
+                'type' => PayrollType::NOVEL,
                 'message' => 'Pendiente de procesar',
             ], -1))->payroll;
 
@@ -112,6 +175,7 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
             );
         }
 
-        return $this->processEPayroll($payroll, $payroll, $provider, $sender, $receiver);
+        dump($request, $payroll, __FILE__ . ':' . __LINE__);
+        return $this->processEPayroll($roll, $payroll, $provider);
     }
 }

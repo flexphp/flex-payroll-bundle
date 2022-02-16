@@ -9,12 +9,12 @@ final class CreateEPayrollRequest implements RequestInterface
 {
     use DateTimeTrait;
 
-    public $orderId;
+    public $paysheetId;
     public $offset;
 
-    public function __construct(int $orderId, ?string $timezone)
+    public function __construct(int $paysheetId, ?string $timezone)
     {
-        $this->orderId = $orderId;
+        $this->paysheetId = $paysheetId;
         $this->offset = $this->getOffset($this->getTimezone($timezone));
     }
 }

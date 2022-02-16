@@ -47,5 +47,5 @@ interface PaysheetGateway
 
     // public function getPrepaysheetData(CreatePrepaysheetRequest $request): array;
 
-    // public function getEPayrollData(CreateEPayrollRequest $request): array;
+    public function getEPayrollData(CreateEPayrollRequest $request): array;
 }
