@@ -3,7 +3,7 @@ jQuery(document).ready(function ($) {
 
     updateHighRisk();
 
-    $('#checkHighRisk').on('click', updateHighRisk);
+    $('#checkHighRisk').on('change', updateHighRisk);
 
     function updateHighRisk() {
         const highRisk = $('#checkHighRisk').is(':checked') ? 1 : 0;
@@ -13,7 +13,7 @@ jQuery(document).ready(function ($) {
 
     updateIntegralSalary();
 
-    $('#checkIntegralSalary').on('click', updateIntegralSalary);
+    $('#checkIntegralSalary').on('change', updateIntegralSalary);
 
     function updateIntegralSalary() {
         const integralSalary = $('#checkIntegralSalary').is(':checked') ? 1 : 0;
@@ -133,8 +133,12 @@ jQuery(document).ready(function ($) {
         $('[name="agreement[pensionPercentage]"]').val(data.pensionPercentage || 0);
         $('[name="agreement[initAt]"]').val(data.initAt || '');
         $('[name="agreement[finishAt]"]').val(data.finishAt || '');
-        $('[name="agreement[integralSalary]"]').prop('checked', data.integralSalary || false);
-        $('[name="agreement[highRisk]"]').prop('checked', data.highRisk || false);
+
+        $('#checkHighRisk').prop('checked', data.highRisk === 1  || false);
+        $('#checkIntegralSalary').prop('checked', data.integralSalary === 1 || false);
+
+        $('#checkHighRisk').trigger('change');
+        $('#checkIntegralSalary').trigger('change');
 
         // getHistoryServices(data.id);
     });
@@ -209,29 +213,6 @@ jQuery(document).ready(function ($) {
 //             }
 //         });
 //     }
-
-//     $('[name="agreement[type]"]').select2({
-//         theme: 'bootstrap4',
-//         placeholder: '',
-//         minimumInputLength: 0,
-//         allowClear: true,
-//         ajax: {
-//             url: window.flex.baseUrl + '/agreements/find-agreement-types',
-//             method: 'POST',
-//             dataType: 'json',
-//             delay: 500,
-//             cache: true,
-//             headers: {
-//                 'X-XSRF-Token': getCookie('XSRF-Token')
-//             },
-//             data: function (params) {
-//                 return {
-//                     term: params.term,
-//                     page: params.page
-//                 };
-//             }
-//         },
-//     });
 
     $('[name="employee[type]"]').select2({
         theme: 'bootstrap4',
@@ -891,13 +872,9 @@ jQuery(document).ready(function ($) {
 //         return true;
 //     }
 
-//     $('.uppercase').on('keyup', function () {
-//         $(this).val($(this).val().toUpperCase());
-//     });
-
-//     $('.uppercase-no-space').on('keyup', function () {
-//         $(this).val($(this).val().replace(' ', '').toUpperCase());
-//     });
+    $('.uppercase').on('keyup', function () {
+        $(this).val($(this).val().toUpperCase());
+    });
 
 //     $('.find-cities').select2({
 //         theme: 'bootstrap4',
@@ -1014,68 +991,66 @@ jQuery(document).ready(function ($) {
 //             .change();
 //     }
 
-//     if ($('[name="paysheet[id]"]').val()) {
-//         let paysheetId = $('[name="paysheet[id]"]').val();
+    if ($('[name="paysheet[id]"]').val()) {
+        let paysheetId = $('[name="paysheet[id]"]').val();
 
-//         $.ajax({
-//             url: window.flex.baseUrl + '/api/v1/paysheets/' + paysheetId + '/worker',
-//             method: 'GET',
-//             dataType: 'json',
-//             headers: {
-//                 'X-XSRF-Token': getCookie('XSRF-Token')
-//             },
-//             beforeSend: function () {
-//                 $('.overlay').show();
-//             }
-//         }).always(function () {
-//             $('.overlay').hide();
-//         }).done(function (response) {
-//             let worker = response.data;
+        $.ajax({
+            url: window.flex.baseUrl + '/api/v1/paysheets/' + paysheetId + '/employee',
+            method: 'GET',
+            dataType: 'json',
+            headers: {
+                'X-XSRF-Token': getCookie('XSRF-Token')
+            },
+            beforeSend: function () {
+                $('.overlay').show();
+            }
+        }).always(function () {
+            $('.overlay').hide();
+        }).done(function (response) {
+            let employee = response.data;
 
-//             if (!worker.id) {
-//                 return undefined;
-//             }
+            if (!employee.id) {
+                return undefined;
+            }
 
-//             $('[name="paysheet[worker]"]')
-//                 .empty()
-//                 .append(new Option(worker.name, worker.id, true, false))
-//                 .trigger({
-//                     type: 'select2:select',
-//                     params: {
-//                         data: worker
-//                     }
-//                 });
-//         });
+            $('[name="employee[id]"]').val(employee.id);
+            $('[name="employee[documentTypeId]"]').val(employee.documentTypeId || null);
+            $('[name="employee[documentNumber]"]').val(employee.documentNumber || null);
 
-//         $.ajax({
-//             url: window.flex.baseUrl + '/api/v1/paysheets/' + paysheetId + '/agreement',
-//             method: 'GET',
-//             dataType: 'json',
-//             headers: {
-//                 'X-XSRF-Token': getCookie('XSRF-Token')
-//             },
-//             beforeSend: function () {
-//                 $('.overlay').show();
-//             }
-//         }).always(function () {
-//             $('.overlay').hide();
-//         }).done(function (response) {
-//             let agreement = response.data;
+            if ($('[name="employee[id]"]').val()) {
+                $('[name="employee[id]"]').change();
+            }
+        });
 
-//             if (!agreement.id) {
-//                 return undefined;
-//             }
+        $.ajax({
+            url: window.flex.baseUrl + '/api/v1/paysheets/' + paysheetId + '/agreement',
+            method: 'GET',
+            dataType: 'json',
+            headers: {
+                'X-XSRF-Token': getCookie('XSRF-Token')
+            },
+            beforeSend: function () {
+                $('.overlay').show();
+            }
+        }).always(function () {
+            $('.overlay').hide();
+        }).done(function (response) {
+            let agreement = response.data;
 
-//             $('[name="agreement[id]"]')
-//                 .empty()
-//                 .append(new Option(agreement.placa, agreement.id, true, false))
-//                 .trigger({
-//                     type: 'select2:select',
-//                     params: {
-//                         data: agreement
-//                     }
-//                 }).trigger('change');
-//         });
+            if (!agreement.id) {
+                return undefined;
+            }
+
+            $('[name="agreement[id]"]')
+                .empty()
+                .append(new Option(agreement.name, agreement.id, true, false))
+                .trigger({
+                    type: 'select2:select',
+                    params: {
+                        data: agreement
+                    }
+                });
+        });
 
 //         $.ajax({
 //             url: window.flex.baseUrl + '/api/v1/paysheets/' + paysheetId + '/paysheet-details',
@@ -1132,11 +1107,7 @@ jQuery(document).ready(function ($) {
 
 //             setTotalPayed();
 //         });
-
-//         if ($('[name="employee[id]"]').val()) {
-//             $('[name="employee[id]"]').change();
-//         }
-//     }
+    }
 
 //     function preloadPayment(id, currencyId, paymentMethodId, paymentMethodName, paymentStatusId, amount) {
 //         $('.add-row-payment').click();

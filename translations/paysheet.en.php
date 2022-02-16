@@ -25,19 +25,20 @@ return [
         'createdAt' => 'Created At',
         // 'updatedAt' => 'Updated At',
         'createdBy' => 'Created By',
-        // 'updatedBy' => 'Updated By',
+        'updatedBy' => 'Updated By',
     ],
     'message' => [
-        // 'created' => 'Paysheet created',
-        // 'updated' => 'Paysheet updated',
-        // 'deleted' => 'Paysheet deleted',
-        // 'payrolled' => 'Invoice request in progress',
+        'created' => 'Paysheet created',
+        'updated' => 'Paysheet updated',
+        'deleted' => 'Paysheet deleted',
+        'payrolled' => 'Payroll request in progress',
     ],
     'filter' => [
         'createdAtStart' => 'Date Start',
         'createdAtEnd' => 'Date End',
     ],
     '__paysheet' => [
+        'accrued' => 'Accrued',
         'totalDue' => 'Total Due',
         'buttonCreate' => 'Create Paysheet',
         'buttonUpdate' => 'Update Paysheet',
@@ -48,7 +49,7 @@ return [
     ],
     '__payroll' => [
         // 'prepaysheet' => 'Download Pre-paysheet',
-        // 'epayroll' => 'Download eInvoice',
+        'epayroll' => 'Download ePayroll',
         // 'request' => 'You are ready to sent DIAN ¿Are you want continue?',
     ],
 ];
