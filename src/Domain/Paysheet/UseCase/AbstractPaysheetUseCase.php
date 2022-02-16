@@ -216,43 +216,12 @@ abstract class AbstractPaysheetUseCase
         return ($useCase->execute(new UpdateEmployeeRequest($id, $employee, $userId, true)))->employee;
     }
 
-    protected function getPaysheetDetails(CreatePaysheetRequest $request): array
+    protected function getDetails(CreatePaysheetRequest $request): array
     {
-        return [];
-
-        $paysheetDetails = [];
-        $ids = $request->paysheetDetail['id'] ?? [];
-        $productIds = $request->paysheetDetail['productId'] ?? [];
-        $quantities = $request->paysheetDetail['quantity'] ?? [];
-        $prices = $request->paysheetDetail['price'] ?? [];
-
-        foreach ($productIds as $index => $productId) {
-            $id = $ids[$index] ?? 0;
-            $quantity = $quantities[$index] ?? 0;
-            $price = $prices[$index] ?? 0;
-
-            $useCase = new ReadProductUseCase($this->productRepository);
-
-            $product = ($useCase->execute(new ReadProductRequest((int)$productId)))->product;
-
-            if (!$product->id()) {
-                throw new Exception(\sprintf('Product not found [%d]', $productId), 404);
-            }
-
-            $tax = $quantity * (($product->taxes() * $price) / 100);
-
-            $paysheetDetails[] = [
-                'id' => $id,
-                'tax' => $this->numberFormat($tax),
-                'total' => $this->numberFormat(($quantity * $price) + $tax),
-                'price' => $this->numberFormat((float)$price),
-                'quantity' => $quantity,
-                'productId' => $product->id(),
-                'taxes' => $product->taxes(),
-            ];
-        }
-
-        return $paysheetDetails;
+        return [
+            'accrued' => $request->accrued,
+            'deduction' => $request->deduction,
+        ];
     }
 
     protected function getPayments(CreatePaysheetRequest $request): array
@@ -355,6 +324,7 @@ abstract class AbstractPaysheetUseCase
 
     protected function getSubTotal(array $paysheetDetails): float
     {
+        return 0;
         $subTotal = 0;
 
         foreach ($paysheetDetails as $paysheetDetail) {
@@ -366,6 +336,7 @@ abstract class AbstractPaysheetUseCase
 
     protected function getTotalTaxes(array $paysheetDetails): float
     {
+        return 0;
         $taxes = 0;
 
         foreach ($paysheetDetails as $paysheetDetail) {

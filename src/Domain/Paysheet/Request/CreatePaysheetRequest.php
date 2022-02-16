@@ -12,6 +12,7 @@ namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request;
 use FlexPHP\Bundle\HelperBundle\Domain\Helper\DateTimeTrait;
 use FlexPHP\Bundle\PayrollBundle\Domain\PayrollType\PayrollType;
 use FlexPHP\Messages\RequestInterface;
+use function embossImage;
 
 class CreatePaysheetRequest implements RequestInterface
 {
@@ -47,13 +48,19 @@ class CreatePaysheetRequest implements RequestInterface
 
     public $statusId;
 
-    public $billNotes;
+    public $paysheetNotes;
 
     public $issuedAt;
 
     public $initAt;
 
     public $finishAt;
+
+    public $accrued;
+
+    public $deduction;
+
+    public $details;
 
     public $createdBy;
 
@@ -70,6 +77,7 @@ class CreatePaysheetRequest implements RequestInterface
         $this->isDraft = $data['paysheet']['isDraft'] ?? false;
         $this->notes = $data['paysheet']['notes'] ?? null;
         $this->paysheetNotes = $data['paysheet']['paysheetNotes'] ?? null;
+
         $this->issuedAt = !empty($data['paysheet']['issuedAt'])
             ? $this->dateTimeToUTC($data['paysheet']['issuedAt'], $this->getOffset($this->getTimezone($timezone)))
             : null;
@@ -79,6 +87,9 @@ class CreatePaysheetRequest implements RequestInterface
         $this->finishAt = !empty($data['paysheet']['finishAt'])
             ? $this->dateTimeToUTC($data['paysheet']['finishAt'], $this->getOffset($this->getTimezone($timezone)))
             : null;
+
+        $this->accrued = !empty($data['accrued']) ? $data['accrued'] : [];
+        $this->deduction = !empty($data['deduction']) ? $data['deduction'] : [];
 
         $this->createdAt = !empty($data['paysheet']['createdAt'])
             ? $this->dateTimeToUTC($data['paysheet']['createdAt'], $this->getOffset($this->getTimezone($timezone)))

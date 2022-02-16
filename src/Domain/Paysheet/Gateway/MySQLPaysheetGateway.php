@@ -110,6 +110,7 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->setValue('IssuedAt', ':issuedAt');
         $query->setValue('InitAt', ':initAt');
         $query->setValue('FinishAt', ':finishAt');
+        $query->setValue('Details', ':details');
         $query->setValue('UpdatedAt', ':updatedAt');
         $query->setValue('CreatedBy', ':createdBy');
 
@@ -127,6 +128,7 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->setParameter(':issuedAt', $paysheet->issuedAt(), DB::DATETIME_MUTABLE);
         $query->setParameter(':initAt', $paysheet->initAt(), DB::DATETIME_MUTABLE);
         $query->setParameter(':finishAt', $paysheet->finishAt(), DB::DATETIME_MUTABLE);
+        $query->setParameter(':details', json_encode($paysheet->details()), DB::STRING);
         $query->setParameter(':createdAt', $paysheet->createdAt() ?? new \DateTime(\date('Y-m-d H:i:s')), DB::DATETIME_MUTABLE);
         $query->setParameter(':updatedAt', $paysheet->updatedAt() ?? new \DateTime(\date('Y-m-d H:i:s')), DB::DATETIME_MUTABLE);
         $query->setParameter(':createdBy', $paysheet->createdBy(), DB::INTEGER);
@@ -156,6 +158,7 @@ class MySQLPaysheetGateway implements PaysheetGateway
             'paysheet.IssuedAt as issuedAt',
             'paysheet.InitAt as initAt',
             'paysheet.FinishAt as finishAt',
+            'paysheet.Details as details',
             'paysheet.CreatedAt as createdAt',
             'paysheet.UpdatedAt as updatedAt',
             'paysheet.CreatedBy as createdBy',
@@ -185,7 +188,15 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->where('paysheet.Id = :id');
         $query->setParameter(':id', $paysheet->id(), DB::INTEGER);
 
-        return $query->execute()->fetch() ?: [];
+        $paysheet = $query->execute()->fetch() ?: [];
+
+        if ($paysheet) {
+            $paysheet['details'] = empty($paysheet['details'])
+                ? []
+                : json_decode($paysheet['details'], true);
+        }
+
+        return $paysheet;
     }
 
     public function shift(Paysheet $paysheet): void
@@ -205,9 +216,10 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->set('PaidAt', ':paidAt');
         $query->set('StatusId', ':statusId');
         $query->set('PaysheetNotes', ':paysheetNotes');
-        $query->set('CreatedAt', ':createdAt');
         $query->set('IssuedAt', ':issuedAt');
         $query->set('InitAt', ':initAt');
+        $query->set('FinishAt', ':finishAt');
+        $query->set('Details', ':details');
         $query->set('UpdatedAt', ':updatedAt');
         $query->set('UpdatedBy', ':updatedBy');
 
@@ -225,6 +237,7 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->setParameter(':issuedAt', $paysheet->issuedAt(), DB::DATETIME_MUTABLE);
         $query->setParameter(':initAt', $paysheet->initAt(), DB::DATETIME_MUTABLE);
         $query->setParameter(':finishAt', $paysheet->finishAt(), DB::DATETIME_MUTABLE);
+        $query->setParameter(':details', json_encode($paysheet->details()), DB::STRING);
         $query->setParameter(':updatedAt', $paysheet->updatedAt() ?? new \DateTime(\date('Y-m-d H:i:s')), DB::DATETIME_MUTABLE);
         $query->setParameter(':updatedBy', $paysheet->updatedBy(), DB::INTEGER);
 

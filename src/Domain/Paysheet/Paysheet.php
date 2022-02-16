@@ -75,6 +75,8 @@ final class Paysheet
 
     private ?Payroll $payrollInstance = null;
 
+    private array $details = [];
+
     public function id(): ?int
     {
         return $this->id;
@@ -148,6 +150,11 @@ final class Paysheet
     public function finishAt(): ?\DateTime
     {
         return $this->finishAt;
+    }
+
+    public function details(): array
+    {
+        return $this->details;
     }
 
     public function createdAt(): ?\DateTime
@@ -273,6 +280,11 @@ final class Paysheet
     public function setFinishAt(?\DateTime $finishAt): void
     {
         $this->finishAt = $finishAt;
+    }
+
+    public function setDetails(array $details): void
+    {
+        $this->details = $details;
     }
 
     public function setCreatedAt(?\DateTime $createdAt): void

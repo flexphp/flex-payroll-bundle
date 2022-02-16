@@ -89,6 +89,10 @@ final class PaysheetFactory
             $paysheet->setFinishAt(\is_string($data['finishAt']) ? new \DateTime($data['finishAt']) : $data['finishAt']);
         }
 
+        if (isset($data['details'])) {
+            $paysheet->setDetails($data['details']);
+        }
+
         if (isset($data['createdAt'])) {
             $paysheet->setCreatedAt(\is_string($data['createdAt']) ? new \DateTime($data['createdAt']) : $data['createdAt']);
         }
