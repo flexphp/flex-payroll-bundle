@@ -1,6 +1,14 @@
 jQuery(document).ready(function ($) {
     'use strict';
 
+    setTotalAccrued();
+    setTotalDeduction();
+
+    setTimeout(setTotalNeto, 500);
+
+    $('.deduction').on('change', setTotalDeduction);
+    $('.accrued').on('change', setTotalAccrued);
+
     updateHighRisk();
 
     $('#checkHighRisk').on('change', updateHighRisk);
@@ -785,51 +793,62 @@ jQuery(document).ready(function ($) {
 //         setTotalNeto();
 //     }
 
-//     function setSubTotal() {
-//         let subTotal = 0;
-//         let taxes = 0;
-//         const $row = $('#detailPaysheet > tbody > tr');
-//         const numberItems = $row.length;
+    function setTotalAccrued() {
+        let totalAccrued = 0;
+        const fields = {
+            'accrued[basic][0][amount]': 0,
 
-//         for (let i = 0; i < numberItems; i++) {
-//             taxes += $row.eq(i).find('[name^="paysheet_detail[taxes]"]').data('mf-amount') * 1;
-//         }
+            'accrued[transport][0][amount]': 0,
+            'accrued[transport][0][viaticSalary]': 0,
+            'accrued[transport][0][viaticNoSalary]': 0,
 
-//         for (let i = 0; i < numberItems; i++) {
-//             subTotal += $row.eq(i).find('[name^="paysheet_detail[total]"]').data('mf-amount') * 1;
-//         }
+            'accrued[vacation][0][amount]': 0,
 
-//         $('[name="subTotal"]').html(subTotal - taxes).change();
-//     }
+            'accrued[bonus][0][amount]': 0,
+            'accrued[bonus][0][noSalary]': 0,
 
-//     function setTotalTaxes() {
-//         let totalTaxes = 0;
-//         const $row = $('#detailPaysheet > tbody > tr');
-//         const numberItems = $row.length;
+            'accrued[cessation][0][amount]': 0,
+            'accrued[cessation][0][noSalary]': 0,
 
-//         for (let i = 0; i < numberItems; i++) {
-//             totalTaxes += $row.eq(i).find('[name^="paysheet_detail[taxes]"]').data('mf-amount') * 1;
-//         }
+            'accrued[support][0][amount]': 0,
+            'accrued[support][0][noSalary]': 0,
 
-//         $('[name="totalTaxes"]').html(totalTaxes).change();
-//     }
+            'accrued[endowment][0][amount]': 0,
+            'accrued[edoowment][0][noSalary]': 0
+        };
 
-//     function setTotalNeto() {
-//         const subTotal = $('[name="subTotal"]').data('mf-amount') * 1;
-//         const totalTaxes = $('[name="totalTaxes"]').data('mf-amount') * 1;
-//         const totalNeto = subTotal + totalTaxes;
+        for (let field in fields) {
+            totalAccrued += (($('[name="' + field + '"]').val() || 0) * 1);
+        }
 
-//         $('[name="totalNeto"]').html(totalNeto).change();
-//         $('[name="payment[total]"]').html(totalNeto).change();
-//         setTotalToPay();
-//     }
+        $('[name="totalAccrued"]').html(totalAccrued).change()
 
-//     function getTaxes(price, taxes) {
-//         price = price || 0;
-//         taxes = taxes || 0;
+        setTotalNeto();
+    }
 
-//         return (price * (taxes / 100)).toFixed(2);
-//     }
+    function setTotalDeduction() {
+        let totalDeduction = 0;
+        const fields = {
+            'deduction[health][0][amount]': 0,
+            'deduction[pension][0][amount]': 0
+        };
+
+        for (let field in fields) {
+            totalDeduction += (($('[name="' + field + '"]').val() || 0) * 1);
+        }
+
+        $('[name="totalDeduction"]').html(totalDeduction).change();
+
+        setTotalNeto();
+    }
+
+    function setTotalNeto() {
+        const totalAccrued = $('[name="totalAccrued"]').data('mf-amount') * 1;
+        const totalDeduction = $('[name="totalDeduction"]').data('mf-amount') * 1;
+        const totalNeto = totalAccrued + totalDeduction;
+
+        $('[name="totalNeto"]').html(totalNeto).change();
+    }
 
 //     $('#buttonPayment').on('click', function () {
 //         let $paysheetBill = $('#__paysheetBill');

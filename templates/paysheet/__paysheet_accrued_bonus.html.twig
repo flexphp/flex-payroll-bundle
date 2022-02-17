@@ -18,7 +18,7 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text">$</span>
                 </div>
-                <input name="accrued[bonus][0][amount]" class="form-control" type="text" value="{{ paysheet.details.accrued.bonus.0.amount|default('') }}" />
+                <input name="accrued[bonus][0][amount]" class="form-control accrued" type="text" value="{{ paysheet.details.accrued.bonus.0.amount|default('') }}" />
             </div>
         </div>
 
@@ -28,7 +28,7 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text">$</span>
                 </div>
-                <input name="accrued[bonus][0][noSalary]" class="form-control" type="text" value="{{ paysheet.details.accrued.bonus.0.noSalary|default('') }}" />
+                <input name="accrued[bonus][0][noSalary]" class="form-control accrued" type="text" value="{{ paysheet.details.accrued.bonus.0.noSalary|default('') }}" />
             </div>
         </div>
 
