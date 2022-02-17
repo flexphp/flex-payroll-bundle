@@ -38,6 +38,9 @@ return [
         'createdAtEnd' => 'Fecha Final',
     ],
     '__paysheet' => [
+        'accrued' => 'Devengado',
+        'deduction' => 'Deducciones',
+        'total' => 'Total',
         'totalDue' => 'Total a pagar',
         'buttonCreate' => 'Crear Desprendible',
         'buttonUpdate' => 'Actualizar Desprendible',

@@ -1,0 +1,37 @@
+{% trans_default_domain 'paysheet' %}
+<div id="totalData" class="collapse show card-body p-0-sm">
+    <div class="form-row">
+        <div class="col-12 table-responsive-sm">
+            <table id="detailOrder" class="table table-borderless">
+                <tfoot>
+                    <tr scope="row">
+                        <td scope="row" class="text-right text-uppercase" colspan="5">
+                            {% trans %}__paysheet.accrued{% endtrans %}
+                        </td>
+                        <td class="text-right">
+                            <span class="money-format" name="totalAccrued">0</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td scope="row" class="text-right text-uppercase" colspan="5">
+                            {% trans %}__paysheet.deduction{% endtrans %}
+                        </td>
+                        <td class="text-right">
+                            <span class="money-format" name="totalDeduction">0</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td scope="row" class="text-right text-uppercase" colspan="5">
+                            {% trans %}__paysheet.total{% endtrans %}
+                        </td>
+                        <td class="text-right font-weight-bold">
+                            <span style="font-size: 1.5em;">
+                                <span class="money-format" name="totalNeto">0</span>
+                            </span>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>

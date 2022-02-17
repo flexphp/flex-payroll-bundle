@@ -39,6 +39,8 @@ return [
     ],
     '__paysheet' => [
         'accrued' => 'Accrued',
+        'deduction' => 'Deduction',
+        'total' => 'Total',
         'totalDue' => 'Total Due',
         'buttonCreate' => 'Create Paysheet',
         'buttonUpdate' => 'Update Paysheet',
