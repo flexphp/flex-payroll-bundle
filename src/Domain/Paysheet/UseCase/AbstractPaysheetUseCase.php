@@ -322,28 +322,71 @@ abstract class AbstractPaysheetUseCase
         }
     }
 
-    protected function getSubTotal(array $paysheetDetails): float
+    private function getTotalByType(string $type, array $items, array $details): float
     {
-        return 0;
-        $subTotal = 0;
+        $totalByType = 0;
 
-        foreach ($paysheetDetails as $paysheetDetail) {
-            $subTotal += $paysheetDetail['quantity'] * $paysheetDetail['price'];
+        foreach ($items as $item => $fields) {
+            foreach ($fields as $field) {
+                foreach ($details[$type][$item] as $detail) {
+                    $totalByType += $detail[$field] ?? 0;
+                }
+            }
         }
 
-        return $this->numberFormat($subTotal);
+        return $totalByType;
     }
 
-    protected function getTotalTaxes(array $paysheetDetails): float
+    protected function getTotalAccrued(array $paysheetDetails): float
     {
-        return 0;
-        $taxes = 0;
+        $items = [
+            'basic' => [
+                'amount',
+            ],
+            'transport' => [
+                'amount',
+                'viaticSalary',
+                'viaticNoSalary',
+            ],
+            'vacation' => [
+                'amount',
+            ],
+            'bonus' => [
+                'amount',
+                'noSalary',
+            ],
+            'cessation' => [
+                'amount',
+                'noSalary',
+            ],
+            'support' => [
+                'amount',
+                'noSalary',
+            ],
+            'endowment' => [
+                'amount',
+            ],
+        ];
 
-        foreach ($paysheetDetails as $paysheetDetail) {
-            $taxes += $paysheetDetail['tax'];
-        }
+        $totalAccrued = $this->getTotalByType('accrued', $items, $paysheetDetails);
 
-        return $this->numberFormat($taxes);
+        return $this->numberFormat($totalAccrued);
+    }
+
+    protected function getTotalDeduction(array $paysheetDetails): float
+    {
+        $items = [
+            'health' => [
+                'amount',
+            ],
+            'pension' => [
+                'amount',
+            ],
+        ];
+
+        $totalDeduction = $this->getTotalByType('deduction', $items, $paysheetDetails);
+
+        return $this->numberFormat($totalDeduction);
     }
 
     protected function getTotalPaid(array $payments): float
@@ -396,7 +439,7 @@ abstract class AbstractPaysheetUseCase
 
     protected function getTotal(CreatePaysheetRequest $request): float
     {
-        return $this->numberFormat($request->subtotal + $request->taxes);
+        return $this->numberFormat($request->totalAccrued + $request->totalDeduction);
     }
 
     protected function numberFormat(float $number): float

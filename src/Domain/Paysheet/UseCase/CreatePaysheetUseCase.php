@@ -31,8 +31,8 @@ final class CreatePaysheetUseCase extends AbstractPaysheetUseCase
         }
 
         $request->details = $this->getDetails($request);
-        $request->subtotal = $this->getSubTotal($request->details);
-        $request->taxes = $this->getTotalTaxes($request->details);
+        $request->totalAccrued = $this->getTotalAccrued($request->details);
+        $request->totalDeduction = $this->getTotalDeduction($request->details);
         $request->total = $this->getTotal($request);
 
         $payments = $this->getPayments($request);

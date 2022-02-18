@@ -31,9 +31,9 @@ final class Paysheet
 
     private $agreementId;
 
-    private $subtotal;
+    private $totalAccrued;
 
-    private $taxes;
+    private $totalDeduction;
 
     private $total;
 
@@ -97,14 +97,14 @@ final class Paysheet
         return $this->agreementId;
     }
 
-    public function subtotal(): ?string
+    public function totalAccrued(): ?string
     {
-        return $this->subtotal;
+        return $this->totalAccrued;
     }
 
-    public function taxes(): ?string
+    public function totalDeduction(): ?string
     {
-        return $this->taxes;
+        return $this->totalDeduction;
     }
 
     public function total(): ?string
@@ -227,14 +227,14 @@ final class Paysheet
         $this->agreementId = $agreementId;
     }
 
-    public function setSubtotal(string $subtotal): void
+    public function setTotalAccrued(string $totalAccrued): void
     {
-        $this->subtotal = $subtotal;
+        $this->totalAccrued = $totalAccrued;
     }
 
-    public function setTaxes(string $taxes): void
+    public function setTotalDeduction(string $totalDeduction): void
     {
-        $this->taxes = $taxes;
+        $this->totalDeduction = $totalDeduction;
     }
 
     public function setTotal(string $total): void

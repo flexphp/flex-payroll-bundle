@@ -44,9 +44,9 @@ final class UpdatePaysheetUseCase extends AbstractPaysheetUseCase
             $request->agreementId = $this->getAgreementId($request);
         }
 
-        $paysheetDetails = $this->getPaysheetDetails($request);
-        $request->subtotal = $this->getSubTotal($paysheetDetails);
-        $request->taxes = $this->getTotalTaxes($paysheetDetails);
+        $request->details = $this->getDetails($request);
+        $request->totalAccrued = $this->getTotalAccrued($request->details);
+        $request->totalDeduction = $this->getTotalDeduction($request->details);
         $request->total = $this->getTotal($request);
 
         $payments = $this->getPayments($request);
@@ -58,6 +58,8 @@ final class UpdatePaysheetUseCase extends AbstractPaysheetUseCase
         $request->employee = null;
         $request->paysheetDetail = null;
         $request->payment = null;
+        $request->accrued = null;
+        $request->deduction = null;
 
         $paysheet = $this->paysheetRepository->change($request);
 

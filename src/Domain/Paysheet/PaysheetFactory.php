@@ -45,12 +45,12 @@ final class PaysheetFactory
             $paysheet->setAgreementId((int)$data['agreementId']);
         }
 
-        if (isset($data['subtotal'])) {
-            $paysheet->setSubtotal((string)$data['subtotal']);
+        if (isset($data['totalAccrued'])) {
+            $paysheet->setTotalAccrued((string)$data['totalAccrued']);
         }
 
-        if (isset($data['taxes'])) {
-            $paysheet->setTaxes((string)$data['taxes']);
+        if (isset($data['totalDeduction'])) {
+            $paysheet->setTotalDeduction((string)$data['totalDeduction']);
         }
 
         if (isset($data['total'])) {

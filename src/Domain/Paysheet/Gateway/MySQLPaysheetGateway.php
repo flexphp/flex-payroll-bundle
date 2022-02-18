@@ -49,8 +49,8 @@ class MySQLPaysheetGateway implements PaysheetGateway
             'paysheet.Type as type',
             'paysheet.EmployeeId as employeeId',
             'paysheet.AgreementId as agreementId',
-            'paysheet.Subtotal as subtotal',
-            'paysheet.Taxes as taxes',
+            'paysheet.TotalAccrued as totalAccrued',
+            'paysheet.TotalDeduction as totalDeduction',
             'paysheet.Total as total',
             'paysheet.Notes as notes',
             'paysheet.TotalPaid as totalPaid',
@@ -98,8 +98,8 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->setValue('Type', ':type');
         $query->setValue('EmployeeId', ':employeeId');
         $query->setValue('AgreementId', ':agreementId');
-        $query->setValue('Subtotal', ':subtotal');
-        $query->setValue('Taxes', ':taxes');
+        $query->setValue('TotalAccrued', ':totalAccrued');
+        $query->setValue('TotalDeduction', ':totalDeduction');
         $query->setValue('Total', ':total');
         $query->setValue('Notes', ':notes');
         $query->setValue('TotalPaid', ':totalPaid');
@@ -117,8 +117,8 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->setParameter(':type', $paysheet->type(), DB::STRING);
         $query->setParameter(':employeeId', $paysheet->employeeId(), DB::INTEGER);
         $query->setParameter(':agreementId', $paysheet->agreementId(), DB::INTEGER);
-        $query->setParameter(':subtotal', $paysheet->subtotal(), DB::STRING);
-        $query->setParameter(':taxes', $paysheet->taxes(), DB::STRING);
+        $query->setParameter(':totalAccrued', $paysheet->totalAccrued(), DB::STRING);
+        $query->setParameter(':totalDeduction', $paysheet->totalDeduction(), DB::STRING);
         $query->setParameter(':total', $paysheet->total(), DB::STRING);
         $query->setParameter(':notes', $paysheet->notes(), DB::TEXT);
         $query->setParameter(':totalPaid', $paysheet->totalPaid(), DB::STRING);
@@ -147,8 +147,8 @@ class MySQLPaysheetGateway implements PaysheetGateway
             'paysheet.Type as type',
             'paysheet.EmployeeId as employeeId',
             'paysheet.AgreementId as agreementId',
-            'paysheet.Subtotal as subtotal',
-            'paysheet.Taxes as taxes',
+            'paysheet.TotalAccrued as totalAccrued',
+            'paysheet.TotalDeduction as totalDeduction',
             'paysheet.Total as total',
             'paysheet.Notes as notes',
             'paysheet.TotalPaid as totalPaid',
@@ -208,8 +208,8 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->set('Type', ':type');
         $query->set('EmployeeId', ':employeeId');
         $query->set('AgreementId', ':agreementId');
-        $query->set('Subtotal', ':subtotal');
-        $query->set('Taxes', ':taxes');
+        $query->set('TotalAccrued', ':totalAccrued');
+        $query->set('TotalDeduction', ':totalDeduction');
         $query->set('Total', ':total');
         $query->set('Notes', ':notes');
         $query->set('TotalPaid', ':totalPaid');
@@ -226,8 +226,8 @@ class MySQLPaysheetGateway implements PaysheetGateway
         $query->setParameter(':type', $paysheet->type(), DB::STRING);
         $query->setParameter(':employeeId', $paysheet->employeeId(), DB::INTEGER);
         $query->setParameter(':agreementId', $paysheet->agreementId(), DB::INTEGER);
-        $query->setParameter(':subtotal', $paysheet->subtotal(), DB::STRING);
-        $query->setParameter(':taxes', $paysheet->taxes(), DB::STRING);
+        $query->setParameter(':totalAccrued', $paysheet->totalAccrued(), DB::STRING);
+        $query->setParameter(':totalDeduction', $paysheet->totalDeduction(), DB::STRING);
         $query->setParameter(':total', $paysheet->total(), DB::STRING);
         $query->setParameter(':notes', $paysheet->notes(), DB::TEXT);
         $query->setParameter(':totalPaid', $paysheet->totalPaid(), DB::STRING);
@@ -519,7 +519,7 @@ class MySQLPaysheetGateway implements PaysheetGateway
     //     $query->select([
     //         'o.Id id',
     //         'o.SubTotal subTotal',
-    //         'o.Taxes taxes',
+    //         'o.TotalDeduction totalDeduction',
     //         'o.Total total',
     //         "IFNULL(o.Notes, '-') notes",
     //     ]);
@@ -676,8 +676,8 @@ class MySQLPaysheetGateway implements PaysheetGateway
     //         'v.Placa as agreementPlaca',
     //         'v.OilQuantity as agreementOilQuantity',
     //         'u.Name as userName',
-    //         'o.Subtotal as paysheetSubtotal',
-    //         'o.Taxes as paysheetTaxes',
+    //         'o.TotalAccrued as paysheetSubtotal',
+    //         'o.TotalDeduction as paysheetTotalDeduction',
     //         'o.Total as paysheetTotal',
     //         'o.Discount as paysheetDiscount',
     //         'o.TotalPaid as paysheetTotalPaid',
@@ -753,8 +753,8 @@ class MySQLPaysheetGateway implements PaysheetGateway
 
         $query->select([
             'o.Id as paysheetId',
-            'o.Subtotal as paysheetSubtotal',
-            'o.Taxes as paysheetTaxes',
+            'o.TotalAccrued as paysheetSubtotal',
+            'o.TotalDeduction as paysheetTotalDeduction',
             'o.Total as paysheetTotal',
             'o.Discount as paysheetDiscount',
             'o.TotalPaid as paysheetTotalPaid',

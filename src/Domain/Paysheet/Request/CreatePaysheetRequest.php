@@ -12,7 +12,6 @@ namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request;
 use FlexPHP\Bundle\HelperBundle\Domain\Helper\DateTimeTrait;
 use FlexPHP\Bundle\PayrollBundle\Domain\PayrollType\PayrollType;
 use FlexPHP\Messages\RequestInterface;
-use function embossImage;
 
 class CreatePaysheetRequest implements RequestInterface
 {
