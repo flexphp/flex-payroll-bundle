@@ -48,6 +48,7 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Request\IndexPaymentRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payment\UseCase\IndexPaymentUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Paysheet;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\PaysheetRepository;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Presenter\SupportPresenter;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Response\CreateEPayrollResponse;
 use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetDetail\PaysheetDetailRepository;
 use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetDetail\Request\IndexPaysheetDetailRequest;
@@ -65,9 +66,12 @@ use FlexPHP\ePayroll\Contract\AgreementContract;
 use FlexPHP\ePayroll\Contract\AnexContract;
 use FlexPHP\ePayroll\Contract\BasicContract;
 use FlexPHP\ePayroll\Contract\BillContract as InvoiceContract;
+use FlexPHP\ePayroll\Contract\BonusContract;
+use FlexPHP\ePayroll\Contract\CessationContract;
 use FlexPHP\ePayroll\Contract\DeductionContract;
 use FlexPHP\ePayroll\Contract\EmployeeContract;
 use FlexPHP\ePayroll\Contract\EmployerContract;
+use FlexPHP\ePayroll\Contract\EndowmentContract;
 use FlexPHP\ePayroll\Contract\EntityContract;
 use FlexPHP\ePayroll\Contract\GeneralContract;
 use FlexPHP\ePayroll\Contract\HealthContract;
@@ -77,7 +81,9 @@ use FlexPHP\ePayroll\Contract\NumerationContract;
 use FlexPHP\ePayroll\Contract\PaymentContract;
 use FlexPHP\ePayroll\Contract\PensionContract;
 use FlexPHP\ePayroll\Contract\PeriodContract;
+use FlexPHP\ePayroll\Contract\SupportContract;
 use FlexPHP\ePayroll\Contract\TransportContract;
+use FlexPHP\ePayroll\Contract\VacationContract;
 use FlexPHP\ePayroll\Payroll as EPayroll;
 use FlexPHP\ePayroll\Provider\Response\DownloadResponse;
 use FlexPHP\ePayroll\Provider\Response\StatusResponse;
@@ -86,10 +92,12 @@ use FlexPHP\ePayroll\Struct\Accrued;
 use FlexPHP\ePayroll\Struct\Agreement as Contract;
 use FlexPHP\ePayroll\Struct\Anex;
 use FlexPHP\ePayroll\Struct\Basic;
+use FlexPHP\ePayroll\Struct\Bonus;
+use FlexPHP\ePayroll\Struct\Cessation;
 use FlexPHP\ePayroll\Struct\Deduction;
 use FlexPHP\ePayroll\Struct\Employee as Clerk;
 use FlexPHP\ePayroll\Struct\Employer;
-use FlexPHP\ePayroll\Struct\Entity;
+use FlexPHP\ePayroll\Struct\Endowment;
 use FlexPHP\ePayroll\Struct\Entity as Company;
 use FlexPHP\ePayroll\Struct\General;
 use FlexPHP\ePayroll\Struct\Health;
@@ -99,7 +107,9 @@ use FlexPHP\ePayroll\Struct\Numeration;
 use FlexPHP\ePayroll\Struct\Payment as Payout;
 use FlexPHP\ePayroll\Struct\Pension;
 use FlexPHP\ePayroll\Struct\Period;
+use FlexPHP\ePayroll\Struct\Support;
 use FlexPHP\ePayroll\Struct\Transport;
+use FlexPHP\ePayroll\Struct\Vacation;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -336,7 +346,6 @@ abstract class AbstractEPayrollUseCase
         string $secondName,
         string $firstSurname,
         string $secondSurname,
-        PaymentContract $payment,
         AgreementContract $agreement,
         LocationContract $location
     ): EmployeeContract {
@@ -348,7 +357,6 @@ abstract class AbstractEPayrollUseCase
             $secondName,
             $firstSurname,
             $secondSurname,
-            $payment,
             $agreement,
             $location
         );
@@ -359,16 +367,14 @@ abstract class AbstractEPayrollUseCase
         string $methodCode,
         string $bankName,
         string $accountType,
-        string $accountNumber,
-        string $date
+        string $accountNumber
     ): PaymentContract {
         return new Payout(
             $meanCode,
             $methodCode,
             $bankName,
             $accountType,
-            $accountNumber,
-            new DateTime($date, new DateTimeZone('America/Bogota'))
+            $accountNumber
         );
     }
 
@@ -391,6 +397,63 @@ abstract class AbstractEPayrollUseCase
         }
 
         return $hour;
+    }
+
+    protected function getVacation(
+        DateTimeInterface $initAt,
+        DateTimeInterface $finishAt,
+        int $days,
+        float $amount,
+        int $compensateDays,
+        float $compensateAmount
+    ): VacationContract {
+        return new Vacation($initAt, $finishAt, $days, $amount, $compensateDays, $compensateAmount);
+    }
+
+    protected function getBonus(
+        int $days,
+        float $amount,
+        float $noSalary
+    ): BonusContract {
+        $bonus = new Bonus($days, $amount);
+
+        if ($noSalary) {
+            $bonus->setNoSalary($noSalary);
+        }
+
+        return $bonus;
+    }
+
+    protected function getCessation(
+        float $percentage,
+        float $amount,
+        float $amountInteres
+    ): CessationContract {
+        return new Cessation($percentage, $amount, $amountInteres);
+    }
+
+    protected function getSupports(SupportPresenter $support): array
+    {
+        $response = [];
+
+        for ($i = 0; $i < $support->count(); ++$i) {
+            $response[] = $this->getSupport($support->amount($i), $support->noSalary($i));
+        }
+
+        return $response;
+    }
+
+    protected function getSupport(
+        float $amount,
+        float $noSalary
+    ): SupportContract {
+        return new Support($amount, $noSalary);
+    }
+
+    protected function getEndowment(
+        float $amount
+    ): EndowmentContract {
+        return new Endowment($amount);
     }
 
     protected function getAccrued(
@@ -481,12 +544,13 @@ abstract class AbstractEPayrollUseCase
         }
     }
 
-    protected function getProvider(): Provider
+    protected function getProvider(string $type): Provider
     {
         $useCase = new IndexProviderUseCase($this->providerRepository);
 
         $response = $useCase->execute(new IndexProviderRequest([
             'isActive' => true,
+            'type' => $type,
         ], 1));
 
         if (\count($response->providers) === 0) {
@@ -542,7 +606,7 @@ abstract class AbstractEPayrollUseCase
         }
     }
 
-    protected function getClerk(Paysheet $paysheet, Employee $employee, Agreement $agreement): EmployeeContract
+    protected function getClerk(Employee $employee, Agreement $agreement): EmployeeContract
     {
         $this->validateEmployee($employee);
 
@@ -573,14 +637,6 @@ abstract class AbstractEPayrollUseCase
                 $employee->secondName() ?? '',
                 $employee->firstSurname(),
                 $employee->secondSurname() ?? '',
-                new Payout(
-                    '1',
-                    $employee->paymentMethod(),
-                    '',
-                    $employee->accountType() ?? '',
-                    $employee->accountNumber() ?? '',
-                    $paysheet->paidAt() ?? new DateTime
-                ),
                 $this->getContract($employee, $agreement),
                 // TODO: Add location data to Employee table
                 $this->getLocation(

@@ -52,6 +52,6 @@ return [
     '__payroll' => [
         // 'prepaysheet' => 'Download Pre-paysheet',
         'epayroll' => 'Download ePayroll',
-        // 'request' => 'You are ready to sent DIAN ¿Are you want continue?',
+        'request' => 'You are ready to sent DIAN ¿Are you want continue?',
     ],
 ];

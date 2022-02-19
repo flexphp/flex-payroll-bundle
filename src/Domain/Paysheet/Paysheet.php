@@ -17,6 +17,7 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\PayrollFactory;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\PayrollGateway;
 use FlexPHP\Bundle\PayrollBundle\Domain\PayrollType\PayrollType;
 use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetStatus\PaysheetStatus;
+use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Presenter\DetailsPresenter;
 use FlexPHP\Bundle\UserBundle\Domain\User\User;
 
 final class Paysheet
@@ -374,5 +375,10 @@ final class Paysheet
     public function isDraft(): bool
     {
         return $this->statusId() === PaysheetStatus::DRAFT;
+    }
+
+    public function detailsPresenter(): DetailsPresenter
+    {
+        return new DetailsPresenter($this->details());
     }
 }

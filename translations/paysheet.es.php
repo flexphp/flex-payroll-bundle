@@ -52,6 +52,6 @@ return [
     '__payroll' => [
         // 'prepaysheet' => 'Download Pre-paysheet',
         'epayroll' => 'Descargar Comprobante',
-        // 'request' => 'You are ready to sent DIAN ¿Are you want continue?',
+        'request' => 'Esto reportará el desprendible a la DIAN, ¿Deseas continuar?',
     ],
 ];

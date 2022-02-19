@@ -25,6 +25,7 @@ use FlexPHP\Bundle\PayrollBundle\Domain\PayrollType\PayrollType;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\CreateEPayrollRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Request\ReadPaysheetRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Response\CreateEPayrollResponse;
+use FlexPHP\ePayroll\Struct\PaymentDate;
 
 final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
 {
@@ -53,7 +54,7 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
         $paysheet->withLastPayroll($this->paysheetRepository->payrollGateway(), 0);
         $payroll = $paysheet->payrollInstance();
 
-        $provider = $this->getProvider();
+        $provider = $this->getProvider('NOM');
 
         $this->testingMode = $provider->url() === 'http://localhost';
 
@@ -78,13 +79,21 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
             new ReadAgreementRequest($paysheet->agreementId())
         )->agreement;
 
-        $clerk = $this->getClerk($paysheet, $employee, $agreement);
+        $clerk = $this->getClerk($employee, $agreement);
 
         $general = $this->getGeneral(
             $paysheet->createdAt()->format('Y-m-d H:i:s'),
             $this->getRecurrenceCode($agreement->period()),
             $agreement->currency(),
             1.0
+        );
+
+        $payment = $this->getPayment(
+            '1',
+            $employee->paymentMethod(),
+            '',
+            $employee->accountType() ?? '',
+            $employee->accountNumber() ?? ''
         );
 
         $period = $this->getPeriod(
@@ -124,24 +133,55 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
             (string)$employee->id()
         );
 
+        $basic = $paysheet->detailsPresenter()->basic();
+        $transport = $paysheet->detailsPresenter()->transport();
+        $vacation = $paysheet->detailsPresenter()->vacation();
+        $bonus = $paysheet->detailsPresenter()->bonus();
+        $cessation = $paysheet->detailsPresenter()->cessation();
+        $support = $paysheet->detailsPresenter()->supports();
+        $endowment = $paysheet->detailsPresenter()->endowment();
+
+        $health = $paysheet->detailsPresenter()->health();
+        $pension = $paysheet->detailsPresenter()->pension();
+
+        $accrued = $this->getAccrued(
+            $this->getBasic($basic->days(), $basic->amount()),
+            $this->getTransport($transport->amount(), $transport->viaticSalary(), $transport->viaticNoSalary()),
+        );
+
+        $accrued->setPayment($payment);
+        $accrued->addPaymentDate(new PaymentDate($basic->paidAt()));
+
+        if ($vacation->days()) {
+            $accrued->setVacation($this->getVacation($vacation->initAt(), $vacation->finishAt(), $vacation->days(), $vacation->amount(), $vacation->compensateDays(), $vacation->compensateAmount()));
+        }
+
+        if ($bonus->days()) {
+            $accrued->setBonus($this->getBonus($bonus->days(), $bonus->amount(), $bonus->noSalary()));
+        }
+
+        if ($cessation->amount() || $cessation->noSalary()) {
+            $accrued->setCessation($this->getCessation($cessation->percentage(), $cessation->amount(), $cessation->noSalary()));
+        }
+
+        if ($support->count()) {
+            $accrued->addSupports($this->getSupports($support));
+        }
+
+        if ($endowment->amount()) {
+            $accrued->setEndowment($this->getEndowment($endowment->amount()));
+        }
+
         $roll = [
             'general' => $general,
             'employer' => $employer,
             'employee' => $clerk,
             'period' => $period,
             'numeration' => $numeration,
-            'accrued' => $this->getAccrued(
-                $this->getBasic($days, $amount),
-                $this->getTransport($subsidy, $viaticSalary, $viaticNoSalary),
-                $this->getVacation($initAt, $finishAt, $days, $amount),
-                $this->getBonus($days, $amount, $amountNoSalary),
-                $this->getCessation($percentage, $amount, $amountInteres),
-                $this->getSupport($amount, $amountNoSalary),
-                $this->getEdowment($amount, $amountNoSalary),
-            ),
+            'accrued' => $accrued,
             'deduction' => $this->getDeduction(
-                $this->getHealth($percentage, $amount),
-                $this->getPension($percentage, $amount)
+                $this->getHealth($health->percentage(), $health->amount()),
+                $this->getPension($pension->percentage(), $pension->amount()),
             ),
         ];
 
@@ -175,7 +215,8 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
             );
         }
 
-        dump($request, $payroll, __FILE__ . ':' . __LINE__);
+        dd($roll, $payroll, __FILE__ . ':' . __LINE__);
+
         return $this->processEPayroll($roll, $payroll, $provider);
     }
 }
