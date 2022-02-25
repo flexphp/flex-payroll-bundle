@@ -31,7 +31,7 @@ jQuery(document).ready(function ($) {
 
 
     $('.find-employee').on('change', function () {
-        const $container = $(this).parent().parent();
+        const $container = $(this).parent().parent().parent();
         const $documentTypeId = $container.find('[name$="[documentTypeId]"]');
         const $documentNumber = $container.find('[name$="[documentNumber]"]');
         const employeeId = $container.find('[name$="[id]"]').val() || 0;
@@ -84,13 +84,28 @@ jQuery(document).ready(function ($) {
             const $paymentMethod = $container.find('[name$="[paymentMethod]"]').empty();
 
             if (data.paymentMethodId) {
-                $paymentMethod.append(new Option(data.paymentMethodName, data.paymentMethodId, true, false));
+                $paymentMethod.append(new Option(data.paymentMethodName, data.paymentMethodId, true, false))
+                .trigger({
+                    type: 'select2:select',
+                    params: {
+                        data: {
+                            id:data.paymentMethodId,
+                            text:data.paymentMethodName
+                        }
+                    }
+                });
             }
 
             const $accountType = $container.find('[name$="[accountType]"]').empty();
 
             if (data.accountTypeId) {
                 $accountType.append(new Option(data.accountTypeName, data.accountTypeId, true, false));
+            }
+
+            const $bank = $container.find('[name$="[bank]"]').empty();
+
+            if (data.bankId) {
+                $bank.append(new Option(data.bankName, data.bankId, true, false));
             }
         });
     });
@@ -289,6 +304,14 @@ jQuery(document).ready(function ($) {
                 };
             },
         },
+    }).on('select2:select', function (e) {
+        const data = e.params.data;
+
+        if (data.id !== '') {
+            $('#dataBank').slideDown()
+        } else {
+            $('#dataBank').slideUp()
+        }
     });
 
     $('[name="employee[accountType]"]').select2({
@@ -298,6 +321,29 @@ jQuery(document).ready(function ($) {
         allowClear: true,
         ajax: {
             url: window.flex.baseUrl + '/employees/find-account-types',
+            method: 'POST',
+            dataType: 'json',
+            delay: 500,
+            cache: true,
+            headers: {
+                'X-XSRF-Token': getCookie('XSRF-Token')
+            },
+            data: function (params) {
+                return {
+                    term: params.term,
+                    page: params.page
+                };
+            },
+        },
+    });
+
+    $('[name="employee[bank]"]').select2({
+        theme: 'bootstrap4',
+        placeholder: '',
+        minimumInputLength: 0,
+        allowClear: true,
+        ajax: {
+            url: window.flex.baseUrl + '/employees/find-banks',
             method: 'POST',
             dataType: 'json',
             delay: 500,

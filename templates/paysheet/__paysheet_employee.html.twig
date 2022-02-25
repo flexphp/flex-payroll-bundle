@@ -60,21 +60,31 @@
             </select>
         </div>
 
-        <div class="form-group col-md-6">
+        <div class="form-group col-md-12">
             <label for="employee[paymentMethod]" class="col-form-label">{% trans from 'employee' %}label.paymentMethod{% endtrans %}</label>
             <select name="employee[paymentMethod]" class="form-control custom-select" required>
             </select>
         </div>
+    </div>
 
-        <div class="form-group col-md-6">
-            <label for="employee[accountType]" class="col-form-label">{% trans from 'employee' %}label.accountType{% endtrans %}</label>
-            <select name="employee[accountType]" class="form-control custom-select" required >
-            </select>
-        </div>
+    <div id="dataBank" style="display: none;">
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label for="employee[bank]" class="col-form-label">{% trans from 'employee' %}label.bank{% endtrans %}</label>
+                <select name="employee[bank]" class="form-control custom-select">
+                </select>
+            </div>
 
-        <div class="form-group col-md-6">
-            <label for="employee[accountNumber]" class="col-form-label">{% trans from 'employee' %}label.accountNumber{% endtrans %}</label>
-            <input name="employee[accountNumber]" class="form-control" type="text" />
+            <div class="form-group col-md-6">
+                <label for="employee[accountType]" class="col-form-label">{% trans from 'employee' %}label.accountType{% endtrans %}</label>
+                <select name="employee[accountType]" class="form-control custom-select">
+                </select>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="employee[accountNumber]" class="col-form-label">{% trans from 'employee' %}label.accountNumber{% endtrans %}</label>
+                <input name="employee[accountNumber]" class="form-control" type="text" />
+            </div>
         </div>
     </div>
 
