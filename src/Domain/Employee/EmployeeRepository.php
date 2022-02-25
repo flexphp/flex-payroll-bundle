@@ -12,6 +12,7 @@ namespace FlexPHP\Bundle\PayrollBundle\Domain\Employee;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\CreateEmployeeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\DeleteEmployeeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\FindEmployeeAccountTypeRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\FindEmployeeBankRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\FindEmployeeDocumentTypeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\FindEmployeeEmployeeSubTypeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\FindEmployeeEmployeeTypeRequest;
@@ -100,5 +101,10 @@ final class EmployeeRepository
     public function findAccountTypesBy(FindEmployeeAccountTypeRequest $request): array
     {
         return $this->gateway->filterAccountTypes($request, $request->_page, $request->_limit);
+    }
+
+    public function findBanksBy(FindEmployeeBankRequest $request): array
+    {
+        return $this->gateway->filterBanks($request, $request->_page, $request->_limit);
     }
 }

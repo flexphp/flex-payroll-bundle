@@ -37,6 +37,8 @@ final class CreateEmployeeRequest implements RequestInterface
 
     public $isActive;
 
+    public $bank;
+
     public $createdBy;
 
     public function __construct(array $data, int $createdBy)
@@ -53,6 +55,7 @@ final class CreateEmployeeRequest implements RequestInterface
         $this->accountType = $data['accountType'] ?? null;
         $this->accountNumber = $data['accountNumber'] ?? null;
         $this->isActive = $data['isActive'] ?? null;
+        $this->bank = $data['bank'] ?? null;
         $this->createdBy = $createdBy;
     }
 }

@@ -10,6 +10,7 @@
 namespace FlexPHP\Bundle\PayrollBundle\Domain\Employee;
 
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\FindEmployeeAccountTypeRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\FindEmployeeBankRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\FindEmployeeDocumentTypeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\FindEmployeeEmployeeSubTypeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\FindEmployeeEmployeeTypeRequest;
@@ -36,4 +37,6 @@ interface EmployeeGateway
     public function filterPaymentMethods(FindEmployeePaymentMethodRequest $request, int $page, int $limit): array;
 
     public function filterAccountTypes(FindEmployeeAccountTypeRequest $request, int $page, int $limit): array;
+
+    public function filterBanks(FindEmployeeBankRequest $request, int $page, int $limit): array;
 }

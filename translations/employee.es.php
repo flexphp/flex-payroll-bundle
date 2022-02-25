@@ -20,6 +20,7 @@ return [
         'subType' => 'Subtipo',
         'paymentMethod' => 'Método de pago',
         'accountType' => 'Tipo de cuenta',
+        'bank' => 'Banco',
         'accountNumber' => 'Número de cuenta',
         'isActive' => 'Está activo?',
         'createdAt' => 'Creado',

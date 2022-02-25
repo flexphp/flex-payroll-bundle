@@ -156,6 +156,7 @@ class MySQLAgreementGateway implements AgreementGateway
             'employee.documentNumber as `employee.documentNumber`',
             'type.id as `type.id`',
             'type.name as `type.name`',
+            'type.code as `type.code`',
             'period.id as `period.id`',
             'period.name as `period.name`',
             'currency.id as `currency.id`',

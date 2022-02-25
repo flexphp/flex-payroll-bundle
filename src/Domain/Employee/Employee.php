@@ -13,6 +13,7 @@ use FlexPHP\Bundle\HelperBundle\Domain\Helper\ToArrayTrait;
 use FlexPHP\Bundle\LocationBundle\Domain\DocumentType\DocumentType;
 use FlexPHP\Bundle\LocationBundle\Domain\PaymentMethod\PaymentMethod;
 use FlexPHP\Bundle\PayrollBundle\Domain\AccountType\AccountType;
+use FlexPHP\Bundle\PayrollBundle\Domain\Bank\Bank;
 use FlexPHP\Bundle\PayrollBundle\Domain\EmployeeSubType\EmployeeSubType;
 use FlexPHP\Bundle\PayrollBundle\Domain\EmployeeType\EmployeeType;
 use FlexPHP\Bundle\UserBundle\Domain\User\User;
@@ -47,6 +48,8 @@ final class Employee
 
     private $isActive;
 
+    private $bank;
+
     private $createdAt;
 
     private $updatedAt;
@@ -64,6 +67,8 @@ final class Employee
     private $paymentMethodInstance;
 
     private $accountTypeInstance;
+
+    private $bankInstance;
 
     private $createdByInstance;
 
@@ -136,6 +141,11 @@ final class Employee
         return $this->isActive;
     }
 
+    public function bank(): ?int
+    {
+        return $this->bank;
+    }
+
     public function createdAt(): ?\DateTime
     {
         return $this->createdAt;
@@ -179,6 +189,11 @@ final class Employee
     public function accountTypeInstance(): AccountType
     {
         return $this->accountTypeInstance ?: new AccountType;
+    }
+
+    public function bankInstance(): Bank
+    {
+        return $this->bankInstance ?: new Bank;
     }
 
     public function createdByInstance(): ?User
@@ -256,6 +271,11 @@ final class Employee
         $this->isActive = $isActive;
     }
 
+    public function setBank(int $bank): void
+    {
+        $this->bank = $bank;
+    }
+
     public function setCreatedAt(?\DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
@@ -299,6 +319,11 @@ final class Employee
     public function setAccountTypeInstance(AccountType $accountType): void
     {
         $this->accountTypeInstance = $accountType;
+    }
+
+    public function setBankInstance(Bank $bank): void
+    {
+        $this->bankInstance = $bank;
     }
 
     public function setCreatedByInstance(?User $user): void

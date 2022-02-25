@@ -14,6 +14,7 @@ use Doctrine\DBAL\Types\Types as DB;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Employee;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\EmployeeGateway;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\FindEmployeeAccountTypeRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\FindEmployeeBankRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\FindEmployeeDocumentTypeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\FindEmployeeEmployeeSubTypeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\FindEmployeeEmployeeTypeRequest;
@@ -101,6 +102,7 @@ class MySQLEmployeeGateway implements EmployeeGateway
         $query->setValue('PaymentMethod', ':paymentMethod');
         $query->setValue('AccountType', ':accountType');
         $query->setValue('AccountNumber', ':accountNumber');
+        $query->setValue('Bank', ':bank');
         $query->setValue('IsActive', ':isActive');
         $query->setValue('CreatedAt', ':createdAt');
         $query->setValue('UpdatedAt', ':updatedAt');
@@ -118,6 +120,7 @@ class MySQLEmployeeGateway implements EmployeeGateway
         $query->setParameter(':accountType', $employee->accountType(), DB::STRING);
         $query->setParameter(':accountNumber', $employee->accountNumber(), DB::STRING);
         $query->setParameter(':isActive', $employee->isActive(), DB::BOOLEAN);
+        $query->setParameter(':bank', $employee->bank(), DB::INTEGER);
         $query->setParameter(':createdAt', $employee->createdAt() ?? new \DateTime(date('Y-m-d H:i:s')), DB::DATETIME_MUTABLE);
         $query->setParameter(':updatedAt', $employee->updatedAt() ?? new \DateTime(date('Y-m-d H:i:s')), DB::DATETIME_MUTABLE);
         $query->setParameter(':createdBy', $employee->createdBy(), DB::INTEGER);
@@ -145,6 +148,7 @@ class MySQLEmployeeGateway implements EmployeeGateway
             'employee.PaymentMethod as paymentMethod',
             'employee.AccountType as accountType',
             'employee.AccountNumber as accountNumber',
+            'employee.Bank as bank',
             'employee.IsActive as isActive',
             'employee.CreatedAt as createdAt',
             'employee.UpdatedAt as updatedAt',
@@ -154,12 +158,16 @@ class MySQLEmployeeGateway implements EmployeeGateway
             'documentTypeId.name as `documentTypeId.name`',
             'type.id as `type.id`',
             'type.name as `type.name`',
+            'type.code as `type.code`',
             'subType.id as `subType.id`',
             'subType.name as `subType.name`',
+            'subType.code as `subType.code`',
             'paymentMethod.id as `paymentMethod.id`',
             'paymentMethod.name as `paymentMethod.name`',
             'accountType.id as `accountType.id`',
             'accountType.name as `accountType.name`',
+            'bank.id as `bank.id`',
+            'bank.name as `bank.name`',
             'createdBy.id as `createdBy.id`',
             'createdBy.name as `createdBy.name`',
             'updatedBy.id as `updatedBy.id`',
@@ -171,6 +179,7 @@ class MySQLEmployeeGateway implements EmployeeGateway
         $query->join('`employee`', '`EmployeeSubTypes`', '`subType`', 'employee.SubType = subType.id');
         $query->join('`employee`', '`PaymentMethods`', '`paymentMethod`', 'employee.PaymentMethod = paymentMethod.id');
         $query->join('`employee`', '`AccountTypes`', '`accountType`', 'employee.AccountType = accountType.id');
+        $query->leftJoin('`employee`', '`Banks`', '`bank`', 'employee.Bank = bank.id');
         $query->leftJoin('`employee`', '`Users`', '`createdBy`', 'employee.CreatedBy = createdBy.id');
         $query->leftJoin('`employee`', '`Users`', '`updatedBy`', 'employee.UpdatedBy = updatedBy.id');
         $query->where('employee.Id = :id');
@@ -195,6 +204,7 @@ class MySQLEmployeeGateway implements EmployeeGateway
         $query->set('SubType', ':subType');
         $query->set('PaymentMethod', ':paymentMethod');
         $query->set('AccountType', ':accountType');
+        $query->set('Bank', ':bank');
         $query->set('AccountNumber', ':accountNumber');
         $query->set('IsActive', ':isActive');
         $query->set('UpdatedAt', ':updatedAt');
@@ -212,6 +222,7 @@ class MySQLEmployeeGateway implements EmployeeGateway
         $query->setParameter(':accountType', $employee->accountType(), DB::STRING);
         $query->setParameter(':accountNumber', $employee->accountNumber(), DB::STRING);
         $query->setParameter(':isActive', $employee->isActive(), DB::BOOLEAN);
+        $query->setParameter(':bank', $employee->bank(), DB::INTEGER);
         $query->setParameter(':updatedAt', $employee->updatedAt() ?? new \DateTime(date('Y-m-d H:i:s')), DB::DATETIME_MUTABLE);
         $query->setParameter(':updatedBy', $employee->updatedBy(), DB::INTEGER);
 
@@ -321,6 +332,25 @@ class MySQLEmployeeGateway implements EmployeeGateway
 
         $query->where('accountType.name like :accountType_name');
         $query->setParameter(':accountType_name', "%{$request->term}%");
+
+        $query->setFirstResult($page ? ($page - 1) * $limit : 0);
+        $query->setMaxResults($limit);
+
+        return $query->execute()->fetchAll();
+    }
+
+    public function filterBanks(FindEmployeeBankRequest $request, int $page, int $limit): array
+    {
+        $query = $this->conn->createQueryBuilder();
+
+        $query->select([
+            'bank.id as id',
+            'bank.name as text',
+        ]);
+        $query->from('`Banks`', '`bank`');
+
+        $query->where('bank.name like :bank_name');
+        $query->setParameter(':bank_name', "%{$request->term}%");
 
         $query->setFirstResult($page ? ($page - 1) * $limit : 0);
         $query->setMaxResults($limit);

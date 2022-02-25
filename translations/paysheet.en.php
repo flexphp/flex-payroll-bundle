@@ -5,7 +5,7 @@ return [
     'title' => [
         'new' => 'New Paysheet',
         'edit' => 'Edit Paysheet',
-        // 'show' => 'Paysheet Details',
+        'show' => 'Paysheet Details',
         'list' => 'Paysheets',
     ],
     'label' => [

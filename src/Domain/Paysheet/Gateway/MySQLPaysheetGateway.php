@@ -300,12 +300,15 @@ class MySQLPaysheetGateway implements PaysheetGateway
             'paymentMethod.Name as paymentMethodName',
             'accountType.Id as accountTypeId',
             'accountType.Name as accountTypeName',
+            'bank.Id as bankId',
+            'bank.Name as bankName',
         ]);
         $query->from('`Employees`', '`employee`');
         $query->join('`employee`', '`EmployeeTypes`', '`employeeType`', 'employeeType.Id = employee.Type');
         $query->join('`employee`', '`EmployeeSubTypes`', '`employeeSubType`', 'employeeSubType.Id = employee.SubType');
         $query->join('`employee`', '`PaymentMethods`', '`paymentMethod`', 'paymentMethod.Id = employee.PaymentMethod');
         $query->join('`employee`', '`AccountTypes`', '`accountType`', 'accountType.Id = employee.AccountType');
+        $query->leftJoin('`employee`', '`Banks`', '`bank`', 'bank.Id = employee.Bank');
 
         $data = [];
 

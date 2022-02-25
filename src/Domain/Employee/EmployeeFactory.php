@@ -11,6 +11,7 @@ namespace FlexPHP\Bundle\PayrollBundle\Domain\Employee;
 
 use FlexPHP\Bundle\PayrollBundle\Domain\AccountType\AccountTypeFactory;
 use FlexPHP\Bundle\LocationBundle\Domain\DocumentType\DocumentTypeFactory;
+use FlexPHP\Bundle\PayrollBundle\Domain\Bank\BankFactory;
 use FlexPHP\Bundle\PayrollBundle\Domain\EmployeeSubType\EmployeeSubTypeFactory;
 use FlexPHP\Bundle\PayrollBundle\Domain\EmployeeType\EmployeeTypeFactory;
 use FlexPHP\Bundle\HelperBundle\Domain\Helper\FactoryExtendedTrait;
@@ -81,6 +82,10 @@ final class EmployeeFactory
             $employee->setIsActive((bool)$data['isActive']);
         }
 
+        if (isset($data['bank'])) {
+            $employee->setBank((int)$data['bank']);
+        }
+
         if (isset($data['createdAt'])) {
             $employee->setCreatedAt(\is_string($data['createdAt']) ? new \DateTime($data['createdAt']) : $data['createdAt']);
         }
@@ -115,6 +120,10 @@ final class EmployeeFactory
 
         if (isset($data['accountType.id'])) {
             $employee->setAccountTypeInstance((new AccountTypeFactory())->make($this->getFkEntity('accountType.', $data)));
+        }
+
+        if (isset($data['bank.id'])) {
+            $employee->setBankInstance((new BankFactory())->make($this->getFkEntity('bank.', $data)));
         }
 
         if (isset($data['createdBy.id'])) {

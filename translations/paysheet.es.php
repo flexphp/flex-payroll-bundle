@@ -5,7 +5,7 @@ return [
     'title' => [
         'new' => 'Nuevo Desprendible',
         'edit' => 'Editar Desprendible',
-        // 'show' => 'Desprendible Details',
+        'show' => 'Desprendible Details',
         'list' => 'Desprendibles',
     ],
     'label' => [

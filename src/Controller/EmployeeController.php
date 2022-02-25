@@ -14,6 +14,7 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Employee\EmployeeFormType;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\CreateEmployeeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\DeleteEmployeeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\FindEmployeeAccountTypeRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\FindEmployeeBankRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\FindEmployeeDocumentTypeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\FindEmployeeEmployeeSubTypeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\FindEmployeeEmployeeTypeRequest;
@@ -24,6 +25,7 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Request\UpdateEmployeeRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\UseCase\CreateEmployeeUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\UseCase\DeleteEmployeeUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\UseCase\FindEmployeeAccountTypeUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Employee\UseCase\FindEmployeeBankUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\UseCase\FindEmployeeDocumentTypeUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\UseCase\FindEmployeeEmployeeSubTypeUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\UseCase\FindEmployeeEmployeeTypeUseCase;
@@ -263,6 +265,26 @@ final class EmployeeController extends AbstractController
 
         return new JsonResponse([
             'results' => $response->accountTypes,
+            'pagination' => ['more' => false],
+        ]);
+    }
+
+    /**
+     * @Cache(smaxage="3600")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER_BANK_INDEX')", statusCode=401)
+     */
+    public function findBank(Request $request, FindEmployeeBankUseCase $useCase): Response
+    {
+        if (!$request->isXmlHttpRequest()) {
+            return new JsonResponse([], Response::HTTP_BAD_REQUEST);
+        }
+
+        $request = new FindEmployeeBankRequest($request->request->all());
+
+        $response = $useCase->execute($request);
+
+        return new JsonResponse([
+            'results' => $response->banks,
             'pagination' => ['more' => false],
         ]);
     }

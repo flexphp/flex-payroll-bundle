@@ -39,6 +39,8 @@ final class UpdateEmployeeRequest implements RequestInterface
 
     public $isActive;
 
+    public $bank;
+
     public $updatedBy;
 
     public function __construct(int $id, array $data, int $updatedBy)
@@ -56,6 +58,7 @@ final class UpdateEmployeeRequest implements RequestInterface
         $this->accountType = $data['accountType'] ?? null;
         $this->accountNumber = $data['accountNumber'] ?? null;
         $this->isActive = $data['isActive'] ?? null;
+        $this->bank = $data['bank'] ?? null;
         $this->updatedBy = $updatedBy;
     }
 }

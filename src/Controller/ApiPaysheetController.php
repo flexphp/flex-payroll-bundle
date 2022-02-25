@@ -55,6 +55,8 @@ final class ApiPaysheetController extends AbstractController
                 'paymentMethodName' => $employee->paymentMethodInstance()->name(),
                 'accountTypeId' => $employee->accountTypeInstance()->id(),
                 'accountTypeName' => $employee->accountTypeInstance()->name(),
+                'bankId' => $employee->bankInstance()->id(),
+                'bankName' => $employee->bankInstance()->name(),
             ],
         ]);
     }
