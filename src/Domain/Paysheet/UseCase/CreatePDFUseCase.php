@@ -52,11 +52,11 @@ final class CreatePDFUseCase// extends FPDF
 
     public function Text($x, $y, $txt): void
     {
-        parent::Text($x, $y, \utf8_decode((string)$txt));
+        // parent::Text($x, $y, \utf8_decode((string)$txt));
     }
 
     public function Cell($w, $h = 0, $txt = '', $border = 0, $ln = 0, $align = '', $fill = false, $link = ''): void
     {
-        parent::Cell($w, $h, \utf8_decode((string)$txt), $border, $ln, $align, $fill, $link);
+        // parent::Cell($w, $h, \utf8_decode((string)$txt), $border, $ln, $align, $fill, $link);
     }
 }

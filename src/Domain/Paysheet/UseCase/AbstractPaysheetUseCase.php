@@ -329,7 +329,7 @@ abstract class AbstractPaysheetUseCase
         foreach ($items as $item => $fields) {
             foreach ($fields as $field) {
                 foreach ($details[$type][$item] as $detail) {
-                    $totalByType += $detail[$field] ?? 0;
+                    $totalByType += !empty($detail[$field]) ? $detail[$field] : 0;
                 }
             }
         }

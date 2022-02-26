@@ -891,7 +891,7 @@ jQuery(document).ready(function ($) {
     function setTotalNeto() {
         const totalAccrued = $('[name="totalAccrued"]').data('mf-amount') * 1;
         const totalDeduction = $('[name="totalDeduction"]').data('mf-amount') * 1;
-        const totalNeto = totalAccrued + totalDeduction;
+        const totalNeto = totalAccrued - totalDeduction;
 
         $('[name="totalNeto"]').html(totalNeto).change();
     }

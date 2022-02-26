@@ -13,7 +13,7 @@ return [
         'name' => 'Nombre',
         'employee' => 'Empleado',
         'type' => 'Tipo',
-        'period' => 'Periodo',
+        'period' => 'Periodo de Pago',
         'currency' => 'Moneda',
         'salary' => 'Salario Base',
         'healthPercentage' => '% Salud',
