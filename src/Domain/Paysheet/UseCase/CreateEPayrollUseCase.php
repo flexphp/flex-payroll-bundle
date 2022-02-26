@@ -91,19 +91,18 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
         $payment = $this->getPayment(
             '1',
             $employee->paymentMethod(),
-            '',
+            $employee->bankInstance()->name(),
             $employee->accountType() ?? '',
             $employee->accountNumber() ?? ''
         );
 
+        $basic = $paysheet->detailsPresenter()->basic();
+
         $period = $this->getPeriod(
-            $paysheet->paidAt() ?? (new DateTime)->format('Y-m-d H:i:s'),
+            $basic->paidAt()->format('Y-m-d H:i:s'),
             $agreement->initAt()->format('Y-m-d H:i:s'),
-            // TODO: Add period columns in Paysheet table
-            // $paysheet->initAt(),
-            // $paysheet->finishAt(),
-            (new DateTime())->format('Y-m-d H:i:s'),
-            (new DateTime())->format('Y-m-d H:i:s'),
+            $paysheet->initAt()->format('Y-m-d H:i:s'),
+            $paysheet->finishAt()->format('Y-m-d H:i:s'),
             $agreement->finishAt()->format('Y-m-d H:i:s')
         );
 
@@ -133,7 +132,6 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
             (string)$employee->id()
         );
 
-        $basic = $paysheet->detailsPresenter()->basic();
         $transport = $paysheet->detailsPresenter()->transport();
         $vacation = $paysheet->detailsPresenter()->vacation();
         $bonus = $paysheet->detailsPresenter()->bonus();
@@ -214,8 +212,6 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
                 ], -1, true)
             );
         }
-
-        dd($roll, $payroll, __FILE__ . ':' . __LINE__);
 
         return $this->processEPayroll($roll, $payroll, $provider);
     }

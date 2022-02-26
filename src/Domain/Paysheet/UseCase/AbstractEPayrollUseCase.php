@@ -14,10 +14,9 @@ use DateTimeInterface;
 use DateTimeZone;
 use Exception;
 use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\Bill;
-use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\BillRepository;
 use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\Request\UpdateBillRequest;
 use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\UseCase\UpdateBillUseCase;
-use FlexPHP\Bundle\InvoiceBundle\Domain\BillStatus\BillStatus;
+use FlexPHP\Bundle\PayrollBundle\Domain\PayrollStatus\PayrollStatus;
 use FlexPHP\Bundle\LocationBundle\Domain\City\City;
 use FlexPHP\Bundle\LocationBundle\Domain\City\CityRepository;
 use FlexPHP\Bundle\LocationBundle\Domain\City\Request\ReadCityRequest;
@@ -46,6 +45,10 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Payment;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payment\PaymentRepository;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Request\IndexPaymentRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payment\UseCase\IndexPaymentUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Payroll;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\PayrollRepository;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\UpdatePayrollRequest;
+use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\UseCase\UpdatePayrollUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Paysheet;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\PaysheetRepository;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Presenter\SupportPresenter;
@@ -139,13 +142,7 @@ abstract class AbstractEPayrollUseCase
 
     //     protected CountryRepository $countryRepository;
 
-    //     protected BillRepository $billRepository;
-
-    //     protected PaysheetDetailRepository $paysheetDetailRepository;
-
-    //     protected ProductRepository $productRepository;
-
-    //     protected PaymentRepository $paymentRepository;
+    protected PayrollRepository $payrollRepository;
 
     protected LoggerInterface $logger;
 
@@ -160,10 +157,7 @@ abstract class AbstractEPayrollUseCase
         // CityRepository $cityRepository,
         // StateRepository $stateRepository,
         // CountryRepository $countryRepository,
-        // BillRepository $billRepository,
-        // PaysheetDetailRepository $paysheetDetailRepository,
-        // ProductRepository $productRepository,
-        // PaymentRepository $paymentRepository,
+        PayrollRepository $payrollRepository,
         LoggerInterface $logger
     ) {
         $this->paysheetRepository = $paysheetRepository;
@@ -174,10 +168,7 @@ abstract class AbstractEPayrollUseCase
         // $this->cityRepository = $cityRepository;
         // $this->stateRepository = $stateRepository;
         // $this->countryRepository = $countryRepository;
-        // $this->billRepository = $billRepository;
-        // $this->paysheetDetailRepository = $paysheetDetailRepository;
-        // $this->productRepository = $productRepository;
-        // $this->paymentRepository = $paymentRepository;
+        $this->payrollRepository = $payrollRepository;
         $this->logger = $logger;
     }
 
@@ -187,79 +178,77 @@ abstract class AbstractEPayrollUseCase
     }
 
     protected function processEPayroll(
-        InvoiceContract $invoice,
-        Bill $bill,
-        Provider $provider,
-        MerchantContract $sender,
-        MerchantContract $receiver
+        array $roll,
+        Payroll $payroll,
+        Provider $provider
     ): CreateEPayrollResponse {
-        $invoice->numeration()->setCurrentNumber($bill->number());
+        // $roll['numeration']->setCurrentNumber($payroll->number());
 
-        $ePayroll = $this->getEPayroll($bill, $provider);
+        $ePayroll = $this->getEPayroll($payroll, $provider);
 
         if (!$ePayroll) {
-            return new CreateEPayrollResponse($bill->status(), $bill->message());
+            return new CreateEPayrollResponse($payroll->status(), $payroll->message());
         }
 
         $sleep = false;
 
-        if (\in_array($bill->status(), [BillStatus::PENDING, BillStatus::PROCESSING, BillStatus::REJECTED])) {
+        if (\in_array($payroll->status(), [PayrollStatus::PENDING, PayrollStatus::PROCESSING, PayrollStatus::REJECTED])) {
             $sleep = true;
-            $bill = $this->upload($ePayroll, $bill, $sender, $receiver, $invoice);
+            $payroll = $this->upload($ePayroll, $payroll, $roll);
         }
 
-        if (!$bill->traceId()) {
-            return new CreateEPayrollResponse($bill->status(), $bill->message());
+        if (!$payroll->traceId()) {
+            return new CreateEPayrollResponse($payroll->status(), $payroll->message());
         }
 
-        if ($bill->status() !== BillStatus::AVAILABLE) {
-            $bill = $this->status($ePayroll, $bill);
+        if ($payroll->status() !== PayrollStatus::AVAILABLE) {
+            $payroll = $this->status($ePayroll, $payroll);
         }
 
-        if ($bill->status() !== BillStatus::AVAILABLE) {
-            return new CreateEPayrollResponse($bill->status(), $bill->message());
+        if ($payroll->status() !== PayrollStatus::AVAILABLE) {
+            return new CreateEPayrollResponse($payroll->status(), $payroll->message());
         }
 
         if ($sleep) {
             \sleep(5);
         }
 
-        if (!$bill->pdfPath()) {
-            $bill = $this->pdf($ePayroll, $bill, $bill->prefix(), (string)$bill->number());
+        if (!$payroll->pdfPath()) {
+            $payroll = $this->pdf($ePayroll, $payroll, $payroll->prefix(), (string)$payroll->number());
         }
 
-        if (!$bill->pdfPath()) {
-            return new CreateEPayrollResponse($bill->status(), $bill->message());
+        if (!$payroll->pdfPath()) {
+            return new CreateEPayrollResponse($payroll->status(), $payroll->message());
         }
 
-        if (!$bill->xmlPath()) {
-            $bill = $this->xml($ePayroll, $bill, $bill->prefix(), (string)$bill->number());
+        if (!$payroll->xmlPath()) {
+            $payroll = $this->xml($ePayroll, $payroll, $payroll->prefix(), (string)$payroll->number());
         }
 
-        if (!$bill->xmlPath()) {
-            return new CreateEPayrollResponse($bill->status(), $bill->message());
+        if (!$payroll->xmlPath()) {
+            return new CreateEPayrollResponse($payroll->status(), $payroll->message());
         }
 
-        if ($bill->pdfPath() && $bill->xmlPath() && !$bill->downloadedAt()) {
-            $bill->setDownloadedAt(new DateTime());
+        if ($payroll->pdfPath() && $payroll->xmlPath() && !$payroll->downloadedAt()) {
+            $payroll->setDownloadedAt(new DateTime());
 
-            $this->updateBill($bill);
+            $this->updatePayroll($payroll);
         }
 
-        return $this->getResponseOk($bill);
+        return $this->getResponseOk($payroll);
     }
 
-    protected function getResponseOk(Bill $bill): CreateEPayrollResponse
+    protected function getResponseOk(Payroll $payroll): CreateEPayrollResponse
     {
-        $filename = \hash('sha256', $bill->getNumeration() . '.pdf');
+        $filename = \hash('sha256', $payroll->getNumeration() . '.pdf');
 
         if ($this->testingMode) {
             $filename = 'fake.pdf';
         }
 
-        $content = \file_get_contents($bill->pdfPath() . \DIRECTORY_SEPARATOR . $filename);
+        $content = \file_get_contents($payroll->pdfPath() . \DIRECTORY_SEPARATOR . $filename);
 
-        return new CreateEPayrollResponse($bill->status(), $bill->message(), $bill->getNumeration(), $content);
+        return new CreateEPayrollResponse($payroll->status(), $payroll->message(), $payroll->getNumeration(), $content);
     }
 
     protected function getPeriod(
@@ -594,9 +583,9 @@ abstract class AbstractEPayrollUseCase
     {
         try {
             return $this->getAgreement(
-                (string)$employee->type(),
-                (string)$employee->subType(),
-                (string)$agreement->type(),
+                $employee->typeInstance()->code(),
+                $employee->subTypeInstance()->code(),
+                $agreement->typeInstance()->code(),
                 (float)$agreement->salary(),
                 (bool)$agreement->integralSalary(),
                 (bool)$agreement->highRisk()
@@ -645,11 +634,11 @@ abstract class AbstractEPayrollUseCase
                     // $city->code(),
                     // 'es',
                     // $employee->address(),
-                    'CO',
-                    '11',
-                    '11001',
+                    $_ENV['ORGANIZATION_COUNTRY'],
+                    $_ENV['ORGANIZATION_STATE'],
+                    $_ENV['ORGANIZATION_CITY'],
                     'es',
-                    ''
+                    $_ENV['ORGANIZATION_ADDRESS']
                 ),
             );
         } catch (Exception $e) {
@@ -820,14 +809,14 @@ abstract class AbstractEPayrollUseCase
         return $hash;
     }
 
-    protected function getEPayroll(Bill $bill, Provider $provider): ?\FlexPHP\ePayroll\InvoiceInterface
+    protected function getEPayroll(Payroll $payroll, Provider $provider): ?\FlexPHP\ePayroll\PayrollInterface
     {
         try {
             if ($this->testingMode) {
                 throw new Exception('Running in test mode');
             }
 
-            $wsdl = \realpath(__DIR__ . '/../../../vendor/flexphp/einvoice/resources/FacturaTech.v21.wsdl');
+            $wsdl = \realpath(getcwd() . '/../vendor/flexphp/epayroll/resources/FTech.payroll.wsdl', );
 
             return new EPayroll($provider->id(), [
                 'username' => $provider->username(),
@@ -837,23 +826,28 @@ abstract class AbstractEPayrollUseCase
                 ]),
             ]);
         } catch (Exception $e) {
-            $bill->setMessage($e->getMessage());
-            $bill->setStatus(BillStatus::PROCESSING);
+            $payroll->setMessage($e->getMessage());
+            $payroll->setStatus(PayrollStatus::PROCESSING);
 
-            $this->updateBill($bill);
+            $this->updatePayroll($payroll);
         }
 
         return null;
     }
 
-    protected function upload(EPayroll $ePayroll, Bill $bill, Merchant $sender, Merchant $receiver, InvoiceContract $invoice): Bill
+    protected function upload(EPayroll $ePayroll, Payroll $payroll, array $roll): Payroll
     {
         try {
-            $response = $ePayroll->upload([
-                'sender' => $sender,
-                'receiver' => $receiver,
-                'bill' => $invoice,
-                'isTest' => $this->testingMode,
+            $response = $ePayroll->preview($roll + [
+                // 'isTest' => $this->testingMode,
+                'isTest' => true,
+            ]);
+
+            file_put_contents(getcwd() . '/../var/log/' . date('Y-m-d') . '-' . $roll['numeration']->number() . '.xml', $response);
+
+            $response = $ePayroll->upload($roll + [
+                // 'isTest' => $this->testingMode,
+                'isTest' => true,
             ]);
         } catch (Exception $e) {
             $response = new UploadResponse(Status::FAILED, $e->getMessage(), null);
@@ -863,22 +857,26 @@ abstract class AbstractEPayrollUseCase
             }
         }
 
+        file_put_contents(getcwd() . '/../var/log/' . date('Y-m-d') . '-' . $roll['numeration']->number() . '-R.xml', serialize( $response));
+
         if ($response->status() !== Status::SUCCESS) {
-            $bill->setStatus(BillStatus::REJECTED);
-            $bill->setMessage($this->convertEncoding($response->message()));
+            $this->logger->warning('Payroll UPLOAD Response ' . serialize($response));
+
+            $payroll->setStatus(PayrollStatus::REJECTED);
+            $payroll->setMessage($this->convertEncoding($response->message()));
         } else {
-            $bill->setStatus(BillStatus::APPROVED);
-            $bill->setMessage($response->message());
-            $bill->setTraceId($response->traceId());
+            $payroll->setStatus(PayrollStatus::APPROVED);
+            $payroll->setMessage($response->message());
+            $payroll->setTraceId($response->traceId());
         }
 
-        return $this->updateBill($bill);
+        return $this->updatePayroll($payroll);
     }
 
-    protected function status(EPayroll $ePayroll, Bill $bill): Bill
+    protected function status(EPayroll $ePayroll, Payroll $payroll): Payroll
     {
         try {
-            $response = $ePayroll->getStatus($bill->traceId());
+            $response = $ePayroll->getStatus($payroll->traceId());
         } catch (Exception $e) {
             $response = new StatusResponse(Status::FAILED, $e->getMessage(), null);
 
@@ -887,19 +885,19 @@ abstract class AbstractEPayrollUseCase
             }
         }
 
-        $bill->setMessage($response->message());
+        $payroll->setMessage($response->message());
 
         if ($response->status() === Status::SUCCESS) {
-            $bill->setStatus(BillStatus::AVAILABLE);
+            $payroll->setStatus(PayrollStatus::AVAILABLE);
         }
 
-        return $this->updateBill($bill);
+        return $this->updatePayroll($payroll);
     }
 
-    protected function pdf(EPayroll $ePayroll, Bill $bill, string $prefix, string $number): Bill
+    protected function pdf(EPayroll $ePayroll, Payroll $payroll, string $prefix, string $number): Payroll
     {
         try {
-            $path = \realpath(__DIR__ . '/../../../payrolls/pdf');
+            $path = \realpath(getcwd() . '/../payrolls/pdf');
 
             if (!\is_dir($path)) {
                 throw new Exception('Carpeta PDF no encontrada');
@@ -914,23 +912,23 @@ abstract class AbstractEPayrollUseCase
             }
         }
 
-        $bill->setMessage($response->message());
+        $payroll->setMessage($response->message());
 
         if ($response->status() === Status::SUCCESS) {
-            $filename = \hash('sha256', $bill->getNumeration() . '.pdf');
+            $filename = \hash('sha256', $payroll->getNumeration() . '.pdf');
 
             \file_put_contents($path . \DIRECTORY_SEPARATOR . $filename, \base64_decode($response->resource()));
 
-            $bill->setPdfPath($path);
+            $payroll->setPdfPath($path);
         }
 
-        return $this->updateBill($bill);
+        return $this->updatePayroll($payroll);
     }
 
-    protected function xml(EPayroll $ePayroll, Bill $bill, string $prefix, string $number): Bill
+    protected function xml(EPayroll $ePayroll, Payroll $payroll, string $prefix, string $number): Payroll
     {
         try {
-            $path = \realpath(__DIR__ . '/../../../invoices/xml');
+            $path = \realpath(getcwd() . '/../payrolls/xml');
 
             if (!\is_dir($path)) {
                 throw new Exception('Carpeta XML no encontrada');
@@ -945,27 +943,27 @@ abstract class AbstractEPayrollUseCase
             }
         }
 
-        $bill->setMessage($response->message());
+        $payroll->setMessage($response->message());
 
         if ($response->status() === Status::SUCCESS) {
             $base64 = \base64_decode($response->resource());
-            $filename = \hash('sha256', $bill->getNumeration() . '.xml');
+            $filename = \hash('sha256', $payroll->getNumeration() . '.xml');
 
             \file_put_contents($path . \DIRECTORY_SEPARATOR . $filename, $base64);
 
-            $bill->setXmlPath($path);
-            $bill->setHashType('CUFE-SHA384');
-            $bill->setHash($this->getHash($base64));
+            $payroll->setXmlPath($path);
+            $payroll->setHashType('CUFE-SHA384');
+            $payroll->setHash($this->getHash($base64));
         }
 
-        return $this->updateBill($bill);
+        return $this->updatePayroll($payroll);
     }
 
-    protected function updateBill(Bill $bill): Bill
+    protected function updatePayroll(Payroll $payroll): Payroll
     {
-        $useCase = new UpdateBillUseCase($this->billRepository);
+        $useCase = new UpdatePayrollUseCase($this->payrollRepository);
 
-        return $useCase->execute(new UpdateBillRequest($bill->id(), $bill->toArray(), -1))->bill;
+        return $useCase->execute(new UpdatePayrollRequest($payroll->id(), $payroll->toArray(), -1))->payroll;
     }
 
     protected function convertEncoding(string $message): string
