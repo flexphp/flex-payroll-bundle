@@ -29,6 +29,28 @@ jQuery(document).ready(function ($) {
         $('[name="agreement[integralSalary]"]').val(integralSalary);
     }
 
+    $('.addPaidAt').on('click', function () {
+        const template = $('#template-row-accrued-paid-at').html().replace(/#0#/g, ((new Date()).getTime()));
+
+        $('.paidAt').last().after(template);
+
+        if ($(document).Zebra_DatePicker) {
+            $('.paidAt').last().find('input.date-picker').Zebra_DatePicker({
+                format: window.flex.defaultDateFormat,
+            });
+        }
+    });
+
+    $('#accruedBasicData').on('click', '.subPaidAt', function () {
+        const id = $(this).data('id');
+
+        const item = $('.paidAt').filter(function () {
+            return $(this).data('id') === id
+        });
+
+        $(item).remove();
+        $(this).parent().remove();
+    });
 
     $('.find-employee').on('change', function () {
         const $container = $(this).parent().parent().parent();

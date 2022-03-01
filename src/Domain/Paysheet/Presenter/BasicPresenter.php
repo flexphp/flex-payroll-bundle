@@ -31,8 +31,23 @@ class BasicPresenter
         return (float)$this->data['amount'];
     }
 
-    public function paidAt(): DateTimeInterface
+    public function paidAts(): array
     {
-        return new DateTime($this->data['paidAt']);
+        $data = [];
+
+        $paidAts = is_array($this->data['paidAt'])
+            ? $this->data['paidAt']
+            : [$this->data['paidAt']];
+
+        foreach ($paidAts as $paidAt) {
+            $data[] = $this->paidAt($paidAt);
+        }
+
+        return $data;
+    }
+
+    private function paidAt(string $paidAt): DateTimeInterface
+    {
+        return new DateTime($paidAt);
     }
 }

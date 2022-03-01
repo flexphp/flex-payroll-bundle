@@ -125,6 +125,21 @@
         </form>
     </div>
 
+    <template id="template-row-accrued-paid-at" type="text/x-template">
+        <div class="form-group col-1 offset-7">
+            <label for="">&nbsp;</label>
+            <button class="subPaidAt btn btn-sm btn-outline-danger" data-id="#0#" type="button">
+                <i class="fa fa-minus" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="paidAt form-group col-4" data-id="#0#">
+            <label for="accrued[basic][0][paidAt][#0#]">Fecha de Pago</label>
+            <input name="accrued[basic][0][paidAt][#0#]" data-zdp_show_icon="false" class="form-control date-picker" type="text" value="" />
+        </div>
+    </template>
+
+
     <template id="template-row-paysheet-detail" type="text/x-template">
         <td scope="row">
             <button type="button" class="btn btn-sm btn-link remove-row-paysheet-detail" title="{% trans from 'messages' %}action.remove{% endtrans %}">

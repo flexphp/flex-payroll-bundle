@@ -50,13 +50,13 @@
                     </div>
                 </div>
 
-                <div class="col">
-                    <label>{% trans %}label.statusId{% endtrans %}</label><div class="form-control-plaintext">
-                        <i class="far fa-circle text-{% if paysheet.isDraft %}primary{% elseif (paysheet.total - paysheet.totalPaid) > 0
-                            %}danger{% elseif paysheet.total == 0 %}warning{% else %}success{% endif %}"></i>
-                        {{ paysheet.statusIdInstance.name|default('-') }}
-                    </div>
-                </div>
+{#                 <div class="col"> #}
+{#                     <label>{% trans %}label.statusId{% endtrans %}</label><div class="form-control-plaintext"> #}
+{#                         <i class="far fa-circle text-{% if paysheet.isDraft %}primary{% elseif (paysheet.total - paysheet.totalPaid) > 0 #}
+{#                             %}danger{% elseif paysheet.total == 0 %}warning{% else %}success{% endif %}"></i> #}
+{#                         {{ paysheet.statusIdInstance.name|default('-') }} #}
+{#                     </div> #}
+{#                 </div> #}
 
                 <div class="col-2">
                     <label>{% trans %}label.type{% endtrans %}</label>

@@ -11,6 +11,7 @@ namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase;
 
 use DateInterval;
 use DateTime;
+use DateTimeInterface;
 use Exception;
 use FlexPHP\Bundle\NumerationBundle\Domain\Numeration\Request\UpdateNumerationRequest;
 use FlexPHP\Bundle\NumerationBundle\Domain\Numeration\UseCase\UpdateNumerationUseCase;
@@ -99,11 +100,11 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
         $basic = $paysheet->detailsPresenter()->basic();
 
         $period = $this->getPeriod(
-            $basic->paidAt()->format('Y-m-d H:i:s'),
+            $paysheet->issuedAt()->format('Y-m-d H:i:s'),
             $agreement->initAt()->format('Y-m-d H:i:s'),
             $paysheet->initAt()->format('Y-m-d H:i:s'),
             $paysheet->finishAt()->format('Y-m-d H:i:s'),
-            $agreement->finishAt()->format('Y-m-d H:i:s')
+            $agreement->finishAt() ? $agreement->finishAt()->format('Y-m-d H:i:s') : null
         );
 
         $entity = $this->getEntity(
@@ -148,7 +149,9 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
         );
 
         $accrued->setPayment($payment);
-        $accrued->addPaymentDate(new PaymentDate($basic->paidAt()));
+        $accrued->addPaymentDates(array_map(function (DateTimeInterface $paidAt) {
+            return new PaymentDate($paidAt);
+        }, $basic->paidAts()));
 
         if ($vacation->days()) {
             $accrued->setVacation($this->getVacation($vacation->initAt(), $vacation->finishAt(), $vacation->days(), $vacation->amount(), $vacation->compensateDays(), $vacation->compensateAmount()));
