@@ -331,4 +331,9 @@ final class Payroll
     {
         $this->updatedByInstance = $user;
     }
+
+    public function getNumeration(): ?string
+    {
+        return sprintf('%s%s', $this->prefix(), $this->number());
+    }
 }

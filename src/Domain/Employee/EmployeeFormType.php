@@ -210,7 +210,7 @@ final class EmployeeFormType extends AbstractType
 
             $form->add('accountType', Select2Type::class, [
                 'label' => 'label.accountType',
-                'required' => true,
+                'required' => false,
                 'attr' => [
                     'data-autocomplete-url' => $this->router->generate('flexphp.payroll.employees.find.account-types'),
                 ],
@@ -295,7 +295,7 @@ final class EmployeeFormType extends AbstractType
         ]);
         $builder->add('accountType', Select2Type::class, [
             'label' => 'label.accountType',
-            'required' => true,
+            'required' => false,
             'attr' => [
                 'data-autocomplete-url' => $this->router->generate('flexphp.payroll.employees.find.account-types'),
                 'maxlength' => 3,
