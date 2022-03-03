@@ -1,9 +1,9 @@
 {% for _paysheet in paysheets %}
     <tr>
         <td>{{ _paysheet.id }}</td>
-        <td>{{ _paysheet.statusIdInstance.name|default('-') }}</td>
+        {# <td>{{ _paysheet.statusIdInstance.name|default('-') }}</td> #}
         <td>{{ _paysheet.employeeIdInstance.name|default('-') }}</td>
-        <td class="money-format text-right">{{ _paysheet.isDraft ? 0 : _paysheet.totalPaid }}</td>
+        {# <td class="money-format text-right">{{ _paysheet.isDraft ? 0 : _paysheet.totalPaid }}</td> #}
         <td class="money-format text-right">{{ _paysheet.total }}</td>
         <td class="money-format text-right">{{ _paysheet.isDraft ? 0 : (_paysheet.total - _paysheet.totalPaid) }}</td>
         <td class="timeago-format">{{ _paysheet.createdAt ? _paysheet.createdAt|date('Y-m-d H:i:s') : '-' }}</td>

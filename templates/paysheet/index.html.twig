@@ -22,12 +22,12 @@
                 <thead>
                     <tr>
                         <th scope="col">{% trans %}label.id{% endtrans %}</th>
-                        <th scope="col">{% trans %}label.statusId{% endtrans %}</th>
+                        {# <th scope="col">{% trans %}label.statusId{% endtrans %}</th> #}
                         <th scope="col">{% trans %}label.employeeId{% endtrans %}</th>
                         {# <th scope="col">{% trans %}label.agreementId{% endtrans %}</th> #}
-                        <th scope="col">{% trans %}label.totalPaid{% endtrans %}</th>
-                        <th scope="col">{% trans %}label.total{% endtrans %}</th>
-                        <th scope="col">{% trans %}__paysheet.totalDue{% endtrans %}</th>
+                        {# <th scope="col">{% trans %}label.totalPaid{% endtrans %}</th> #}
+                        <th scope="col" class="text-right">{% trans %}label.total{% endtrans %}</th>
+                        <th scope="col" class="text-right">{% trans %}__paysheet.totalDue{% endtrans %}</th>
                         <th scope="col">{% trans %}label.createdAt{% endtrans %}</th>
                         {# <th scope="col">{% trans %}label.notes{% endtrans %}</th> #}
                         <th scope="col" class="text-center" style="width: 105px;"><i class="fa fa-cogs" aria-hidden="true"></i></th>

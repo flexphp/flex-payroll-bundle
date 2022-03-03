@@ -45,7 +45,7 @@
             <input name="accrued[basic][0][paidAt][0]" data-zdp_show_icon="false" class="form-control date-picker" type="text" required value="{{ paysheet.details.accrued.basic.0.paidAt.0|default('') ? paysheet.details.accrued.basic.0.paidAt.0|date('Y-m-d') : paidAt }}" />
         </div>
 
-        {% if paysheet.details.accrued.basic.0.paidAt|length > 1 %}
+        {% if paysheet.details and paysheet.details.accrued.basic.0.paidAt|length > 1 %}
             {% for index,paidAt in paysheet.details.accrued.basic.0.paidAt|slice(1, paysheet.details.accrued.basic.0.paidAt|length) %}
                 <div class="form-group col-1 offset-7">
                     <label for="">&nbsp;</label>
