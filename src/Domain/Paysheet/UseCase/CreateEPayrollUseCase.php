@@ -12,6 +12,7 @@ namespace FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\UseCase;
 use DateInterval;
 use DateTime;
 use DateTimeInterface;
+use DateTimeZone;
 use Exception;
 use FlexPHP\Bundle\NumerationBundle\Domain\Numeration\Request\UpdateNumerationRequest;
 use FlexPHP\Bundle\NumerationBundle\Domain\Numeration\UseCase\UpdateNumerationUseCase;
@@ -52,6 +53,8 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
             throw new Exception('Paysheet is draft', 400);
         }
 
+        $timezone = new DateTimeZone('America/Bogota');
+
         $paysheet->withLastPayroll($this->paysheetRepository->payrollGateway(), 0);
         $payroll = $paysheet->payrollInstance();
 
@@ -83,7 +86,7 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
         $clerk = $this->getClerk($employee, $agreement);
 
         $general = $this->getGeneral(
-            $paysheet->createdAt()->format('Y-m-d H:i:s'),
+            $paysheet->createdAt()->setTimezone($timezone)->format('Y-m-d H:i:s'),
             $this->getRecurrenceCode($agreement->period()),
             $agreement->currency(),
             1.0
@@ -92,19 +95,19 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
         $payment = $this->getPayment(
             '1',
             $employee->paymentMethod(),
-            $employee->bankInstance()->name(),
-            $employee->accountType() ?? '',
-            $employee->accountNumber() ?? ''
+            $employee->bankInstance()->name() ?: '',
+            $employee->accountType() ?: '',
+            $employee->accountNumber() ?: ''
         );
 
         $basic = $paysheet->detailsPresenter()->basic();
 
         $period = $this->getPeriod(
-            $paysheet->issuedAt()->format('Y-m-d H:i:s'),
-            $agreement->initAt()->format('Y-m-d H:i:s'),
-            $paysheet->initAt()->format('Y-m-d H:i:s'),
-            $paysheet->finishAt()->format('Y-m-d H:i:s'),
-            $agreement->finishAt() ? $agreement->finishAt()->format('Y-m-d H:i:s') : null
+            $paysheet->issuedAt()->setTimezone($timezone)->format('Y-m-d H:i:s'),
+            $agreement->initAt()->setTimezone($timezone)->format('Y-m-d H:i:s'),
+            $paysheet->initAt()->setTimezone($timezone)->format('Y-m-d H:i:s'),
+            $paysheet->finishAt()->setTimezone($timezone)->format('Y-m-d H:i:s'),
+            $agreement->finishAt() ? $agreement->finishAt()->setTimezone($timezone)->format('Y-m-d H:i:s') : null
         );
 
         $entity = $this->getEntity(

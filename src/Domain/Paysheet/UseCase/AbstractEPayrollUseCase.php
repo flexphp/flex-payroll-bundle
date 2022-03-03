@@ -619,7 +619,7 @@ abstract class AbstractEPayrollUseCase
 
         try {
             return $this->getEmployee(
-                \str_pad((string)$employee->id(), 10, '0', \STR_PAD_RIGHT),
+                $employee->documentNumber(),
                 $employee->documentNumber(),
                 $employee->documentTypeId(),
                 $employee->firstName(),
@@ -795,10 +795,9 @@ abstract class AbstractEPayrollUseCase
         \libxml_use_internal_errors(true);
 
         $xml = new \SimpleXMLElement($content);
+        $xml->registerXPathNamespace('ns', 'dian:gov:co:facturaelectronica:NominaIndividual');
 
-        $xml->registerXPathNamespace('cbc', 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
-
-        $hash = (string)$xml->xpath('//cbc:UUID')[0] ?? '';
+        $hash = (string)$xml->xpath('//ns:NominaIndividual')[0]->InformacionGeneral->attributes()['CUNE'][0] ?? '';
 
         if (empty($hash)) {
             throw new Exception('Hash not found');
@@ -968,6 +967,8 @@ abstract class AbstractEPayrollUseCase
 
     protected function convertEncoding(string $message): string
     {
+        return $message;
+
         $encoding = \mb_detect_encoding($message);
         $this->logger->info($message . ' => encoding: ' . $encoding);
 
