@@ -38,7 +38,7 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text">%</span>
                 </div>
-                <input name="accrued[cessation][0][percentage]" class="form-control accrued" type="text" value="{{ paysheet.details.accrued.cessation.0.percentage|default('') }}" />
+                <input name="accrued[cessation][0][percentage]" class="form-control accrued" type="numbe" min="0" max="100" value="{{ paysheet.details.accrued.cessation.0.percentage|default('') }}" />
             </div>
         </div>
 

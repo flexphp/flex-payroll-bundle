@@ -18,7 +18,7 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text">%</span>
                 </div>
-                <input name="deduction[health][0][percentage]" class="form-control" type="text" required value="{{ paysheet.details.deduction.health.0.percentage|default('') }}" />
+                <input name="deduction[health][0][percentage]" class="form-control" type="number" min="0" max="100" required value="{{ paysheet.details.deduction.health.0.percentage|default('') }}" />
             </div>
         </div>
 
@@ -38,7 +38,7 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text">%</span>
                 </div>
-                <input name="deduction[pension][0][percentage]" class="form-control" type="text" required value="{{ paysheet.details.deduction.pension.0.percentage|default('') }}" />
+                <input name="deduction[pension][0][percentage]" class="form-control" type="number" min="0" max="100" required value="{{ paysheet.details.deduction.pension.0.percentage|default('') }}" />
             </div>
         </div>
 
