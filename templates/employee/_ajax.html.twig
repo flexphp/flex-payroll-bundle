@@ -1,17 +1,20 @@
 {% for _employee in employees %}
     <tr>
         <td>{{ _employee.id }}</td>
-        <td>{{ _employee.documentTypeIdInstance.name|default('-') }}</td>
-        <td>{{ _employee.documentNumber }}</td>
-        <td>{{ _employee.firstName }}</td>
-        <td>{{ _employee.secondName }}</td>
-        <td>{{ _employee.firstSurname }}</td>
-        <td>{{ _employee.secondSurname }}</td>
-        <td>{{ _employee.typeInstance.id|default('-') }}</td>
-        <td>{{ _employee.subTypeInstance.id|default('-') }}</td>
-        <td>{{ _employee.paymentMethodInstance.name|default('-') }}</td>
-        <td>{{ _employee.accountTypeInstance.id|default('-') }}</td>
-        <td>{{ _employee.accountNumber }}</td>
+        <td>
+            {{ _employee.firstName }} {{ _employee.secondName }}<br />
+            {{ _employee.firstSurname }} {{ _employee.secondSurname }}<br />
+            {{ _employee.documentTypeIdInstance.id|default('-') }} {{ _employee.documentNumber }}
+        </td>
+        <td>
+            {{ _employee.typeInstance.name|default('-') }}<br />
+            {{ _employee.subTypeInstance.name|default('-') }}
+        </td>
+        <td>
+            {{ _employee.paymentMethodInstance.name|default('-') }}<br />
+            {{ _employee.accountTypeInstance.name|default('-') }}<br />
+            {{ _employee.accountNumber }}
+        </td>
         <td>{% if _employee.isActive %}{% trans from 'messages' %}label.yes{% endtrans %}{% else %}{% trans from 'messages' %}label.no{% endtrans %}{% endif %}</td>
         <td class="text-center">
             <div class="btn-group">

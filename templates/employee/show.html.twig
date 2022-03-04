@@ -24,10 +24,10 @@
             <div class="form-group"><label>{% trans %}label.secondName{% endtrans %}</label><div class="form-control-plaintext">{{ employee.secondName }}</div></div>
             <div class="form-group"><label>{% trans %}label.firstSurname{% endtrans %}</label><div class="form-control-plaintext">{{ employee.firstSurname }}</div></div>
             <div class="form-group"><label>{% trans %}label.secondSurname{% endtrans %}</label><div class="form-control-plaintext">{{ employee.secondSurname }}</div></div>
-            <div class="form-group"><label>{% trans %}label.type{% endtrans %}</label><div class="form-control-plaintext">{{ employee.typeInstance.id|default('-') }}</div></div>
-            <div class="form-group"><label>{% trans %}label.subType{% endtrans %}</label><div class="form-control-plaintext">{{ employee.subTypeInstance.id|default('-') }}</div></div>
+            <div class="form-group"><label>{% trans %}label.type{% endtrans %}</label><div class="form-control-plaintext">{{ employee.typeInstance.name|default('-') }}</div></div>
+            <div class="form-group"><label>{% trans %}label.subType{% endtrans %}</label><div class="form-control-plaintext">{{ employee.subTypeInstance.name|default('-') }}</div></div>
             <div class="form-group"><label>{% trans %}label.paymentMethod{% endtrans %}</label><div class="form-control-plaintext">{{ employee.paymentMethodInstance.name|default('-') }}</div></div>
-            <div class="form-group"><label>{% trans %}label.accountType{% endtrans %}</label><div class="form-control-plaintext">{{ employee.accountTypeInstance.id|default('-') }}</div></div>
+            <div class="form-group"><label>{% trans %}label.accountType{% endtrans %}</label><div class="form-control-plaintext">{{ employee.accountTypeInstance.name|default('-') }}</div></div>
             <div class="form-group"><label>{% trans %}label.accountNumber{% endtrans %}</label><div class="form-control-plaintext">{{ employee.accountNumber }}</div></div>
             <div class="form-group"><label>{% trans %}label.isActive{% endtrans %}</label><div class="form-control-plaintext">{% if employee.isActive %}{% trans from 'messages' %}label.yes{% endtrans %}{% else %}{% trans from 'messages' %}label.no{% endtrans %}{% endif %}</div></div>
             <div class="form-group"><label>{% trans %}label.createdAt{% endtrans %}</label><div class="form-control-plaintext">{{ employee.createdAt ? employee.createdAt|date('Y-m-d H:i:s') : '-' }}</div></div>

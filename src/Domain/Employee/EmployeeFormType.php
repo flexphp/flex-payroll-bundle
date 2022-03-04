@@ -102,7 +102,7 @@ final class EmployeeFormType extends AbstractType
                 $response = $this->readEmployeeTypeUseCase->execute(new ReadEmployeeTypeRequest($value));
 
                 if ($response->employeeType->id()) {
-                    $choices = [$response->employeeType->id() => $value];
+                    $choices = [$response->employeeType->name() => $value];
                 }
             }
 
@@ -136,7 +136,7 @@ final class EmployeeFormType extends AbstractType
                 $response = $this->readEmployeeSubTypeUseCase->execute(new ReadEmployeeSubTypeRequest($value));
 
                 if ($response->employeeSubType->id()) {
-                    $choices = [$response->employeeSubType->id() => $value];
+                    $choices = [$response->employeeSubType->name() => $value];
                 }
             }
 
@@ -204,7 +204,7 @@ final class EmployeeFormType extends AbstractType
                 $response = $this->readAccountTypeUseCase->execute(new ReadAccountTypeRequest($value));
 
                 if ($response->accountType->id()) {
-                    $choices = [$response->accountType->id() => $value];
+                    $choices = [$response->accountType->name() => $value];
                 }
             }
 

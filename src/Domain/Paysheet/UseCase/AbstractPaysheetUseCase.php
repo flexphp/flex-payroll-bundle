@@ -198,6 +198,8 @@ abstract class AbstractPaysheetUseCase
 
     protected function createEmployee(array $employee, int $userId): Employee
     {
+        $employee['isActive'] = true;
+
         $useCase = new CreateEmployeeUseCase($this->employeeRepository);
 
         $employee = ($useCase->execute(new CreateEmployeeRequest($employee, $userId)))->employee;
@@ -211,6 +213,8 @@ abstract class AbstractPaysheetUseCase
 
     protected function updateEmployee(int $id, array $employee, int $userId): Employee
     {
+        $employee['isActive'] = true;
+
         $useCase = new UpdateEmployeeUseCase($this->employeeRepository);
 
         return ($useCase->execute(new UpdateEmployeeRequest($id, $employee, $userId, true)))->employee;
