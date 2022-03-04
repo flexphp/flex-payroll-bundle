@@ -69,7 +69,7 @@ final class AgreementFormType extends AbstractType
                 $response = $this->readEmployeeUseCase->execute(new ReadEmployeeRequest($value));
 
                 if ($response->employee->id()) {
-                    $choices = [$response->employee->documentNumber() => $value];
+                    $choices = [$response->employee->getFullname() => $value];
                 }
             }
 
@@ -103,7 +103,7 @@ final class AgreementFormType extends AbstractType
                 $response = $this->readAgreementTypeUseCase->execute(new ReadAgreementTypeRequest($value));
 
                 if ($response->agreementType->id()) {
-                    $choices = [$response->agreementType->id() => $value];
+                    $choices = [$response->agreementType->name() => $value];
                 }
             }
 
@@ -137,7 +137,7 @@ final class AgreementFormType extends AbstractType
                 $response = $this->readAgreementPeriodUseCase->execute(new ReadAgreementPeriodRequest($value));
 
                 if ($response->agreementPeriod->id()) {
-                    $choices = [$response->agreementPeriod->id() => $value];
+                    $choices = [$response->agreementPeriod->name() => $value];
                 }
             }
 
@@ -171,7 +171,7 @@ final class AgreementFormType extends AbstractType
                 $response = $this->readCurrencyUseCase->execute(new ReadCurrencyRequest($value));
 
                 if ($response->currency->id()) {
-                    $choices = [$response->currency->id() => $value];
+                    $choices = [$response->currency->name() => $value];
                 }
             }
 
@@ -205,7 +205,7 @@ final class AgreementFormType extends AbstractType
                 $response = $this->readAgreementStatusUseCase->execute(new ReadAgreementStatusRequest($value));
 
                 if ($response->agreementStatus->id()) {
-                    $choices = [$response->agreementStatus->id() => $value];
+                    $choices = [$response->agreementStatus->name() => $value];
                 }
             }
 

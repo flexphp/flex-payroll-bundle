@@ -20,8 +20,8 @@
         <div class="card-body">
             <div class="form-group"><label>{% trans %}label.name{% endtrans %}</label><div class="form-control-plaintext">{{ agreement.name }}</div></div>
             <div class="form-group"><label>{% trans %}label.employee{% endtrans %}</label><div class="form-control-plaintext">{{ agreement.employeeInstance.documentNumber|default('-') }}</div></div>
-            <div class="form-group"><label>{% trans %}label.type{% endtrans %}</label><div class="form-control-plaintext">{{ agreement.typeInstance.id|default('-') }}</div></div>
-            <div class="form-group"><label>{% trans %}label.period{% endtrans %}</label><div class="form-control-plaintext">{{ agreement.periodInstance.id|default('-') }}</div></div>
+            <div class="form-group"><label>{% trans %}label.type{% endtrans %}</label><div class="form-control-plaintext">{{ agreement.typeInstance.name|default('-') }}</div></div>
+            <div class="form-group"><label>{% trans %}label.period{% endtrans %}</label><div class="form-control-plaintext">{{ agreement.periodInstance.name|default('-') }}</div></div>
             <div class="form-group"><label>{% trans %}label.currency{% endtrans %}</label><div class="form-control-plaintext">{{ agreement.currencyInstance.id|default('-') }}</div></div>
             <div class="form-group"><label>{% trans %}label.salary{% endtrans %}</label><div class="form-control-plaintext">{{ agreement.salary }}</div></div>
             <div class="form-group"><label>{% trans %}label.healthPercentage{% endtrans %}</label><div class="form-control-plaintext">{{ agreement.healthPercentage }}</div></div>
@@ -30,7 +30,7 @@
             <div class="form-group"><label>{% trans %}label.highRisk{% endtrans %}</label><div class="form-control-plaintext">{% if agreement.highRisk %}{% trans from 'messages' %}label.yes{% endtrans %}{% else %}{% trans from 'messages' %}label.no{% endtrans %}{% endif %}</div></div>
             <div class="form-group"><label>{% trans %}label.initAt{% endtrans %}</label><div class="form-control-plaintext">{{ agreement.initAt ? agreement.initAt|date('Y-m-d H:i:s') : '-' }}</div></div>
             <div class="form-group"><label>{% trans %}label.finishAt{% endtrans %}</label><div class="form-control-plaintext">{{ agreement.finishAt ? agreement.finishAt|date('Y-m-d H:i:s') : '-' }}</div></div>
-            <div class="form-group"><label>{% trans %}label.status{% endtrans %}</label><div class="form-control-plaintext">{{ agreement.statusInstance.id|default('-') }}</div></div>
+            <div class="form-group"><label>{% trans %}label.status{% endtrans %}</label><div class="form-control-plaintext">{{ agreement.statusInstance.name|default('-') }}</div></div>
             <div class="form-group"><label>{% trans %}label.createdAt{% endtrans %}</label><div class="form-control-plaintext">{{ agreement.createdAt ? agreement.createdAt|date('Y-m-d H:i:s') : '-' }}</div></div>
             <div class="form-group"><label>{% trans %}label.updatedAt{% endtrans %}</label><div class="form-control-plaintext">{{ agreement.updatedAt ? agreement.updatedAt|date('Y-m-d H:i:s') : '-' }}</div></div>
             <div class="form-group"><label>{% trans %}label.createdBy{% endtrans %}</label><div class="form-control-plaintext">{{ agreement.createdByInstance.name|default('-') }}</div></div>

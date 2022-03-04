@@ -345,4 +345,9 @@ final class Employee
     {
         $this->name = $name;
     }
+
+    public function getFullname(): string
+    {
+        return sprintf('%s - %s %s', $this->documentNumber(), $this->firstName(), $this->firstSurname());
+    }
 }

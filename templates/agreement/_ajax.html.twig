@@ -2,18 +2,19 @@
     <tr>
         <td>{{ _agreement.id }}</td>
         <td>{{ _agreement.name }}</td>
-        <td>{{ _agreement.employeeInstance.documentNumber|default('-') }}</td>
-        <td>{{ _agreement.typeInstance.id|default('-') }}</td>
-        <td>{{ _agreement.periodInstance.id|default('-') }}</td>
-        <td>{{ _agreement.currencyInstance.id|default('-') }}</td>
-        <td>{{ _agreement.salary }}</td>
-        <td>{{ _agreement.healthPercentage }}</td>
-        <td>{{ _agreement.pensionPercentage }}</td>
+        <td>{{ _agreement.employeeInstance.fullname|default('-') }}</td>
+        <td>
+            {{ _agreement.typeInstance.name|default('-') }}<br />
+            {{ _agreement.periodInstance.name|default('-') }}<br />
+            {{ _agreement.currencyInstance.id|default('-') }} {{ _agreement.salary }}
+        </td>
+        {# <td>{{ _agreement.healthPercentage }}</td> #}
+        {# <td>{{ _agreement.pensionPercentage }}</td> #}
         <td>{% if _agreement.integralSalary %}{% trans from 'messages' %}label.yes{% endtrans %}{% else %}{% trans from 'messages' %}label.no{% endtrans %}{% endif %}</td>
         <td>{% if _agreement.highRisk %}{% trans from 'messages' %}label.yes{% endtrans %}{% else %}{% trans from 'messages' %}label.no{% endtrans %}{% endif %}</td>
         <td>{{ _agreement.initAt ? _agreement.initAt|date('Y-m-d H:i:s') : '-' }}</td>
         <td>{{ _agreement.finishAt ? _agreement.finishAt|date('Y-m-d H:i:s') : '-' }}</td>
-        <td>{{ _agreement.statusInstance.id|default('-') }}</td>
+        <td>{{ _agreement.statusInstance.name|default('-') }}</td>
         <td class="text-center">
             <div class="btn-group">
                 <a href="{{ path('flexphp.payroll.agreements.read', {id: _agreement.id}) }}" class="btn btn-sm btn-outline-light" title="{% trans from 'messages' %}action.read{% endtrans %}">

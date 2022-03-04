@@ -54,6 +54,8 @@ class MySQLAgreementGateway implements AgreementGateway
             'agreement.Status as status',
             'employee.id as `employee.id`',
             'employee.documentNumber as `employee.documentNumber`',
+            'employee.firstName as `employee.firstName`',
+            'employee.firstSurname as `employee.firstSurname`',
             'type.id as `type.id`',
             'type.name as `type.name`',
             'period.id as `period.id`',
@@ -242,14 +244,18 @@ class MySQLAgreementGateway implements AgreementGateway
     {
         $query = $this->conn->createQueryBuilder();
 
+        $term = \preg_replace('/(\s)+/', '%', \trim($request->term));
+
         $query->select([
             'employee.id as id',
-            'employee.documentNumber as text',
+            "CONCAT(employee.DocumentNumber, ' - ', employee.FirstName, ' ', employee.FirstSurname) as text",
         ]);
         $query->from('`Employees`', '`employee`');
 
-        $query->where('employee.documentNumber like :employee_documentNumber');
-        $query->setParameter(':employee_documentNumber', "%{$request->term}%");
+        $query->where("CONCAT(employee.DocumentNumber, ' ', employee.FirstName, ' ', employee.FirstSurname) like :employee_name");
+        $query->setParameter(':employee_name', "%{$term}%");
+        $query->andWhere('employee.IsActive = :employee_isActive');
+        $query->setParameter(':employee_isActive', 1);
 
         $query->setFirstResult($page ? ($page - 1) * $limit : 0);
         $query->setMaxResults($limit);
