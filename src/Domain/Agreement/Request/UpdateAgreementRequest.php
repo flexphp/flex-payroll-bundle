@@ -56,8 +56,8 @@ final class UpdateAgreementRequest implements RequestInterface
         $this->pensionPercentage = $data['pensionPercentage'] ?? null;
         $this->integralSalary = $data['integralSalary'] ?? null;
         $this->highRisk = $data['highRisk'] ?? null;
-        $this->initAt = $data['initAt'] ?? null;
-        $this->finishAt = $data['finishAt'] ?? null;
+        $this->initAt = $data['initAt'] ?: null;
+        $this->finishAt = $data['finishAt'] ?: null;
         $this->status = $data['status'] ?? null;
         $this->updatedBy = $updatedBy;
     }
