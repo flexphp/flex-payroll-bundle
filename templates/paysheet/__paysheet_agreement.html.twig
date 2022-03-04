@@ -61,12 +61,12 @@
 
         <div class="form-group col-12 col-md-2">
             <label for="agreement[healthPercentage]" class="col-form-label">{% trans from 'agreement' %}label.healthPercentage{% endtrans %}</label>
-            <input name="agreement[healthPercentage]" class="form-control" type="number" />
+            <input name="agreement[healthPercentage]" class="form-control" type="number" min="0" max="100" />
         </div>
 
         <div class="form-group col-12 col-md-2">
             <label for="agreement[pensionPercentage]" class="col-form-label">{% trans from 'agreement' %}label.pensionPercentage{% endtrans %}</label>
-            <input name="agreement[pensionPercentage]" class="form-control" type="number" />
+            <input name="agreement[pensionPercentage]" class="form-control" type="number" min="0" max="100" />
         </div>
     </div>
 

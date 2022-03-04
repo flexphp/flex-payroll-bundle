@@ -6,8 +6,8 @@ jQuery(document).ready(function ($) {
 
     setTimeout(setTotalNeto, 500);
 
-    $('.deduction').on('change', setTotalDeduction);
-    $('.accrued').on('change', setTotalAccrued);
+    $('.deduction').on('keyup', setTotalDeduction);
+    $('.accrued').on('keyup', setTotalAccrued);
 
     updateHighRisk();
 
@@ -174,8 +174,16 @@ jQuery(document).ready(function ($) {
 
         $('[name="agreement[name]"]').val(data.name || '');
         $('[name="agreement[salary]"]').val(data.salary || '');
-        $('[name="agreement[healthPercentage]"]').val(data.healthPercentage || 0);
-        $('[name="agreement[pensionPercentage]"]').val(data.pensionPercentage || 0);
+
+        const healthPercentage = data.healthPercentage || 0;
+        const pensionPercentage = data.pensionPercentage || 0;
+
+        $('[name="agreement[healthPercentage]"]').val(healthPercentage);
+        $('[name="deduction[health][0][percentage]"]').val(healthPercentage);
+
+        $('[name="agreement[pensionPercentage]"]').val(pensionPercentage);
+        $('[name="deduction[pension][0][percentage]"]').val(pensionPercentage);
+
         $('[name="agreement[initAt]"]').val(data.initAt || '');
         $('[name="agreement[finishAt]"]').val(data.finishAt || '');
 
