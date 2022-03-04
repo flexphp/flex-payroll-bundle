@@ -131,9 +131,9 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
         $setting = $this->getSetting('NI');
 
         $numeration = $this->getNumeration(
-            $setting->prefix(),
-            $setting->currentNumber(),
-            (string)$employee->id()
+            ($payroll ? $payroll->prefix() : $setting->prefix()),
+            ($payroll ? $payroll->number() : $setting->currentNumber()),
+            $employee->documentNumber()
         );
 
         $transport = $paysheet->detailsPresenter()->transport();
@@ -190,12 +190,6 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
         ];
 
         if (!$payroll) {
-            // $data = $this->paysheetRepository->getEPayrollData($request);
-
-            // if (empty($data)) {
-            //     throw new Exception(\sprintf('Paysheet data not found [%d]', $request->id), 404);
-            // }
-
             $useCase = new CreatePayrollUseCase($this->payrollRepository);
 
             $payroll = $useCase->execute(new CreatePayrollRequest([
