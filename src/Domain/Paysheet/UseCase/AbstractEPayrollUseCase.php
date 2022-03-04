@@ -182,8 +182,6 @@ abstract class AbstractEPayrollUseCase
         Payroll $payroll,
         Provider $provider
     ): CreateEPayrollResponse {
-        // $roll['numeration']->setCurrentNumber($payroll->number());
-
         $ePayroll = $this->getEPayroll($payroll, $provider);
 
         if (!$ePayroll) {

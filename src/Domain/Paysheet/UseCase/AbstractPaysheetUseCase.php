@@ -439,7 +439,7 @@ abstract class AbstractPaysheetUseCase
 
     protected function getTotal(CreatePaysheetRequest $request): float
     {
-        return $this->numberFormat($request->totalAccrued + $request->totalDeduction);
+        return $this->numberFormat($request->totalAccrued - $request->totalDeduction);
     }
 
     protected function numberFormat(float $number): float
