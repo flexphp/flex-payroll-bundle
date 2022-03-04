@@ -2,7 +2,7 @@
     <tr>
         <td>{{ _payroll.id }}</td>
         <td>{{ _payroll.prefix }}{{ _payroll.number }}</td>
-        <td>{{ _payroll.employeeInstance.documentNumber|default('-') }}</td>
+        <td>{{ _payroll.paysheetInstance.id|default('-') }}</td>
         <td>{{ _payroll.providerInstance.name|default('-') }}</td>
         <td>{{ _payroll.statusInstance.name|default('-') }}</td>
         <td>{{ _payroll.typeInstance.name|default('-') }}</td>

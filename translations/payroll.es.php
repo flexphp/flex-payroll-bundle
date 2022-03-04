@@ -13,7 +13,7 @@ return [
         'prefix' => 'Prefijo',
         'number' => 'Número',
         'numeration' => 'Numeración',
-        'employee' => 'Empleado',
+        'paysheet' => 'Desprendible',
         'provider' => 'Proveedor',
         'status' => 'Estado',
         'type' => 'Tipo',
