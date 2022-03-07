@@ -69,7 +69,7 @@ class MySQLEmployeeGateway implements EmployeeGateway
         $query->join('`employee`', '`EmployeeTypes`', '`type`', 'employee.Type = type.id');
         $query->join('`employee`', '`EmployeeSubTypes`', '`subType`', 'employee.SubType = subType.id');
         $query->join('`employee`', '`PaymentMethods`', '`paymentMethod`', 'employee.PaymentMethod = paymentMethod.id');
-        $query->join('`employee`', '`AccountTypes`', '`accountType`', 'employee.AccountType = accountType.id');
+        $query->leftJoin('`employee`', '`AccountTypes`', '`accountType`', 'employee.AccountType = accountType.id');
 
         $query->orderBy('employee.UpdatedAt', 'DESC');
 
@@ -178,7 +178,7 @@ class MySQLEmployeeGateway implements EmployeeGateway
         $query->join('`employee`', '`EmployeeTypes`', '`type`', 'employee.Type = type.id');
         $query->join('`employee`', '`EmployeeSubTypes`', '`subType`', 'employee.SubType = subType.id');
         $query->join('`employee`', '`PaymentMethods`', '`paymentMethod`', 'employee.PaymentMethod = paymentMethod.id');
-        $query->join('`employee`', '`AccountTypes`', '`accountType`', 'employee.AccountType = accountType.id');
+        $query->leftJoin('`employee`', '`AccountTypes`', '`accountType`', 'employee.AccountType = accountType.id');
         $query->leftJoin('`employee`', '`Banks`', '`bank`', 'employee.Bank = bank.id');
         $query->leftJoin('`employee`', '`Users`', '`createdBy`', 'employee.CreatedBy = createdBy.id');
         $query->leftJoin('`employee`', '`Users`', '`updatedBy`', 'employee.UpdatedBy = updatedBy.id');
