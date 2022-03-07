@@ -83,6 +83,22 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
             new ReadAgreementRequest($paysheet->agreementId())
         )->agreement;
 
+        if (!$paysheet->issuedAt()) {
+            throw new Exception('Paysheet issuedAt is required', 404);
+        }
+
+        if (!$agreement->initAt()) {
+            throw new Exception('Agreement initAt is required', 404);
+        }
+
+        if (!$paysheet->initAt()) {
+            throw new Exception('Paysheet initAt is required', 404);
+        }
+
+        if (!$paysheet->finishAt()) {
+            throw new Exception('Paysheet finishAt is required', 404);
+        }
+
         $clerk = $this->getClerk($employee, $agreement);
 
         $general = $this->getGeneral(
