@@ -836,15 +836,13 @@ abstract class AbstractEPayrollUseCase
     {
         try {
             $response = $ePayroll->preview($roll + [
-                // 'isTest' => $this->testingMode,
-                'isTest' => true,
+                'isTest' => $this->testingMode,
             ]);
 
             file_put_contents(getcwd() . '/../var/log/' . date('Y-m-d') . '-' . $roll['numeration']->number() . '.xml', $response);
 
             $response = $ePayroll->upload($roll + [
-                // 'isTest' => $this->testingMode,
-                'isTest' => true,
+                'isTest' => $this->testingMode,
             ]);
         } catch (Exception $e) {
             $response = new UploadResponse(Status::FAILED, $e->getMessage(), null);
