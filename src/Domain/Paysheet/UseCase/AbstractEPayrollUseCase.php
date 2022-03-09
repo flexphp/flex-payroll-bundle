@@ -387,14 +387,14 @@ abstract class AbstractEPayrollUseCase
     }
 
     protected function getVacation(
-        DateTimeInterface $initAt,
-        DateTimeInterface $finishAt,
         int $days,
         float $amount,
+        ?DateTimeInterface $initAt,
+        ?DateTimeInterface $finishAt,
         int $compensateDays,
         float $compensateAmount
     ): VacationContract {
-        return new Vacation($initAt, $finishAt, $days, $amount, $compensateDays, $compensateAmount);
+        return new Vacation($days, $amount, $initAt, $finishAt, $compensateDays, $compensateAmount);
     }
 
     protected function getBonus(

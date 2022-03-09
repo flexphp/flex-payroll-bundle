@@ -20,17 +20,6 @@ class VacationPresenter
     {
         $this->data = $data;
     }
-
-    public function initAt(): DateTimeInterface
-    {
-        return new DateTime($this->data['initAt']);
-    }
-
-    public function finishAt(): DateTimeInterface
-    {
-        return new DateTime($this->data['finishAt']);
-    }
-
     public function days(): int
     {
         return (int)$this->data['days'];
@@ -39,6 +28,20 @@ class VacationPresenter
     public function amount(): float
     {
         return (float)$this->data['amount'];
+    }
+
+    public function initAt(): ?DateTimeInterface
+    {
+        return !empty($this->data['initAt'])
+            ? new DateTime($this->data['initAt'])
+            : null;
+    }
+
+    public function finishAt(): ?DateTimeInterface
+    {
+        return !empty($this->data['finishAt'])
+            ? new DateTime($this->data['finishAt'])
+            : null;
     }
 
     public function compensateDays(): int
