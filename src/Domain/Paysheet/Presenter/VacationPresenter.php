@@ -51,6 +51,6 @@ class VacationPresenter
 
     public function compensateAmount(): float
     {
-        return (float)$this->data['amount'];
+        return (float)$this->data['compensateAmount'];
     }
 }
