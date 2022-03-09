@@ -92,12 +92,12 @@
 {#             </div> #}
 {#             {% endif %} #}
 
-{#             <div class="form-row"> #}
-{#                 <div class="col"> #}
-{#                     <label>{% trans %}label.paysheetNotes{% endtrans %}</label> #}
-{#                     <div class="form-control-plaintext">{{ paysheet.paysheetNotes|default('-')|nl2br }}</div> #}
-{#                 </div> #}
-{#             </div> #}
+            <div class="form-row">
+                <div class="col">
+                    <label>{% trans %}label.paysheetNotes{% endtrans %}</label>
+                    <div class="form-control-plaintext">{{ paysheet.paysheetNotes|default('-')|nl2br }}</div>
+                </div>
+            </div>
 
             {# {% if payments|length > 0 %} #}
                 {# <hr /> #}
@@ -144,15 +144,35 @@
 
 {#             <hr /> #}
 
-            {# <div class="form-row"> #}
-            {#     <div class="col"></div> #}
-            {#     <div class="col"> #}
-            {#         <label>{% trans %}__paysheet.total{% endtrans %}</label> #}
-            {#     </div> #}
-            {#     <div class="col"> #}
-            {#         <div class="form-control-plaintext money-format">{{ paysheet.total  }}</div> #}
-            {#     </div> #}
-            {# </div> #}
+            <div class="form-row">
+                <div class="col"></div>
+                <div class="col text-right">
+                    <label>{% trans %}label.totalAccrued{% endtrans %}</label>
+                </div>
+                <div class="col text-right">
+                    <div class="form-control-plaintext money-format">{{ paysheet.totalAccrued  }}</div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col"></div>
+                <div class="col text-right">
+                    <label>{% trans %}label.totalDeduction{% endtrans %}</label>
+                </div>
+                <div class="col text-right">
+                    <div class="form-control-plaintext money-format">{{ paysheet.totalDeduction  }}</div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col"></div>
+                <div class="col text-right">
+                    <label>{% trans %}label.total{% endtrans %}</label>
+                </div>
+                <div class="col text-right">
+                    <div class="form-control-plaintext money-format">{{ paysheet.total  }}</div>
+                </div>
+            </div>
             {% if not paysheet.isDraft %}
             {# <div class="form-row"> #}
             {#     <div class="col"></div> #}
