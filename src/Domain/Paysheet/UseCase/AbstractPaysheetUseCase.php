@@ -354,6 +354,7 @@ abstract class AbstractPaysheetUseCase
             ],
             'vacation' => [
                 'amount',
+                'compensateAmount',
             ],
             'bonus' => [
                 'amount',

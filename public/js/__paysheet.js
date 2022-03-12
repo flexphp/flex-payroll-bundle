@@ -879,6 +879,7 @@ jQuery(document).ready(function ($) {
             'accrued[transport][0][viaticNoSalary]': 0,
 
             'accrued[vacation][0][amount]': 0,
+            'accrued[vacation][0][compensateAmount]': 0,
 
             'accrued[bonus][0][amount]': 0,
             'accrued[bonus][0][noSalary]': 0,

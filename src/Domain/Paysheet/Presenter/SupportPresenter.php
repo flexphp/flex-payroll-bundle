@@ -23,7 +23,7 @@ class SupportPresenter
         return \count($this->data);
     }
 
-    public function amount(int $index): float
+    public function salary(int $index): float
     {
         return (float)$this->data[$index]['amount'];
     }

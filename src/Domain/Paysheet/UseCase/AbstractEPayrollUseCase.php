@@ -293,9 +293,10 @@ abstract class AbstractEPayrollUseCase
         string $datetime,
         string $recurrenceCode,
         string $currencyCode,
-        float $trm = 1.0
+        float $trm = 1.0,
+        string $notes = ''
     ): GeneralContract {
-        return new General(new DateTime($datetime, new DateTimeZone('America/Bogota')), $recurrenceCode, $currencyCode, $trm);
+        return new General(new DateTime($datetime, new DateTimeZone('America/Bogota')), $recurrenceCode, $currencyCode, $trm, $notes);
     }
 
     protected function getEntity(
@@ -399,16 +400,10 @@ abstract class AbstractEPayrollUseCase
 
     protected function getBonus(
         int $days,
-        float $amount,
+        float $salary,
         float $noSalary
     ): BonusContract {
-        $bonus = new Bonus($days, $amount);
-
-        if ($noSalary) {
-            $bonus->setNoSalary($noSalary);
-        }
-
-        return $bonus;
+        return new Bonus($days, $salary, $noSalary);
     }
 
     protected function getCessation(
@@ -424,17 +419,17 @@ abstract class AbstractEPayrollUseCase
         $response = [];
 
         for ($i = 0; $i < $support->count(); ++$i) {
-            $response[] = $this->getSupport($support->amount($i), $support->noSalary($i));
+            $response[] = $this->getSupport($support->salary($i), $support->noSalary($i));
         }
 
         return $response;
     }
 
     protected function getSupport(
-        float $amount,
+        float $salary,
         float $noSalary
     ): SupportContract {
-        return new Support($amount, $noSalary);
+        return new Support($salary, $noSalary);
     }
 
     protected function getEndowment(

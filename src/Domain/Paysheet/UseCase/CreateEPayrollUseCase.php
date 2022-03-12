@@ -66,13 +66,6 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
             return $this->getResponseOk($payroll);
         }
 
-        //         $paysheetTimeout = clone $paysheet->createdAt();
-        //         $timeAllowed = new DateInterval(\sprintf('P%dD', $_ENV['EINVOICE_TIMEOUT'] ?? 10));
-
-        //         if ($paysheetTimeout->add($timeAllowed) < new DateTime()) {
-        //             throw new Exception('Paysheet is older', 400);
-        //         }
-
         $this->validateEnvs();
 
         $employee = (new ReadEmployeeUseCase($this->employeeRepository))->execute(
@@ -105,7 +98,8 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
             $paysheet->createdAt()->setTimezone($timezone)->format('Y-m-d H:i:s'),
             $this->getRecurrenceCode($agreement->period()),
             $agreement->currency(),
-            1.0
+            1.0,
+            $paysheet->paysheetNotes()
         );
 
         $payment = $this->getPayment(
