@@ -13,10 +13,6 @@ use DateTime;
 use DateTimeInterface;
 use DateTimeZone;
 use Exception;
-use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\Bill;
-use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\Request\UpdateBillRequest;
-use FlexPHP\Bundle\InvoiceBundle\Domain\Bill\UseCase\UpdateBillUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\PayrollStatus\PayrollStatus;
 use FlexPHP\Bundle\LocationBundle\Domain\City\City;
 use FlexPHP\Bundle\LocationBundle\Domain\City\CityRepository;
 use FlexPHP\Bundle\LocationBundle\Domain\City\Request\ReadCityRequest;
@@ -42,24 +38,21 @@ use FlexPHP\Bundle\PayrollBundle\Domain\Agreement\AgreementRepository;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\Employee;
 use FlexPHP\Bundle\PayrollBundle\Domain\Employee\EmployeeRepository;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Payment;
-use FlexPHP\Bundle\PayrollBundle\Domain\Payment\PaymentRepository;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payment\Request\IndexPaymentRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payment\UseCase\IndexPaymentUseCase;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Payroll;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\PayrollRepository;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\Request\UpdatePayrollRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Payroll\UseCase\UpdatePayrollUseCase;
+use FlexPHP\Bundle\PayrollBundle\Domain\PayrollStatus\PayrollStatus;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Paysheet;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\PaysheetRepository;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Presenter\SupportPresenter;
 use FlexPHP\Bundle\PayrollBundle\Domain\Paysheet\Response\CreateEPayrollResponse;
-use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetDetail\PaysheetDetailRepository;
 use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetDetail\Request\IndexPaysheetDetailRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\PaysheetDetail\UseCase\IndexPaysheetDetailUseCase;
-use FlexPHP\Bundle\PayrollBundle\Domain\Product\ProductRepository;
 use FlexPHP\Bundle\PayrollBundle\Domain\Product\Request\ReadProductRequest;
 use FlexPHP\Bundle\PayrollBundle\Domain\Product\UseCase\ReadProductUseCase;
-use FlexPHP\eInvoice\Contract\MerchantContract;
 use FlexPHP\ePayroll\Constant\PaymentMeanCode;
 use FlexPHP\ePayroll\Constant\RecurrenceCode;
 use FlexPHP\ePayroll\Constant\Status;
@@ -68,7 +61,6 @@ use FlexPHP\ePayroll\Contract\AccruedContract;
 use FlexPHP\ePayroll\Contract\AgreementContract;
 use FlexPHP\ePayroll\Contract\AnexContract;
 use FlexPHP\ePayroll\Contract\BasicContract;
-use FlexPHP\ePayroll\Contract\BillContract as InvoiceContract;
 use FlexPHP\ePayroll\Contract\BonusContract;
 use FlexPHP\ePayroll\Contract\CessationContract;
 use FlexPHP\ePayroll\Contract\DeductionContract;
@@ -808,7 +800,7 @@ abstract class AbstractEPayrollUseCase
                 throw new Exception('Running in test mode');
             }
 
-            $wsdl = \realpath(getcwd() . '/../vendor/flexphp/epayroll/resources/FTech.payroll.wsdl', );
+            $wsdl = \realpath(\getcwd() . '/../vendor/flexphp/epayroll/resources/FTech.payroll.wsdl', );
 
             return new EPayroll($provider->id(), [
                 'username' => $provider->username(),
@@ -834,7 +826,7 @@ abstract class AbstractEPayrollUseCase
                 'isTest' => $this->testingMode,
             ]);
 
-            file_put_contents(getcwd() . '/../var/log/' . date('Y-m-d') . '-' . $roll['numeration']->number() . '.xml', $response);
+            \file_put_contents(\getcwd() . '/../var/log/' . \date('Y-m-d') . '-' . $roll['numeration']->number() . '.xml', $response);
 
             $response = $ePayroll->upload($roll + [
                 'isTest' => $this->testingMode,
@@ -847,10 +839,10 @@ abstract class AbstractEPayrollUseCase
             }
         }
 
-        file_put_contents(getcwd() . '/../var/log/' . date('Y-m-d') . '-' . $roll['numeration']->number() . '-R.xml', serialize( $response));
+        \file_put_contents(\getcwd() . '/../var/log/' . \date('Y-m-d') . '-' . $roll['numeration']->number() . '-R.log', \serialize($response));
 
         if ($response->status() !== Status::SUCCESS) {
-            $this->logger->warning('Payroll UPLOAD Response ' . serialize($response));
+            $this->logger->warning('Payroll UPLOAD Response ' . \serialize($response));
 
             $payroll->setStatus(PayrollStatus::REJECTED);
             $payroll->setMessage($this->convertEncoding($response->message()));
@@ -875,6 +867,8 @@ abstract class AbstractEPayrollUseCase
             }
         }
 
+        \file_put_contents(\getcwd() . '/../var/log/' . \date('Y-m-d') . '-' . $payroll->traceId() . '-S.log', \serialize($response));
+
         $payroll->setMessage($response->message());
 
         if ($response->status() === Status::SUCCESS) {
@@ -887,7 +881,7 @@ abstract class AbstractEPayrollUseCase
     protected function pdf(EPayroll $ePayroll, Payroll $payroll, string $prefix, string $number): Payroll
     {
         try {
-            $path = \realpath(getcwd() . '/../payrolls/pdf');
+            $path = \realpath(\getcwd() . '/../payrolls/pdf');
 
             if (!\is_dir($path)) {
                 throw new Exception('Carpeta PDF no encontrada');
@@ -901,6 +895,8 @@ abstract class AbstractEPayrollUseCase
                 $response = new DownloadResponse(Status::SUCCESS, $e->getMessage(), \file_get_contents($path . 'fake.pdf'));
             }
         }
+
+        \file_put_contents(\getcwd() . '/../var/log/' . \date('Y-m-d') . '-' . $prefix . $number . '-P.log', \serialize($response));
 
         $payroll->setMessage($response->message());
 
@@ -918,7 +914,7 @@ abstract class AbstractEPayrollUseCase
     protected function xml(EPayroll $ePayroll, Payroll $payroll, string $prefix, string $number): Payroll
     {
         try {
-            $path = \realpath(getcwd() . '/../payrolls/xml');
+            $path = \realpath(\getcwd() . '/../payrolls/xml');
 
             if (!\is_dir($path)) {
                 throw new Exception('Carpeta XML no encontrada');
@@ -932,6 +928,8 @@ abstract class AbstractEPayrollUseCase
                 $response = new DownloadResponse(Status::SUCCESS, $e->getMessage(), \file_get_contents($path . 'fake.xml'));
             }
         }
+
+        \file_put_contents(\getcwd() . '/../var/log/' . \date('Y-m-d') . '-' . $prefix . $number . '-X.log', \serialize($response));
 
         $payroll->setMessage($response->message());
 
