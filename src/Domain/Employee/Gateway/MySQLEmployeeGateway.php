@@ -351,7 +351,7 @@ class MySQLEmployeeGateway implements EmployeeGateway
 
         $query->where('bank.name like :bank_name');
         $query->setParameter(':bank_name', "%{$request->term}%");
-        $query->where('bank.IsActive = :bank_is_active');
+        $query->andWhere('bank.IsActive = :bank_is_active');
         $query->setParameter(':bank_is_active', true);
 
         $query->setFirstResult($page ? ($page - 1) * $limit : 0);
