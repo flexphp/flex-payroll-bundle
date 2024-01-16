@@ -58,7 +58,14 @@ final class AgreementRepository
 
     public function change(UpdateAgreementRequest $request): Agreement
     {
-        $agreement = (new AgreementFactory())->make($request);
+        $factory = new AgreementFactory();
+        $agreement = $factory->make($request);
+
+        if (!empty($request->_patch)) {
+            $data = $this->gateway->get($agreement);
+
+            $agreement = $factory->patch($request, $data);
+        }
 
         $this->gateway->shift($agreement);
 

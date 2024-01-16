@@ -133,7 +133,7 @@ abstract class AbstractPaysheetUseCase
     {
         $useCase = new CreateAgreementUseCase($this->agreementRepository);
 
-        $agreement = ($useCase->execute(new CreateAgreementRequest($request->agreement, $request->createdBy)))->agreement;
+        $agreement = ($useCase->execute(new CreateAgreementRequest($request->agreement, $request->createdBy, $request->timezone)))->agreement;
 
         if (!$agreement->id()) {
             throw new Exception('Agreement not create', 404);
@@ -146,7 +146,7 @@ abstract class AbstractPaysheetUseCase
     {
         $useCase = new UpdateAgreementUseCase($this->agreementRepository);
 
-        return ($useCase->execute(new UpdateAgreementRequest($id, $request->agreement, $request->createdBy, true)))->agreement;
+        return ($useCase->execute(new UpdateAgreementRequest($id, $request->agreement, $request->createdBy, true, $request->timezone)))->agreement;
     }
 
     protected function getEmployeeId(CreatePaysheetRequest $request): int

@@ -85,7 +85,7 @@ final class AgreementController extends AbstractController
         $form = $this->createForm(AgreementFormType::class);
         $form->handleRequest($request);
 
-        $request = new CreateAgreementRequest($form->getData(), $this->getUser()->id());
+        $request = new CreateAgreementRequest($form->getData(), $this->getUser()->id(), $this->getUser()->timezone());
 
         $useCase->execute($request);
 
@@ -144,7 +144,7 @@ final class AgreementController extends AbstractController
         $form->submit($request->request->get($form->getName()));
         $form->handleRequest($request);
 
-        $request = new UpdateAgreementRequest($id, $form->getData(), $this->getUser()->id());
+        $request = new UpdateAgreementRequest($id, $form->getData(), $this->getUser()->id(), false, $this->getUser()->timezone());
 
         $useCase->execute($request);
 

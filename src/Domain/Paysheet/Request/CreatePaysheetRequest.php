@@ -65,6 +65,8 @@ class CreatePaysheetRequest implements RequestInterface
 
     public $createdAt;
 
+    public $timezone;
+
     public function __construct(array $data, int $createdBy, ?string $timezone = null)
     {
         $this->employee = $data['employee'] ?? [];
@@ -93,6 +95,8 @@ class CreatePaysheetRequest implements RequestInterface
         $this->createdAt = !empty($data['paysheet']['createdAt'])
             ? $this->dateTimeToUTC($data['paysheet']['createdAt'], $this->getOffset($this->getTimezone($timezone)))
             : null;
+
         $this->createdBy = $createdBy;
+        $this->timezone = $timezone;
     }
 }

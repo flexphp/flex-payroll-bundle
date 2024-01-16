@@ -9,10 +9,14 @@
  */
 namespace FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request;
 
+use DateTime;
+use FlexPHP\Bundle\HelperBundle\Domain\Helper\DateTimeTrait;
 use FlexPHP\Messages\RequestInterface;
 
 final class CreateAgreementRequest implements RequestInterface
 {
+    use DateTimeTrait;
+
     public $name;
 
     public $employee;
@@ -41,7 +45,7 @@ final class CreateAgreementRequest implements RequestInterface
 
     public $createdBy;
 
-    public function __construct(array $data, int $createdBy)
+    public function __construct(array $data, int $createdBy, ?string $timezone = null)
     {
         $this->name = $data['name'] ?? null;
         $this->employee = $data['employee'] ?? null;
@@ -53,8 +57,12 @@ final class CreateAgreementRequest implements RequestInterface
         $this->pensionPercentage = $data['pensionPercentage'] ?? null;
         $this->integralSalary = $data['integralSalary'] ?? null;
         $this->highRisk = $data['highRisk'] ?? null;
-        $this->initAt = $data['initAt'] ?: null;
-        $this->finishAt = $data['finishAt'] ?: null;
+        $this->initAt = !empty($data['initAt'])
+            ? $this->dateTimeToUTC($data['initAt']->format(DateTime::ISO8601), $this->getOffset($this->getTimezone($timezone)))
+            : null;
+        $this->finishAt = !empty($data['finishAt'])
+            ? $this->dateTimeToUTC($data['finishAt']->format(DateTime::ISO8601), $this->getOffset($this->getTimezone($timezone)))
+            : null;
         $this->status = $data['status'] ?? null;
         $this->createdBy = $createdBy;
     }

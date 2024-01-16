@@ -9,10 +9,14 @@
  */
 namespace FlexPHP\Bundle\PayrollBundle\Domain\Agreement\Request;
 
+use DateTime;
+use FlexPHP\Bundle\HelperBundle\Domain\Helper\DateTimeTrait;
 use FlexPHP\Messages\RequestInterface;
 
 final class UpdateAgreementRequest implements RequestInterface
 {
+    use DateTimeTrait;
+
     public $id;
 
     public $name;
@@ -43,7 +47,9 @@ final class UpdateAgreementRequest implements RequestInterface
 
     public $updatedBy;
 
-    public function __construct(int $id, array $data, int $updatedBy)
+    public $_patch;
+
+    public function __construct(int $id, array $data, int $updatedBy, bool $_patch = false, ?string $timezone = null)
     {
         $this->id = $id;
         $this->name = $data['name'] ?? null;
@@ -56,9 +62,14 @@ final class UpdateAgreementRequest implements RequestInterface
         $this->pensionPercentage = $data['pensionPercentage'] ?? null;
         $this->integralSalary = $data['integralSalary'] ?? null;
         $this->highRisk = $data['highRisk'] ?? null;
-        $this->initAt = $data['initAt'] ?: null;
-        $this->finishAt = $data['finishAt'] ?: null;
+        $this->initAt = !empty($data['initAt'])
+            ? $this->dateTimeToUTC($data['initAt']->format(DateTime::ISO8601), $this->getOffset($this->getTimezone($timezone)))
+            : null;
+        $this->finishAt = !empty($data['finishAt'])
+            ? $this->dateTimeToUTC($data['finishAt']->format(DateTime::ISO8601), $this->getOffset($this->getTimezone($timezone)))
+            : null;
         $this->status = $data['status'] ?? null;
         $this->updatedBy = $updatedBy;
+        $this->_patch = $_patch;
     }
 }
