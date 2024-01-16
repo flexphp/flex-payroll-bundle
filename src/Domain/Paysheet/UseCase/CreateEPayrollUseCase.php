@@ -166,7 +166,7 @@ final class CreateEPayrollUseCase extends AbstractEPayrollUseCase
             return new PaymentDate($paidAt);
         }, $basic->paidAts()));
 
-        if ($vacation->days()) {
+        if ($vacation->days() || $vacation->compensateDays()) {
             $accrued->setVacation($this->getVacation($vacation->days(), $vacation->amount(), $vacation->initAt(), $vacation->finishAt(), $vacation->compensateDays(), $vacation->compensateAmount()));
         }
 
