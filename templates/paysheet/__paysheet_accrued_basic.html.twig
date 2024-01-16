@@ -41,7 +41,7 @@
 
         <div class="paidAt form-group col-4">
             <label for="accrued[basic][0][paidAt][0]">Fecha de Pago</label>
-            <input name="accrued[basic][0][paidAt][0]" data-zdp_show_icon="false" class="form-control date-picker" type="text" required value="{{ paysheet.details.accrued.basic.0.paidAt.0|default('') ? paysheet.details.accrued.basic.0.paidAt.0|date('Y-m-d') : paidAt }}" />
+            <input name="accrued[basic][0][paidAt][0]" data-zdp_show_icon="false" class="form-control date-picker" type="text" required value="{{ paysheet.details.accrued.basic.0.paidAt.0|default('') ? paysheet.details.accrued.basic.0.paidAt.0|date('Y-m-d', app.user.timezone) : paidAt }}" />
         </div>
 
         {% if paysheet.details and paysheet.details.accrued.basic.0.paidAt|length > 1 %}

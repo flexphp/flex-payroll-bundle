@@ -30,8 +30,8 @@
             <div class="form-group"><label>{% trans %}label.accountType{% endtrans %}</label><div class="form-control-plaintext">{{ employee.accountTypeInstance.name|default('-') }}</div></div>
             <div class="form-group"><label>{% trans %}label.accountNumber{% endtrans %}</label><div class="form-control-plaintext">{{ employee.accountNumber }}</div></div>
             <div class="form-group"><label>{% trans %}label.isActive{% endtrans %}</label><div class="form-control-plaintext">{% if employee.isActive %}{% trans from 'messages' %}label.yes{% endtrans %}{% else %}{% trans from 'messages' %}label.no{% endtrans %}{% endif %}</div></div>
-            <div class="form-group"><label>{% trans %}label.createdAt{% endtrans %}</label><div class="form-control-plaintext">{{ employee.createdAt ? employee.createdAt|date('Y-m-d H:i:s') : '-' }}</div></div>
-            <div class="form-group"><label>{% trans %}label.updatedAt{% endtrans %}</label><div class="form-control-plaintext">{{ employee.updatedAt ? employee.updatedAt|date('Y-m-d H:i:s') : '-' }}</div></div>
+            <div class="form-group"><label>{% trans %}label.createdAt{% endtrans %}</label><div class="form-control-plaintext">{{ employee.createdAt ? employee.createdAt|date('Y-m-d H:i:s', app.user.timezone) : '-' }}</div></div>
+            <div class="form-group"><label>{% trans %}label.updatedAt{% endtrans %}</label><div class="form-control-plaintext">{{ employee.updatedAt ? employee.updatedAt|date('Y-m-d H:i:s', app.user.timezone) : '-' }}</div></div>
             <div class="form-group"><label>{% trans %}label.createdBy{% endtrans %}</label><div class="form-control-plaintext">{{ employee.createdByInstance.name|default('-') }}</div></div>
             <div class="form-group"><label>{% trans %}label.updatedBy{% endtrans %}</label><div class="form-control-plaintext">{{ employee.updatedByInstance.name|default('-') }}</div></div>
         </div>

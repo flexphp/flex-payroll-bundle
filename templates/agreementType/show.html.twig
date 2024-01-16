@@ -21,8 +21,8 @@
             <div class="form-group"><label>{% trans %}label.name{% endtrans %}</label><div class="form-control-plaintext">{{ agreementType.name }}</div></div>
             <div class="form-group"><label>{% trans %}label.code{% endtrans %}</label><div class="form-control-plaintext">{{ agreementType.code }}</div></div>
             <div class="form-group"><label>{% trans %}label.isActive{% endtrans %}</label><div class="form-control-plaintext">{% if agreementType.isActive %}{% trans from 'messages' %}label.yes{% endtrans %}{% else %}{% trans from 'messages' %}label.no{% endtrans %}{% endif %}</div></div>
-            <div class="form-group"><label>{% trans %}label.createdAt{% endtrans %}</label><div class="form-control-plaintext">{{ agreementType.createdAt ? agreementType.createdAt|date('Y-m-d H:i:s') : '-' }}</div></div>
-            <div class="form-group"><label>{% trans %}label.updatedAt{% endtrans %}</label><div class="form-control-plaintext">{{ agreementType.updatedAt ? agreementType.updatedAt|date('Y-m-d H:i:s') : '-' }}</div></div>
+            <div class="form-group"><label>{% trans %}label.createdAt{% endtrans %}</label><div class="form-control-plaintext">{{ agreementType.createdAt ? agreementType.createdAt|date('Y-m-d H:i:s', app.user.timezone) : '-' }}</div></div>
+            <div class="form-group"><label>{% trans %}label.updatedAt{% endtrans %}</label><div class="form-control-plaintext">{{ agreementType.updatedAt ? agreementType.updatedAt|date('Y-m-d H:i:s', app.user.timezone) : '-' }}</div></div>
             <div class="form-group"><label>{% trans %}label.createdBy{% endtrans %}</label><div class="form-control-plaintext">{{ agreementType.createdByInstance.name|default('-') }}</div></div>
             <div class="form-group"><label>{% trans %}label.updatedBy{% endtrans %}</label><div class="form-control-plaintext">{{ agreementType.updatedByInstance.name|default('-') }}</div></div>
         </div>

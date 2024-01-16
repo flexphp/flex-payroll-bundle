@@ -12,8 +12,8 @@
         {# <td>{{ _agreement.pensionPercentage }}</td> #}
         <td>{% if _agreement.integralSalary %}{% trans from 'messages' %}label.yes{% endtrans %}{% else %}{% trans from 'messages' %}label.no{% endtrans %}{% endif %}</td>
         <td>{% if _agreement.highRisk %}{% trans from 'messages' %}label.yes{% endtrans %}{% else %}{% trans from 'messages' %}label.no{% endtrans %}{% endif %}</td>
-        <td>{{ _agreement.initAt ? _agreement.initAt|date('Y-m-d H:i:s') : '-' }}</td>
-        <td>{{ _agreement.finishAt ? _agreement.finishAt|date('Y-m-d H:i:s') : '-' }}</td>
+        <td>{{ _agreement.initAt ? _agreement.initAt|date('Y-m-d', app.user.timezone) : '-' }}</td>
+        <td>{{ _agreement.finishAt ? _agreement.finishAt|date('Y-m-d', app.user.timezone) : '-' }}</td>
         <td>{{ _agreement.statusInstance.name|default('-') }}</td>
         <td class="text-center">
             <div class="btn-group">

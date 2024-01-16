@@ -19,8 +19,8 @@
 
         <div class="card-body">
             <div class="form-group"><label>{% trans %}label.name{% endtrans %}</label><div class="form-control-plaintext">{{ agreementStatus.name }}</div></div>
-            <div class="form-group"><label>{% trans %}label.createdAt{% endtrans %}</label><div class="form-control-plaintext">{{ agreementStatus.createdAt ? agreementStatus.createdAt|date('Y-m-d H:i:s') : '-' }}</div></div>
-            <div class="form-group"><label>{% trans %}label.updatedAt{% endtrans %}</label><div class="form-control-plaintext">{{ agreementStatus.updatedAt ? agreementStatus.updatedAt|date('Y-m-d H:i:s') : '-' }}</div></div>
+            <div class="form-group"><label>{% trans %}label.createdAt{% endtrans %}</label><div class="form-control-plaintext">{{ agreementStatus.createdAt ? agreementStatus.createdAt|date('Y-m-d H:i:s', app.user.timezone) : '-' }}</div></div>
+            <div class="form-group"><label>{% trans %}label.updatedAt{% endtrans %}</label><div class="form-control-plaintext">{{ agreementStatus.updatedAt ? agreementStatus.updatedAt|date('Y-m-d H:i:s', app.user.timezone) : '-' }}</div></div>
             <div class="form-group"><label>{% trans %}label.createdBy{% endtrans %}</label><div class="form-control-plaintext">{{ agreementStatus.createdByInstance.name|default('-') }}</div></div>
             <div class="form-group"><label>{% trans %}label.updatedBy{% endtrans %}</label><div class="form-control-plaintext">{{ agreementStatus.updatedByInstance.name|default('-') }}</div></div>
         </div>

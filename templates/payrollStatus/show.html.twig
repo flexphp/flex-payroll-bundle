@@ -19,8 +19,8 @@
 
         <div class="card-body">
             <div class="form-group"><label>{% trans %}label.name{% endtrans %}</label><div class="form-control-plaintext">{{ payrollStatus.name }}</div></div>
-            <div class="form-group"><label>{% trans %}label.createdAt{% endtrans %}</label><div class="form-control-plaintext">{{ payrollStatus.createdAt ? payrollStatus.createdAt|date('Y-m-d H:i:s') : '-' }}</div></div>
-            <div class="form-group"><label>{% trans %}label.updatedAt{% endtrans %}</label><div class="form-control-plaintext">{{ payrollStatus.updatedAt ? payrollStatus.updatedAt|date('Y-m-d H:i:s') : '-' }}</div></div>
+            <div class="form-group"><label>{% trans %}label.createdAt{% endtrans %}</label><div class="form-control-plaintext">{{ payrollStatus.createdAt ? payrollStatus.createdAt|date('Y-m-d H:i:s', app.user.timezone) : '-' }}</div></div>
+            <div class="form-group"><label>{% trans %}label.updatedAt{% endtrans %}</label><div class="form-control-plaintext">{{ payrollStatus.updatedAt ? payrollStatus.updatedAt|date('Y-m-d H:i:s', app.user.timezone) : '-' }}</div></div>
             <div class="form-group"><label>{% trans %}label.createdBy{% endtrans %}</label><div class="form-control-plaintext">{{ payrollStatus.createdByInstance.name|default('-') }}</div></div>
             <div class="form-group"><label>{% trans %}label.updatedBy{% endtrans %}</label><div class="form-control-plaintext">{{ payrollStatus.updatedByInstance.name|default('-') }}</div></div>
         </div>

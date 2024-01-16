@@ -31,9 +31,9 @@
             <div class="form-group"><label>{% trans %}label.pdfPath{% endtrans %}</label><div class="form-control-plaintext">{{ payroll.pdfPath }}</div></div>
             <div class="form-group"><label>{% trans %}label.xmlPath{% endtrans %}</label><div class="form-control-plaintext">{{ payroll.xmlPath }}</div></div>
             <div class="form-group"><label>{% trans %}label.parentId{% endtrans %}</label><div class="form-control-plaintext">{{ payroll.parentIdInstance.number|default('-') }}</div></div>
-            <div class="form-group"><label>{% trans %}label.downloadedAt{% endtrans %}</label><div class="form-control-plaintext">{{ payroll.downloadedAt ? payroll.downloadedAt|date('Y-m-d H:i:s') : '-' }}</div></div>
-            <div class="form-group"><label>{% trans %}label.createdAt{% endtrans %}</label><div class="form-control-plaintext">{{ payroll.createdAt ? payroll.createdAt|date('Y-m-d H:i:s') : '-' }}</div></div>
-            <div class="form-group"><label>{% trans %}label.updatedAt{% endtrans %}</label><div class="form-control-plaintext">{{ payroll.updatedAt ? payroll.updatedAt|date('Y-m-d H:i:s') : '-' }}</div></div>
+            <div class="form-group"><label>{% trans %}label.downloadedAt{% endtrans %}</label><div class="form-control-plaintext">{{ payroll.downloadedAt ? payroll.downloadedAt|date('Y-m-d H:i:s', app.user.timezone) : '-' }}</div></div>
+            <div class="form-group"><label>{% trans %}label.createdAt{% endtrans %}</label><div class="form-control-plaintext">{{ payroll.createdAt ? payroll.createdAt|date('Y-m-d H:i:s', app.user.timezone) : '-' }}</div></div>
+            <div class="form-group"><label>{% trans %}label.updatedAt{% endtrans %}</label><div class="form-control-plaintext">{{ payroll.updatedAt ? payroll.updatedAt|date('Y-m-d H:i:s', app.user.timezone) : '-' }}</div></div>
             <div class="form-group"><label>{% trans %}label.createdBy{% endtrans %}</label><div class="form-control-plaintext">{{ payroll.createdByInstance.name|default('-') }}</div></div>
             <div class="form-group"><label>{% trans %}label.updatedBy{% endtrans %}</label><div class="form-control-plaintext">{{ payroll.updatedByInstance.name|default('-') }}</div></div>
         </div>

@@ -86,7 +86,7 @@
 {#                 <div class="col"> #}
 {#                     <label>{% trans %}label.expiratedAt{% endtrans %}</label> #}
 {#                     <div class="form-control-plaintext"> #}
-{#                         <span class="date-format">{{ paysheet.expiratedAt|date('Y-m-d H:i:s') }}</span> #}
+{#                         <span class="date-format">{{ paysheet.expiratedAt|date('Y-m-d H:i:s', app.user.timezone) }}</span> #}
 {#                     </div> #}
 {#                 </div> #}
 {#             </div> #}
@@ -125,7 +125,7 @@
                 {#     <div class="form-row"> #}
                 {#         <div class="col"> #}
                 {#             <div class="form-control-plaintext"> #}
-                {#                 <span class="datetime-format">{{ _payment.createdAt ? _payment.createdAt|date('Y-m-d H:i:s') : '-' }}</span> #}
+                {#                 <span class="datetime-format">{{ _payment.createdAt ? _payment.createdAt|date('Y-m-d H:i:s', app.user.timezone) : '-' }}</span> #}
                 {#             </div> #}
                 {#         </div> #}
                 {#         <div class="col"> #}
@@ -196,13 +196,13 @@
             {# {% endif %} #}
             {% endif %}
             {# {% if paysheet.paidAt %} #}
-            {#     <div class="form-group"><label>{% trans %}label.paidAt{% endtrans %}</label><div class="form-control-plaintext"><span class="datetime-format">{{ paysheet.paidAt|date('Y-m-d H:i:s') }}</span></div></div> #}
+            {#     <div class="form-group"><label>{% trans %}label.paidAt{% endtrans %}</label><div class="form-control-plaintext"><span class="datetime-format">{{ paysheet.paidAt|date('Y-m-d H:i:s', app.user.timezone) }}</span></div></div> #}
             {# {% endif %} #}
             {% if paysheet.createdBy %}
-                <div class="form-group"><label>{% trans %}label.createdBy{% endtrans %}</label><div class="form-control-plaintext">{{ paysheet.createdByInstance.name }} (<span class="datetime-format">{{ paysheet.createdAt ? paysheet.createdAt|date('Y-m-d H:i:s') : '-' }}</span>)</div></div>
+                <div class="form-group"><label>{% trans %}label.createdBy{% endtrans %}</label><div class="form-control-plaintext">{{ paysheet.createdByInstance.name }} (<span class="datetime-format">{{ paysheet.createdAt ? paysheet.createdAt|date('Y-m-d H:i:s', app.user.timezone) : '-' }}</span>)</div></div>
             {% endif %}
             {% if paysheet.updatedBy %}
-                <div class="form-group"><label>{% trans %}label.updatedBy{% endtrans %}</label><div class="form-control-plaintext">{{ paysheet.updatedByInstance.name }} (<span class="datetime-format">{{ paysheet.updatedAt ? paysheet.updatedAt|date('Y-m-d H:i:s') : '-' }}</span>)</div></div>
+                <div class="form-group"><label>{% trans %}label.updatedBy{% endtrans %}</label><div class="form-control-plaintext">{{ paysheet.updatedByInstance.name }} (<span class="datetime-format">{{ paysheet.updatedAt ? paysheet.updatedAt|date('Y-m-d H:i:s', app.user.timezone) : '-' }}</span>)</div></div>
             {% endif %}
         </div>
 
